@@ -10,8 +10,8 @@ declare namespace Music {
     type song = {
         name: string;
         id: number;
-        artistName: Array<{ id: string; name: string; }>;//id和name都是歌手的信息
-        al: { id: number, name: string, picUrl: string }//该歌曲相关专辑信息
+        ar:[{id:string,name:string}];//歌手
+        alia:[string];//歌曲别名
     }
     //歌单
     type highLists = {
@@ -44,3 +44,5 @@ declare namespace Music {
         artist: singer;//歌手
     }
 }
+//声明可以使用css模块化
+declare module "*.css";

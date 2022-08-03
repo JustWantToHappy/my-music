@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { useNavigate } from "react-router-dom"
-import "./recommon.css"
+import  "./recommon.css"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
