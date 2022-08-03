@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    justify-content: center;
+    background-color: #242424;
+}
+
+.ant-carousel .slick-prev,
+.ant-carousel .slick-prev:hover {
+    left: -15%;
+    z-index: 2;
+    color: white;
+    font-size: 20px;
+    height: 30px;
+}
+
+.ant-carousel .slick-next,
+.ant-carousel .slick-next:hover {
+    right: -10%;
+    z-index: 2;
+    color: white;
+    font-size: 20px;
+    height: 30px;
+}
+
+.content{
+    display:flex;
+    justify-content: space-between;
+    width:calc(100% - 12.5vw + 20px);
+}
