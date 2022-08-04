@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from "axios"
 const request:AxiosInstance = axios.create({
     baseURL: "http://localhost:4000/",
     timeout: 5000,
-    withCredentials:true
+    withCredentials:false
 });
 //请求拦截器
 request.interceptors.request.use((config) => {

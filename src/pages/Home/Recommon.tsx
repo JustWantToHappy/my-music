@@ -32,7 +32,7 @@ const RecommonList = () => {
 }
 //新碟上架
 const NewDisc = () => {
-    const [newDiscs, setNewDiscs] = useState<Array<Music.ablum>>();
+    const [newDiscs, setNewDiscs] = useState<Array<Music.album>>();
     useEffect(() => {
         (async () => {
             const data = await getNewDiscs();

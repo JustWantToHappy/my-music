@@ -10,8 +10,14 @@ declare namespace Music {
     type song = {
         name: string;
         id: number;
-        ar:[{id:string,name:string}];//歌手
-        alia:[string];//歌曲别名
+        dt: number;//歌曲时长
+        //歌手
+        ar?: singer[];
+        artists?: Array<singer>;
+        //专辑
+        al?: album;
+        album?: ablum;
+        publishTime: number;//歌曲发布时间
     }
     //歌单
     type highLists = {
@@ -22,7 +28,7 @@ declare namespace Music {
         creator: any;
         tags: string[];//标签
         subscribers: any;//貌似是用户的信息头像，关于歌单的评论等
-        creator: any;//制作歌单的人信息
+        creator: any;//制作歌单的人信息 
         tracks: Array<song>;//歌单中每一首歌曲信息
     }
     //歌手
@@ -36,12 +42,14 @@ declare namespace Music {
         briefDesc?: string; // 简单描述
     }
     //专辑
-    type ablum = {
+    type album = {
         id: number;
         name: string;
         company: string;//发行公司
         picUrl: string;//专辑封面
         artist: singer;//歌手
+        publishTime: number;//发布时间
+        description: string;//专辑描述
     }
 }
 //声明可以使用css模块化
