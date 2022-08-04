@@ -8,6 +8,8 @@ declare namespace Music {
     }
     //一首歌
     type song = {
+        index:number;//序号
+        key:number;
         name: string;
         id: number;
         dt: number;//歌曲时长

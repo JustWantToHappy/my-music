@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
 import Song from "./Song"
-const Onmit = (props: { isLong: boolean | undefined } = { isLong: false }) => {
+/* const Onmit = (props: { isLong: boolean | undefined } = { isLong: false }) => {
     let { isLong } = props;
     if (isLong) {
         return (
@@ -12,19 +12,19 @@ const Onmit = (props: { isLong: boolean | undefined } = { isLong: false }) => {
     } else {
         return null;
     }
-}
+} */
 const PlayList = () => {
     const { id } = useParams();
-    interface list {
+    interface myList {
         playlist: {
             description: string,
             tags: Array<string>,
             coverImgUrl: string,
             name: string,
-            creator:{avatarUrl:string,nickname:string}//歌单建立者
+            creator: { avatarUrl: string, nickname: string }//歌单建立者
         }
     };
-    const [list, setList] = useState<list>();
+    const [list, setList] = useState<myList>();
     const [songs, setSongs] = useState<Array<Music.song>>();
     //拿取歌单信息
     useEffect(() => {
@@ -36,6 +36,11 @@ const PlayList = () => {
         (async function () {
             //获取歌单中每首歌
             let sgs = await getListSong(parseInt(id as string));
+            //给歌单中的每首歌添加编号(1~n)
+            for (let i = 0; i < sgs.songs.length; i++) {
+                sgs.songs[i].index = i + 1;
+                sgs.songs[i].key = i + 1;
+            }
             setSongs(sgs.songs);
         })();
     }, []);
@@ -64,7 +69,7 @@ const PlayList = () => {
                             <small>共{songs?.length}首歌曲</small>
                         </div>
                         <hr />
-                        <Song songs={songs}/>
+                        <Song songs={songs} />
                     </span>
                 </div>
             </div>

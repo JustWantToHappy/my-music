@@ -73,10 +73,36 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
     cursor: pointer;
 }
 
 .song>span:hover {
     text-decoration: underline;
+}
+
+.song-header:hover {
+    cursor: pointer;
+}
+
+.song-album:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.song-order {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+/* 歌单列表中播放图标样式 */
+.song-order-svg {
+    font-size: 20px;
+    opacity: 0.4;
+}
+
+.song-order-svg:hover{
+    opacity: 0.8;
+    cursor: pointer;
 }
