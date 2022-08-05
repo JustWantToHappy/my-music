@@ -40,7 +40,7 @@ export default function Header() {
             <div className="head">
                 <section>
                     <img src={require("../../assets/logo/logo.png")} alt="图片无法显示" />
-                    <b>网易云音乐</b>
+                    <b>某云音乐</b>
                 </section>
                 {items.map((item, index) => {
                     return (

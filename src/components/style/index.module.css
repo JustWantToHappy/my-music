@@ -1,3 +1,4 @@
+/* 整个播放条容器的样式 */
 .playbar {
     position: fixed;
     bottom: 0;
@@ -5,19 +6,62 @@
     left: 0;
     width: 100vw;
     height: 9vh;
-    background-color: #242424;
+    background-color: #252933;
     color: aliceblue;
     display: flex;
     align-items: center;
     font-family: 'Courier New', Courier, monospace;
+    animation: slide-down 0.5s ease-in-out;
 }
 
-.playbar>img {
+@keyframes slide-down {
+    0% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* 播放条移入底部 */
+.playbar-move {
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+    left: 0;
+    width: 100vw;
+    height: 9vh;
+    background-color: #252933;
+    color: aliceblue;
+    display: flex;
+    align-items: center;
+    font-family: 'Courier New', Courier, monospace;
+    opacity: 1;
+    transition: all 1s linear;
+}
+
+.playbar-end{
+    opacity: 0;
+}
+.coverImg {
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playbar>div>img {
+    width: 47px;
+    border-radius: 5%;
+}
+
+.playbar-move>div>img {
+    width: 47px;
+    border-radius: 5%;
 }
 
 .playmusic {
-    flex: 1;
     display: flex;
     height: 100%;
     align-items: center;
@@ -28,6 +72,7 @@
 /*  几个播放按钮的样式 */
 .playmusic-div1 {
     opacity: 0.4;
+    margin: 10px;
 }
 
 .playmusic-div1:hover {
@@ -44,6 +89,7 @@
 }
 
 .playmusic-div3 {
+    margin: 10px;
     opacity: 0.4;
 }
 
@@ -62,12 +108,14 @@
 .music-bar>small {
     position: absolute;
     top: 0;
+    display: flex;
+    transform: translateX(-2vw);
+    justify-content: space-between;
 }
 
 .music-bar>span {
     display: flex;
     align-items: center;
-
 }
 
 .music-bar>span>small {
@@ -80,12 +128,13 @@
     justify-content: space-evenly;
 }
 
-.play-sound{
+.play-sound {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
 .play-sound-btn {
     opacity: 0.5;
 }
@@ -96,9 +145,8 @@
 
 /* 音量调整条 */
 .play-sound-bar {
-   height:100px;
-   position:absolute;
-   float:top;
-   top:-104px;
-   color:red !important;
+    height: 100px;
+    position: absolute;
+    float: top;
+    top: -104px;
 }

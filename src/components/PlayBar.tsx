@@ -6,9 +6,10 @@ import {
     PlayCircleOutlined,
     PauseCircleOutlined,
     EllipsisOutlined,
-    SoundFilled
+    SoundFilled,
 } from "@ant-design/icons"
-import { Progress, Dropdown, Menu, Slider } from 'antd';
+import { Dropdown, Menu, Slider } from 'antd';
+import { transTime } from "../utils/help"
 import React from "react"
 const menu = (
     <Menu
@@ -37,47 +38,87 @@ const menu = (
         ]}
     />
 );
-const PlayBar = (props: { id: number }) => {
+const PlayBar = (props: { song: Music.song }) => {
+    const [song, setSong] = React.useState<Music.song>(props.song);
     const playBar: any = React.useRef();
-    let { id } = props;
     const url = `https://music.163.com/song/media/outer/url?id=33894312`;
-    const [isPlay, setPlay] = React.useState(false);
+    //控制是否播放音乐
+    const [isPlay, setPlay] = React.useState(true);
+    //控制是否显示播放条
+    const [showBar, setBar] = React.useState(true);
     //控制音量条是否展示
     const [showSloud, setSloud] = React.useState(false);
-    return <div className={styles.playbar}>
-        <div style={{ flex: "1" }}></div>
-        <audio ref={playBar} >
-            <source src={url} type="audio/mp3" />
-        </audio>
-        <div className={styles.playmusic}>
-            {/* 播放上一首 */}
-            <StepBackwardOutlined className={styles['playmusic-div1']} />
-            {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => setPlay(!isPlay)} />}
-            {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { setPlay(!isPlay) }} />}
-            {/* 播放下一首 */}
-            <StepForwardOutlined className={styles['playmusic-div3']} />
+    //进度条当前时间
+    const [time, setTime] = React.useState(0)
+    //用于判断组件是否需要重新渲染
+    if (song !== props.song) {
+        setSong(props.song);
+        setBar(true);
+        setTime(0);
+    }
+    React.useEffect(() => {
+        /*   setTimeout(() => {
+              setBar(false);
+          }, 2000) */
+    }, []);
+    const getStyle = (type: string) => {
+        let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
+        return arrStyle.join(" ");
+    }
+    const getCurrentTime = (value: number) => {
+        setTime(value);
+    }
+    return <>
+        <div className={showBar ? getStyle("start") : getStyle("move")}>
+            <div style={{ flex: "1" }}></div>
+            <audio ref={playBar} >
+                <source src={url} type="audio/mp3" />
+            </audio>
+            <div className={styles.playmusic}>
+                {/* 播放上一首 */}
+                <StepBackwardOutlined className={styles['playmusic-div1']} />
+                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { setPlay(!isPlay); }} />}
+                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { setPlay(!isPlay); }} />}
+                {/* 播放下一首 */}
+                <StepForwardOutlined className={styles['playmusic-div3']} />
+            </div>
+            <div className={styles.coverImg}>
+                <img src={song.al?.picUrl} alt="图片无法显示" />
+            </div>
+            <div className={styles["music-bar"]}>
+                {/* 歌曲名称 */}
+                <small style={{ marginLeft: "30px" }}>
+                    {/* 歌手名称 */}
+                    <span>{song.name}</span>
+                    {/* 进度条 */}
+                    <span style={{marginLeft:"3vw"}}>
+                        {song.ar?.map((per, index) => {
+                            if (index === 0) {
+                                return <>{per.name}</>
+                            } else {
+                                return "";
+                            }
+                        })}
+                    </span>
+                </small>
+                <span >
+                    {/* 其中tipFormatter=null不显示当前进度的刻度 */}
+                    <Slider style={{ flex: "1" }} max={song.dt} tipFormatter={null} onChange={getCurrentTime} value={time} />
+                    <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
+                </span>
+            </div>
+            <div className={styles['play-method']}>
+                {/* 音量调整 */}
+                <span className={styles['play-sound']}>
+                    {showSloud && <Slider vertical className={styles['play-sound-bar']} style={{ background: "#E6E8EB" }} />}
+                    <SoundFilled className={styles['play-sound-btn']} onClick={() => { setSloud(!showSloud) }} />
+                </span>
+                {/* 播放方式 */}
+                <Dropdown overlay={menu} placement="top" >
+                    <EllipsisOutlined />
+                </Dropdown>
+            </div>
         </div>
-        <img src="" alt="图片无法显示" />
-        <div className={styles["music-bar"]}>
-            <small>歌曲名称</small>
-            {/* 进度条 */}
-            <span >
-                {/* <Progress percent={0} showInfo={false} strokeColor={"#F53F3F"} style={{ flex: "1" }} /> */}
-                <Slider style={{ flex: "1" }} />
-                <small>歌曲总时长</small>
-            </span>
-        </div>
-        <div className={styles['play-method']}>
-            {/* 音量调整 */}
-            <span className={styles['play-sound']}>
-                {showSloud && <Slider vertical className={styles['play-sound-bar']} />}
-                <SoundFilled className={styles['play-sound-btn']} onClick={() => { setSloud(!showSloud) }} />
-            </span>
-            {/* 播放方式 */}
-            <Dropdown overlay={menu} placement="top" >
-                <EllipsisOutlined />
-            </Dropdown>
-        </div>
-    </div>
+    </>
 }
 export { PlayBar };

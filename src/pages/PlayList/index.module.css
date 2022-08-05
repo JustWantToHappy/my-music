@@ -96,7 +96,7 @@
 
 }
 
-/* 歌单列表中播放图标样式 */
+/* 歌单列表中播放图标样式 ,分为默认形式和点击之后的样式*/
 .song-order-svg {
     font-size: 20px;
     opacity: 0.4;
@@ -105,6 +105,13 @@
 .song-order-svg:hover {
     opacity: 0.8;
     cursor: pointer;
+}
+
+.song-order-svg1 {
+    font-size: 20px;
+    opacity: 0.9;
+    cursor: pointer;
+    color: #F53F3F;
 }
 
 .blank {

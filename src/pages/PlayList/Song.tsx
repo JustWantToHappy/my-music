@@ -1,84 +1,79 @@
 //歌单组件
 import { Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
 import styles from "./index.module.css"
 import { transTime } from "../../utils/help"
-import { PlayCircleOutlined, PauseCircleOutlined } from "@ant-design/icons"
+import { PlayCircleOutlined } from "@ant-design/icons"
 import { PlayBar } from "../../components/PlayBar"
-
-//用于判断播放条是否启用
-const columns: ColumnsType<Music.song> = [
-    {
-        dataIndex: 'index',
-        key: 'id',
-        width: 150,
-        render: (text) => {
-            return <span className={styles["song-order"]}>
-                <>{text}</>
-                <PlayCircleOutlined className={styles['song-order-svg']} />
-                {/* <PauseCircleOutlined style={{fontSize:"20px",opacity:"0.8"}}/> */}
-            </span>;
-        },
-    },
-    {
-        title: '歌曲标题',
-        dataIndex: 'name',
-        key: 'id',
-        width: 200,
-        render: (text) => {
-            return <span className={styles['song-header']}>{text}</span>
-        }
-    },
-    {
-        title: '时长',
-        dataIndex: "dt",
-        key: "id",
-        width: 150,
-        render: (text) => {
-            return <li>{transTime(text)}</li>
-        }
-    },
-    {
-        title: '歌手',
-        dataIndex: "ar",
-        key: "id",
-        width: 150,
-        render: (singers: Array<Music.song>) => {
-            return <div className={styles.song}>
-                {
-                    singers.map(singer => {
-                        return (
-                            <span key={singer.id}>
-                                {singer.name}
-                            </span>
-                        )
-                    })
-                }
-            </div>
-        }
-    },
-    {
-        title: '专辑',
-        dataIndex: "al",
-        key: "id",
-        render: (album) => {
-            return <span className={styles['song-album']}>{album.name}</span>
-        }
-    },
-];
-
+import React from "react"
+const { Column } = Table;
 
 const Song = (props: { songs: Array<Music.song> | undefined }) => {
+    //用于记录播放的歌曲
+    let playArr: Array<boolean> = Array(props.songs?.length).fill(false);
+    //播放列表(队列)
+    let playList = Array(props.songs?.length);
+    const [arr, setArr] = React.useState(playArr);
+    //给播放条组件传递的歌曲信息
+    const [song, setSong] = React.useState<Music.song>();
+    const changePlayState = (index: number): void => {
+        playArr[index] = true;
+        setArr(playArr);
+        setSong(props?.songs && props?.songs[index-1]);
+    }
+    
     return (
         <>
             <Table
-                columns={columns}
                 dataSource={props.songs}
                 pagination={false}
                 scroll={{ y: 385 }}//实现固定表头
-            />
+            >
+                <Column dataIndex="index" render={
+                    (text: number) => {
+                        return <span className={styles["song-order"]}>
+                            <>{text}</>
+                            {/* 暂停按钮*/}
+                            <span className="span-pause" onClick={() => { changePlayState(text) }}>
+                                <PlayCircleOutlined className={!arr[text] ? styles['song-order-svg'] : styles['song-order-svg1']} />
+                            </span>
+                        </span>;
+                    }
+                } />
+                <Column title="歌曲标题" dataIndex="name"
+                    render={(text: string) => {
+                        return <span className={styles['song-header']}>{text}</span>
+                    }}
+                />
+                <Column title="时长" dataIndex="dt"
+                    render={(text) => {
+                        return <li>{transTime(text,1)}</li>
+                    }}
+                />
+                <Column title="歌手" dataIndex="ar"
+                    render={(singers: Array<Music.song>) => {
+                        return <div className={styles.song}>
+                            {
+                                singers.map(singer => {
+                                    return (
+                                        <span key={singer.id}>
+                                            {singer.name}
+                                        </span>
+                                    )
+                                })
+                            }
+                        </div>
+                    }}
+                />
+                <Column title="专辑" dataIndex="al"
+                    render={
+                        (album) => {
+                            return <span className={styles['song-album']}>{album.name}</span>
+                        }
+                    }
+                />
+            </Table>
             {/* 用于展示播放条的容器 */}
-            <PlayBar id={33894312} />
+            {song && <PlayBar song={song} />}
         </>
     )
 };
