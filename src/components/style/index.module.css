@@ -1,0 +1,104 @@
+.playbar {
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+    left: 0;
+    width: 100vw;
+    height: 9vh;
+    background-color: #242424;
+    color: aliceblue;
+    display: flex;
+    align-items: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.playbar>img {
+    flex: 1;
+}
+
+.playmusic {
+    flex: 1;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    font-size: 30px;
+    justify-content: space-around;
+}
+
+/*  几个播放按钮的样式 */
+.playmusic-div1 {
+    opacity: 0.4;
+}
+
+.playmusic-div1:hover {
+    opacity: 0.8;
+}
+
+.playmusic-div2 {
+    opacity: 0.4;
+}
+
+.playmusic-div2:hover {
+    opacity: 0.9;
+
+}
+
+.playmusic-div3 {
+    opacity: 0.4;
+}
+
+.playmusic-div3:hover {
+    opacity: 0.8;
+}
+
+
+.music-bar {
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.music-bar>small {
+    position: absolute;
+    top: 0;
+}
+
+.music-bar>span {
+    display: flex;
+    align-items: center;
+
+}
+
+.music-bar>span>small {
+    margin-left: 2%;
+}
+
+.play-method {
+    flex: 1;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.play-sound{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.play-sound-btn {
+    opacity: 0.5;
+}
+
+.play-sound-btn:hover {
+    opacity: 0.8;
+}
+
+/* 音量调整条 */
+.play-sound-bar {
+   height:100px;
+   position:absolute;
+   float:top;
+   top:-104px;
+   color:red !important;
+}

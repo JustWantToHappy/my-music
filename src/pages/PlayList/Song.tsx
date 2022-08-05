@@ -3,7 +3,10 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import styles from "./index.module.css"
 import { transTime } from "../../utils/help"
-import { PlayCircleOutlined } from "@ant-design/icons"
+import { PlayCircleOutlined, PauseCircleOutlined } from "@ant-design/icons"
+import { PlayBar } from "../../components/PlayBar"
+
+//用于判断播放条是否启用
 const columns: ColumnsType<Music.song> = [
     {
         dataIndex: 'index',
@@ -12,7 +15,8 @@ const columns: ColumnsType<Music.song> = [
         render: (text) => {
             return <span className={styles["song-order"]}>
                 <>{text}</>
-                <PlayCircleOutlined className={styles['song-order-svg']}/>
+                <PlayCircleOutlined className={styles['song-order-svg']} />
+                {/* <PauseCircleOutlined style={{fontSize:"20px",opacity:"0.8"}}/> */}
             </span>;
         },
     },
@@ -66,12 +70,16 @@ const columns: ColumnsType<Music.song> = [
 
 const Song = (props: { songs: Array<Music.song> | undefined }) => {
     return (
-        <Table
-            columns={columns}
-            dataSource={props.songs}
-            pagination={false}
-            scroll={{ y: 385 }}//实现固定表头
-        />
+        <>
+            <Table
+                columns={columns}
+                dataSource={props.songs}
+                pagination={false}
+                scroll={{ y: 385 }}//实现固定表头
+            />
+            {/* 用于展示播放条的容器 */}
+            <PlayBar id={33894312} />
+        </>
     )
 };
 

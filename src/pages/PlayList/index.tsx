@@ -71,6 +71,7 @@ const PlayList = () => {
                         <hr />
                         <Song songs={songs} />
                     </span>
+                    <div className={styles.blank}></div>
                 </div>
             </div>
         </>
