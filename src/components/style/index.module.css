@@ -149,4 +149,9 @@
     position: absolute;
     float: top;
     top: -104px;
+    background: #242424;
+    opacity: 0.7;
+    width:40px;
+    padding:0 18px;
+    padding-top:2px;
 }

@@ -3,8 +3,9 @@ import { Table } from 'antd';
 import styles from "./index.module.css"
 import { transTime } from "../../utils/help"
 import { PlayCircleOutlined } from "@ant-design/icons"
-import { PlayBar } from "../../components/PlayBar"
 import React from "react"
+import { addLocalStorage } from "../../utils/authorization";
+import pubsub from "pubsub-js"
 const { Column } = Table;
 
 const Song = (props: { songs: Array<Music.song> | undefined }) => {
@@ -13,14 +14,16 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
     //播放列表(队列)
     let playList = Array(props.songs?.length);
     const [arr, setArr] = React.useState(playArr);
-    //给播放条组件传递的歌曲信息
-    const [song, setSong] = React.useState<Music.song>();
     const changePlayState = (index: number): void => {
         playArr[index] = true;
         setArr(playArr);
-        setSong(props?.songs && props?.songs[index-1]);
+        let obj = JSON.stringify(props?.songs && props?.songs[index - 1]);
+        let items = [{ key: "isPlay", value: "true" }, { key: "song", value: obj }];
+        addLocalStorage(items);
+        //通知播放条播放音乐
+        pubsub.publish("play", true);
     }
-    
+
     return (
         <>
             <Table
@@ -28,7 +31,7 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                 pagination={false}
                 scroll={{ y: 385 }}//实现固定表头
             >
-                <Column dataIndex="index" render={
+                <Column dataIndex="index" key="index" render={
                     (text: number) => {
                         return <span className={styles["song-order"]}>
                             <>{text}</>
@@ -39,14 +42,14 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                         </span>;
                     }
                 } />
-                <Column title="歌曲标题" dataIndex="name"
+                <Column title="歌曲标题" dataIndex="name" key="name"
                     render={(text: string) => {
                         return <span className={styles['song-header']}>{text}</span>
                     }}
                 />
-                <Column title="时长" dataIndex="dt"
+                <Column title="时长" dataIndex="dt" 
                     render={(text) => {
-                        return <li>{transTime(text,1)}</li>
+                        return <li>{transTime(text, 1)}</li>
                     }}
                 />
                 <Column title="歌手" dataIndex="ar"
@@ -72,8 +75,6 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                     }
                 />
             </Table>
-            {/* 用于展示播放条的容器 */}
-            {song && <PlayBar song={song} />}
         </>
     )
 };

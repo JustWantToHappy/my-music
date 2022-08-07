@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
 import Song from "./Song"
+
 /* const Onmit = (props: { isLong: boolean | undefined } = { isLong: false }) => {
     let { isLong } = props;
     if (isLong) {
