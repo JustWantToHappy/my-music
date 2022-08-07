@@ -2,7 +2,7 @@
 import { Table } from 'antd';
 import styles from "./index.module.css"
 import { transTime } from "../../utils/help"
-import { PlayCircleOutlined } from "@ant-design/icons"
+import { AlertTwoTone, PlayCircleOutlined } from "@ant-design/icons"
 import React from "react"
 import { addLocalStorage } from "../../utils/authorization";
 import pubsub from "pubsub-js"
@@ -22,8 +22,24 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
         addLocalStorage(items);
         //通知播放条播放音乐
         pubsub.publish("play", true);
-    }
+        //接收改变播放方式的通知
+        pubsub.subscribe("playway", function (_, type) {
+            if (type === '1') {
 
+            } else if (type === '2') {
+
+            } else if (type === '4') {
+                try {
+                    let index = Math.ceil((props.songs?.length as number) * Math.random());
+                    let obj = JSON.stringify(props?.songs && props?.songs[index]);
+                    let items = [{ key: "isPlay", value: "true" }, { key: "song", value: obj }, { key: "playway", value: "4" }];
+                    addLocalStorage(items);
+                } catch (e) {
+
+                }
+            }
+        })
+    }
     return (
         <>
             <Table
@@ -47,7 +63,7 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                         return <span className={styles['song-header']}>{text}</span>
                     }}
                 />
-                <Column title="时长" dataIndex="dt" 
+                <Column title="时长" dataIndex="dt"
                     render={(text) => {
                         return <li>{transTime(text, 1)}</li>
                     }}

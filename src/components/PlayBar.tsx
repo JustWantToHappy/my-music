@@ -14,8 +14,9 @@ import React from "react"
 import pubsub from "pubsub-js"
 import { addLocalStorage } from "../utils/authorization"
 const PlayBar = (props: { song: Music.song }) => {
-    const [song, setSong] = React.useState<Music.song>(props.song);
     const playBar: any = React.useRef();
+    //控制歌曲切换
+    const [song, setSong] = React.useState<Music.song>(props.song);
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     //控制是否播放音乐
     const [isPlay, setPlay] = React.useState(true);
@@ -48,6 +49,7 @@ const PlayBar = (props: { song: Music.song }) => {
             })
             playBar.current.addEventListener("ended", () => {
                 let playway = localStorage.getItem("playway");
+                clearInterval(timer);
                 //1列表播放2顺序播放3单曲循环4随机播放
                 switch (playway) {
                     case '1':
@@ -55,10 +57,11 @@ const PlayBar = (props: { song: Music.song }) => {
                     case '2':
                         break;
                     case '3':
-                        clearInterval(timer);
-                        pubsub.publish("play","");
+                        pubsub.publish("play", "");
                         break;
                     case '4':
+                        pubsub.publish("playway", "4");
+                        pubsub.publish("play", "");
                         break;
                     default:
                         break;
@@ -70,7 +73,7 @@ const PlayBar = (props: { song: Music.song }) => {
             clearInterval(timer);
         }
     }, [isPlay, song]);
-    
+
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
         return arrStyle.join(" ");
