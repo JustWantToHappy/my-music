@@ -11,33 +11,8 @@ import {
 import { Dropdown, Menu, Slider } from 'antd';
 import { transTime } from "../utils/help"
 import React from "react"
-const menu = (
-    <Menu
-        // 使用selectable和defaultSelectedKeys属性让下拉菜单给定一个默认选项高亮
-        selectable
-        defaultSelectedKeys={['1']}
-        items={[
-            {
-                key: '1',
-                label: (
-                    <span>列表播放</span>
-                ),
-            },
-            {
-                key: '2',
-                label: (
-                    <span>循环播放</span>
-                ),
-            },
-            {
-                key: '3',
-                label: (
-                    <span>单曲循环</span>
-                ),
-            },
-        ]}
-    />
-);
+import pubsub from "pubsub-js"
+import { addLocalStorage } from "../utils/authorization"
 const PlayBar = (props: { song: Music.song }) => {
     const [song, setSong] = React.useState<Music.song>(props.song);
     const playBar: any = React.useRef();
@@ -52,32 +27,50 @@ const PlayBar = (props: { song: Music.song }) => {
     const [time, setTime] = React.useState(0)
     //音量条大小
     const [voice, setVoice] = React.useState(1);
-    //用于判断组件是否需要重新渲染
+    //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         setSong(props.song);
         setBar(true);
         setPlay(true);
-        setTime(0);
     }
+    // 当播放新的歌曲的时候或者按播放按钮时调用
     React.useEffect(() => {
-        /*   setTimeout(() => {
-              setBar(false);
-          }, 2000) */
         isPlay && playBar?.current.play();
         let timer: any;
-        playBar.current.addEventListener("play", () => {
-            //音乐一旦开始播放，设置音量初始值
-            playBar.current.volume=0.4;
-            setVoice(Math.floor(playBar.current.volume * 100));
-            timer = setInterval(() => {
-                setTime(playBar.current.currentTime);
-                console.log(playBar.current.currentTime)
-            }, 1000)
-        })
+        if (isPlay) {
+            playBar.current.addEventListener("play", () => {
+                //音乐一旦开始播放，设置音量初始值
+                playBar.current.volume = 0.4;
+                setVoice(Math.floor(playBar.current.volume * 100));
+                timer = setInterval(() => {
+                    setTime(playBar.current.currentTime * 1000);
+                }, 1000)
+            })
+            playBar.current.addEventListener("ended", () => {
+                let playway = localStorage.getItem("playway");
+                //1列表播放2顺序播放3单曲循环4随机播放
+                switch (playway) {
+                    case '1':
+                        break;
+                    case '2':
+                        break;
+                    case '3':
+                        clearInterval(timer);
+                        pubsub.publish("play","");
+                        break;
+                    case '4':
+                        break;
+                    default:
+                        break;
+
+                }
+            })
+        }
         return function () {
             clearInterval(timer);
         }
-    });
+    }, [isPlay, song]);
+    
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
         return arrStyle.join(" ");
@@ -85,6 +78,10 @@ const PlayBar = (props: { song: Music.song }) => {
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
         setTime(value);
+    }
+    //当拉取进度条之后触发，设置当前播放时间
+    const changeCurrentTime = (value: number) => {
+        playBar.current.currentTime = value / 1000;
     }
     // 点击播放或者暂停
     const playMusic = () => {
@@ -128,7 +125,7 @@ const PlayBar = (props: { song: Music.song }) => {
                 </small>
                 <span >
                     {/* 其中tipFormatter=null不显示当前进度的刻度 */}
-                    <Slider style={{ flex: "1" }} max={song.dt} tipFormatter={null} onChange={getCurrentTime} value={time} />
+                    <Slider style={{ flex: "1" }} max={song.dt} tipFormatter={null} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
                     <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
                 </span>
             </div>
@@ -146,4 +143,43 @@ const PlayBar = (props: { song: Music.song }) => {
         </div>
     </>
 }
+const menu = () => {
+    //默认时列表播放
+    let playWay = localStorage.getItem("playway") || '1';
+    const getPlayWay = (event: any) => {
+        addLocalStorage([{ key: "playway", value: event.key }]);
+    }
+    return <Menu
+        // 使用selectable和defaultSelectedKeys属性让下拉菜单给定一个默认选项高亮
+        selectable
+        defaultSelectedKeys={[playWay]}
+        items={[
+            {
+                key: '1',
+                label: (
+                    <span>列表播放</span>
+                ),
+            },
+            {
+                key: '2',
+                label: (
+                    <span>顺序播放</span>
+                ),
+            },
+            {
+                key: '3',
+                label: (
+                    <span>单曲循环</span>
+                ),
+            },
+            {
+                key: "4",
+                label: (
+                    <span>随机播放</span>
+                )
+            }
+        ]}
+        onSelect={getPlayWay}
+    />
+};
 export { PlayBar };

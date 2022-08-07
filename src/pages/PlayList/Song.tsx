@@ -80,4 +80,4 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
 };
 
 
-export default Song;
+export default React.memo(Song);
