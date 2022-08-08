@@ -29,7 +29,7 @@ export default function Header() {
 
     //点击搜索按钮时进行搜索
     function search() {
-        alert(input);
+        
     }
     //点击登录
     function login() {

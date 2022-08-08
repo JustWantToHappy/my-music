@@ -9,10 +9,12 @@ import {
     SoundFilled,
 } from "@ant-design/icons"
 import { Dropdown, Menu, Slider } from 'antd';
-import { transTime } from "../utils/help"
 import React from "react"
 import pubsub from "pubsub-js"
+import { transTime } from "../utils/help"
 import { addLocalStorage } from "../utils/authorization"
+import { songStore } from "../mobx/song"
+import { musicIsUse } from "../api/songlist"
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
     //控制歌曲切换
@@ -34,34 +36,43 @@ const PlayBar = (props: { song: Music.song }) => {
         setBar(true);
         setPlay(true);
     }
+
     // 当播放新的歌曲的时候或者按播放按钮时调用
     React.useEffect(() => {
         isPlay && playBar?.current.play();
-        let timer: any;
         if (isPlay) {
+            playBar.current.addEventListener("timeupdate", function (e: any) {
+                //此回调每250ms执行一次，可以获取当前音乐的播放进度
+            })
             playBar.current.addEventListener("play", () => {
                 //音乐一旦开始播放，设置音量初始值
-                playBar.current.volume = 0.4;
+                if (localStorage.getItem("volume")) {
+                    playBar.current.volume = parseFloat(localStorage.getItem("volume") as string);
+                } else {
+                    playBar.current.volume = 0.4;
+                }
                 setVoice(Math.floor(playBar.current.volume * 100));
-                timer = setInterval(() => {
+                songStore.timer = setInterval(() => {
+                    // console.log("live")
                     setTime(playBar.current.currentTime * 1000);
-                }, 1000)
+                }, 1000);
             })
             playBar.current.addEventListener("ended", () => {
                 let playway = localStorage.getItem("playway");
-                clearInterval(timer);
+                clearInterval(songStore.timer);
                 //1列表播放2顺序播放3单曲循环4随机播放
                 switch (playway) {
                     case '1':
+                        pubsub.publish("playway", "1");
                         break;
                     case '2':
+                        pubsub.publish("playway", "2");
                         break;
                     case '3':
                         pubsub.publish("play", "");
                         break;
                     case '4':
                         pubsub.publish("playway", "4");
-                        pubsub.publish("play", "");
                         break;
                     default:
                         break;
@@ -70,16 +81,16 @@ const PlayBar = (props: { song: Music.song }) => {
             })
         }
         return function () {
-            clearInterval(timer);
+            clearInterval(songStore.timer);
         }
     }, [isPlay, song]);
-
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
         return arrStyle.join(" ");
     }
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
+        songStore.clearTimer();
         setTime(value);
     }
     //当拉取进度条之后触发，设置当前播放时间
@@ -89,12 +100,13 @@ const PlayBar = (props: { song: Music.song }) => {
     // 点击播放或者暂停
     const playMusic = () => {
         setPlay(!isPlay);
-        isPlay ? playBar.current.pause() : playBar.current.play();
+        isPlay ? playBar.current.pause() : playBar.current.load() && playBar.current.play();
     }
     //改变音量
     const changeVoice = (value: any) => {
         playBar.current.volume = value * 0.01;
         setVoice(value);
+        addLocalStorage([{ key: "volume", value: playBar.current.volume }]);
     }
     return <>
         <div className={showBar ? getStyle("start") : getStyle("move")}>
@@ -128,7 +140,7 @@ const PlayBar = (props: { song: Music.song }) => {
                 </small>
                 <span >
                     {/* 其中tipFormatter=null不显示当前进度的刻度 */}
-                    <Slider style={{ flex: "1" }} max={song.dt} tipFormatter={null} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
+                    <Slider style={{ flex: "1" }} min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
                     <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
                 </span>
             </div>

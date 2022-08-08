@@ -7,7 +7,7 @@ const Container = function () {
     const element = useRoutes(routes);
     const [song, setSong] = React.useState<Music.song>();
     //播放音乐
-    const play = () => {
+    const play = async () => {
         if (localStorage.getItem("isPlay")) {
             let obj = JSON.parse(localStorage.getItem("song") as string);
             setSong(obj);

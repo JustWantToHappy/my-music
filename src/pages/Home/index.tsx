@@ -32,7 +32,6 @@ export default function Container() {
                 <RecommonList />
                 <NewDisc />
             </div>
-            <span>sb</span>
         </>
     )
 }
