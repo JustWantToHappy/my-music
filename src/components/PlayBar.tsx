@@ -37,13 +37,11 @@ const PlayBar = (props: { song: Music.song }) => {
         setPlay(true);
     }
 
-    // 当播放新的歌曲的时候或者按播放按钮时调用
+    // 当播放新的歌曲的时调用
     React.useEffect(() => {
+        clearInterval(songStore.timer);
         isPlay && playBar?.current.play();
         if (isPlay) {
-            playBar.current.addEventListener("timeupdate", function (e: any) {
-                //此回调每250ms执行一次，可以获取当前音乐的播放进度
-            })
             playBar.current.addEventListener("play", () => {
                 //音乐一旦开始播放，设置音量初始值
                 if (localStorage.getItem("volume")) {
@@ -52,6 +50,9 @@ const PlayBar = (props: { song: Music.song }) => {
                     playBar.current.volume = 0.4;
                 }
                 setVoice(Math.floor(playBar.current.volume * 100));
+                let count = 0;
+                clearInterval(songStore.timer);
+                songStore.timer = null;
                 songStore.timer = setInterval(() => {
                     setTime(playBar.current.currentTime * 1000);
                 }, 1000);
@@ -84,8 +85,9 @@ const PlayBar = (props: { song: Music.song }) => {
         }
         return function () {
             clearInterval(songStore.timer);
+            songStore.timer = null;
         }
-    }, [isPlay, song]);
+    }, [song]);
     //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
@@ -94,17 +96,20 @@ const PlayBar = (props: { song: Music.song }) => {
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
         songStore.clearTimer();
-        songStore.timer=null;
+        songStore.timer = null;
         setTime(value);
     }
     //当拉取进度条之后触发，设置当前播放时间
     const changeCurrentTime = (value: number) => {
         playBar.current.currentTime = value / 1000;
+        songStore.timer=setInterval(()=>{
+            setTime(playBar.current.currentTime*1000);
+        },1000);
     }
     // 点击播放或者暂停
     const playMusic = () => {
         setPlay(!isPlay);
-        isPlay ? playBar.current.pause() : playBar.current.load() && playBar.current.play();
+        isPlay ? playBar.current.pause() : playBar.current.play();
     }
     //改变音量
     const changeVoice = (value: any) => {
