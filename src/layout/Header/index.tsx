@@ -56,7 +56,7 @@ export default function Header() {
                 <li>
                     <Search
                         allowClear
-                        placeholder='音乐/电台/视频/用户'
+                        placeholder='音乐/电台/视频/歌手'
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setInput(event.target.value);
                         }}

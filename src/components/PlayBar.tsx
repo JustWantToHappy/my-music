@@ -7,14 +7,14 @@ import {
     PauseCircleOutlined,
     EllipsisOutlined,
     SoundFilled,
+    DownOutlined
 } from "@ant-design/icons"
-import { Dropdown, Menu, Slider } from 'antd';
+import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
 import pubsub from "pubsub-js"
 import { transTime } from "../utils/help"
 import { addLocalStorage } from "../utils/authorization"
 import { songStore } from "../mobx/song"
-import { musicIsUse } from "../api/songlist"
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
     //控制歌曲切换
@@ -53,7 +53,6 @@ const PlayBar = (props: { song: Music.song }) => {
                 }
                 setVoice(Math.floor(playBar.current.volume * 100));
                 songStore.timer = setInterval(() => {
-                    // console.log("live")
                     setTime(playBar.current.currentTime * 1000);
                 }, 1000);
             })
@@ -67,6 +66,9 @@ const PlayBar = (props: { song: Music.song }) => {
                         break;
                     case '2':
                         pubsub.publish("playway", "2");
+                        pubsub.subscribe("stopPlay", function (_, data) {
+                            setPlay(false);
+                        })
                         break;
                     case '3':
                         pubsub.publish("play", "");
@@ -84,6 +86,7 @@ const PlayBar = (props: { song: Music.song }) => {
             clearInterval(songStore.timer);
         }
     }, [isPlay, song]);
+    //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
         return arrStyle.join(" ");
@@ -91,6 +94,7 @@ const PlayBar = (props: { song: Music.song }) => {
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
         songStore.clearTimer();
+        songStore.timer=null;
         setTime(value);
     }
     //当拉取进度条之后触发，设置当前播放时间
@@ -108,19 +112,31 @@ const PlayBar = (props: { song: Music.song }) => {
         setVoice(value);
         addLocalStorage([{ key: "volume", value: playBar.current.volume }]);
     }
+    //播放上一首音乐
+    const playLast = () => {
+        pubsub.publish("changeMusic", "last");
+    }
+    //播放下一首音乐
+    const playNext = () => {
+        pubsub.publish("changeMusic", "next");
+    }
     return <>
         <div className={showBar ? getStyle("start") : getStyle("move")}>
-            <div style={{ flex: "1" }}></div>
+            <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
+                <Tooltip placement="top" title={"收起"} >
+                    <DownOutlined />
+                </Tooltip>
+            </div>
             {/* preload="auto"表示预加载音频 */}
             <audio ref={playBar} src={url} preload="auto">
             </audio>
             <div className={styles.playmusic}>
                 {/* 播放上一首 */}
-                <StepBackwardOutlined className={styles['playmusic-div1']} />
+                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playLast} />
                 {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
                 {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
                 {/* 播放下一首 */}
-                <StepForwardOutlined className={styles['playmusic-div3']} />
+                <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNext} />
             </div>
             <div className={styles.coverImg}>
                 <img src={song.al?.picUrl} alt="图片无法显示" />

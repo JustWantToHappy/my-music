@@ -10,7 +10,7 @@ import { musicIsUse } from '../../api/songlist';
 const { Column } = Table;
 
 const Song = (props: { songs: Array<Music.song> | undefined }) => {
-    //用于记录播放的歌曲
+    //用于记录正在播放的歌曲，其值取true
     let playArr: Array<boolean> = Array(props.songs?.length).fill(false);
     const [arr, setArr] = React.useState(playArr);
     const changePlayState = async (index: number): Promise<any> => {
@@ -25,15 +25,36 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
             //通知播放条播放音乐
             pubsub.publish("play", true);
         }
+        async function randomPlay() {
+            while (true) {
+                index = Math.ceil((props.songs?.length as number) * Math.random());
+                let obj1 = props?.songs && props?.songs[index];
+                var objStr = "";
+                if (obj1) {
+                    objStr = JSON.stringify(obj1);
+                }
+                let items = [{ key: "isPlay", value: "true" }, { key: "song", value: objStr }, { key: "playway", value: "4" }];
+                let id = props?.songs && props?.songs[index - 1].id;
+                let { message } = await musicIsUse(id as number);
+                if (message === 'ok') {
+                    addLocalStorage(items);
+                    let arr = Array(props.songs?.length).fill(false);
+                    arr[index + 1] = true;
+                    setArr(arr);
+                    pubsub.publish("play", true);
+                    break;
+                }
+            }
+        }
         //接收改变播放方式的通知
-        pubsub.subscribe("playway", async function (_, type) {
+        pubsub.subscribe("playway", async function (_, type: string) {
             try {
+                let obj = JSON.parse(localStorage.getItem("song") as string);
+                let index = obj.index - 1;
+                let len = props.songs?.length as number;
                 if (type === "1") {
-                    let obj = JSON.parse(localStorage.getItem("song") as string);
-                    let index = obj.index - 1;
                     while (true) {
-                        let len = props.songs?.length as number;
-                        let target=(++index) % len;
+                        let target = (++index) % len;
                         let obj1 = props?.songs && props?.songs[target];
                         if (obj1) {
                             let { message } = await musicIsUse(obj1.id);
@@ -43,39 +64,140 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                                 //通知播放条播放音乐
                                 pubsub.publish("play", true);
                                 let arr = Array(props.songs?.length).fill(false);
-                                arr[target+1] = true;
+                                arr[target + 1] = true;
                                 setArr(arr);
                                 break;
                             }
                         }
                     }
                 } else if (type === '2') {
-                    
-                } else if (type === '4') {
-                    console.log("hhh")
                     while (true) {
-                        index = Math.ceil((props.songs?.length as number) * Math.random());
-                        let obj1 = props?.songs && props?.songs[index];
-                        var objStr = "";
-                        if (obj1) {
-                            objStr = JSON.stringify(obj1);
+                        let target = ++index;
+                        if (target >= len) {
+                            pubsub.publish("stopPlay", true);
                         }
-                        let items = [{ key: "isPlay", value: "true" }, { key: "song", value: objStr }, { key: "playway", value: "4" }];
-                        let id = props?.songs && props?.songs[index - 1].id;
-                        let { message } = await musicIsUse(id as number);
-                        if (message === 'ok') {
-                            addLocalStorage(items);
-                            let arr = Array(props.songs?.length).fill(false);
-                            arr[index + 1] = true;
-                            setArr(arr);
-                            pubsub.publish("play", true);
+                        if (target < len) {
+                            let obj1 = props?.songs && props?.songs[target];
+                            let { message } = obj1 && await musicIsUse(obj1.id);
+                            if (message === 'ok') {
+                                let items = [{ key: "isPlay", value: "true" }, { key: "song", value: JSON.stringify(obj1) }, { key: "playway", value: "1" }];
+                                addLocalStorage(items)
+                                //通知播放条播放音乐
+                                pubsub.publish("play", true);
+                                let arr = Array(props.songs?.length).fill(false);
+                                arr[target + 1] = true;
+                                setArr(arr);
+                                break;
+                            }
+                        } else {
                             break;
                         }
                     }
+                } else if (type === '4') {
+                    randomPlay();
                 }
             } catch (e) {
 
             }
+        })
+        pubsub.subscribe("changeMusic", async (_, type: string) => {
+            try {
+                let target = 0;
+                let playway = localStorage.getItem("playway");
+                let len = props.songs?.length as number;
+                let obj = JSON.parse(localStorage.getItem("song") as string);
+                let brr = Array(len).fill(false);
+                if (type === 'last') {
+                    switch (playway) {
+                        case '1':
+                            target = (obj.index - 2 + len) % len;
+                            while (true) {
+                                let id = props.songs && props.songs[target].id;
+                                let { message } = await musicIsUse(id as number);
+                                if (message === 'ok') {
+                                    brr[target + 1] = true;
+                                    setArr(brr);
+                                    addLocalStorage([{ key: "song", value: JSON.stringify(props.songs && props.songs[target]) }]);
+                                    pubsub.publish("play", true);
+                                    break;
+                                } else {
+                                    target = (target - 1 + len) % len;
+                                }
+                            }
+                            break;
+                        case '2':
+                            target = obj.index - 2;
+                            while (true && target >= 0) {
+                                let id = props.songs && props.songs[target].id;
+                                let { message } = await musicIsUse(id as number);
+                                if (message === 'ok') {
+                                    if (target >= 0) {
+                                        brr[target + 1] = true;
+                                        setArr(brr);
+                                        addLocalStorage([{ key: "song", value: JSON.stringify(props.songs && props.songs[target]) }]);
+                                        pubsub.publish("play", true);
+                                        break;
+                                    }
+                                } else {
+                                    target -= 1;
+                                }
+                            }
+                            break;
+                        case '3':
+                            pubsub.publish("play", true);
+                            break;
+                        case '4':
+                            randomPlay();
+                            break;
+                        default:
+                            break;
+                    }
+
+                } else if (type === 'next') {
+                    switch (playway) {
+                        case '1':
+                            target = (obj.index) % len;
+                            while (true) {
+                                let id = props.songs && props.songs[target].id;
+                                let { message } = await musicIsUse(id as number);
+                                if (message === 'ok') {
+                                    brr[target + 1] = true;
+                                    setArr(brr);
+                                    addLocalStorage([{ key: "song", value: JSON.stringify(props.songs && props.songs[target]) }]);
+                                    pubsub.publish("play", true);
+                                    break;
+                                } else {
+                                    target = (target + 1) % len;
+                                }
+                            }
+                            break;
+                        case '2':
+                            target = obj.index;
+                            while (true && target < len) {
+                                let id = props.songs && props.songs[target].id;
+                                let { message } = await musicIsUse(id as number);
+                                if (message === 'ok') {
+                                    brr[target + 1] = true;
+                                    setArr(brr);
+                                    addLocalStorage([{ key: "song", value: JSON.stringify(props.songs && props.songs[target]) }]);
+                                    pubsub.publish("play", true);
+                                    break;
+                                } else {
+                                    target++;
+                                }
+                            }
+                            break;
+                        case '3':
+                            pubsub.publish("play", true);
+                            break;
+                        case '4':
+                            randomPlay();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } catch (e) { }
         })
     }
     return (
@@ -83,9 +205,9 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
             <Table
                 dataSource={props.songs}
                 pagination={false}
-                scroll={{ y: 385 }}//实现固定表头
+            // scroll={{ y: 385 }}实现固定表头
             >
-                <Column dataIndex="index" key="index" render={
+                <Column dataIndex="index" key="index" width={100} render={
                     (text: number) => {
                         return <span className={styles["song-order"]}>
                             <>{text}</>
@@ -101,7 +223,7 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                         return <span className={styles['song-header']}>{text}</span>
                     }}
                 />
-                <Column title="时长" dataIndex="dt"
+                <Column title="时长" dataIndex="dt" width={100}
                     render={(text) => {
                         return <li>{transTime(text, 1)}</li>
                     }}

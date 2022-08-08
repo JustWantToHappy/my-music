@@ -24,6 +24,11 @@
     }
 }
 
+.hidden-indicate{
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
 /* 播放条移入底部 */
 .playbar-move {
     position: fixed;
@@ -73,6 +78,7 @@
 .playmusic-div1 {
     opacity: 0.4;
     margin: 10px;
+    cursor: pointer;
 }
 
 .playmusic-div1:hover {
@@ -91,6 +97,7 @@
 .playmusic-div3 {
     margin: 10px;
     opacity: 0.4;
+    cursor: pointer;
 }
 
 .playmusic-div3:hover {

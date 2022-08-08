@@ -1,3 +1,4 @@
+import { musicIsUse } from "../api/songlist"
 //将毫秒级别的时间转换为分秒级
 export function transTime(time: number, type: number): string {
     if (type === 1) {
@@ -11,11 +12,10 @@ export function transTime(time: number, type: number): string {
         }
         str += mt;
         str += ":";
-        if (st <10) {
+        if (st < 10) {
             str += "0";
         }
         str += st;
         return str;
     }
 }
-
