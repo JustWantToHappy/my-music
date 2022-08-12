@@ -1,4 +1,5 @@
 //音乐播放条组件
+import styles from "./index.module.css"
 import {
     StepBackwardOutlined,
     StepForwardOutlined,
@@ -8,7 +9,6 @@ import {
     SoundFilled,
     DownOutlined
 } from "@ant-design/icons"
-import styles from "../PlayBar/index.module.css";
 import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
 import pubsub from "pubsub-js"
@@ -39,11 +39,10 @@ const PlayBar = (props: { song: Music.song }) => {
 
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
-        clearInterval(songStore.timer);
-        songStore.timer = setInterval(() => {
-            setTime(playBar.current.currentTime * 1000);
-        }, 1000);
+        songStore.clearTimer();
+        songStore.timer = null;
         playBar?.current.play();
+        setTime(0);
         playBar.current.addEventListener("play", () => {
             //音乐一旦开始播放，设置音量初始值
             if (localStorage.getItem("volume")) {
@@ -54,9 +53,11 @@ const PlayBar = (props: { song: Music.song }) => {
             setVoice(Math.floor(playBar.current.volume * 100));
             songStore.clearTimer();
             songStore.timer = null;
+            songStore.timer = setInterval(() => {
+                setTime(playBar.current.currentTime * 1000);
+            }, 1000);
         })
         playBar.current.addEventListener("ended", () => {
-            playBar.current.pause();
             let playway = localStorage.getItem("playway");
             clearInterval(songStore.timer);
             //1列表播放2顺序播放3单曲循环4随机播放
@@ -86,6 +87,12 @@ const PlayBar = (props: { song: Music.song }) => {
             songStore.timer = null;
         }
     }, [song]);
+    React.useEffect(() => {
+        if (!isPlay) {
+            songStore.clearTimer();
+            songStore.timer = null;
+        }
+    }, [isPlay]);
     //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
