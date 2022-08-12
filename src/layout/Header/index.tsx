@@ -2,11 +2,13 @@ import React from 'react'
 import { UserOutlined } from '@ant-design/icons';
 import { NavLink } from "react-router-dom"
 import { Button, Input, Avatar } from "antd"
+import LoginBox from "../../components/Login";
 import "antd/dist/antd.min.css"
-import "./index.css"
+import styles from "./index.module.css"
 export default function Header() {
     const { Search } = Input;
     const [input, setInput] = React.useState("" as any);
+    const [login, setLogin] = React.useState(false);
     const items: Array<{
         title: string, path: string
     }> = [{
@@ -29,15 +31,15 @@ export default function Header() {
 
     //点击搜索按钮时进行搜索
     function search() {
-        
+
     }
     //点击登录
-    function login() {
-
+    function loginIn() {
+        setLogin(true);
     }
     return (
         <>
-            <div className="head">
+            <div className={styles.head}>
                 <section>
                     <img src={require("../../assets/logo/logo.png")} alt="图片无法显示" />
                     <b>某云音乐</b>
@@ -47,7 +49,7 @@ export default function Header() {
                         <NavLink to={item.path}
                             key={index}
                             className={({ isActive }) => {
-                                return isActive ? "is-active" : "not-active"
+                                return isActive ? styles["is-active"] : styles["not-active"];
                             }}>
                             {item.title}
                         </NavLink>
@@ -67,12 +69,13 @@ export default function Header() {
                     <Avatar size="large" icon={<UserOutlined />} />
                     <Button type="text"
                         style={{ color: "white", }}
-                        onClick={login}
+                        onClick={loginIn}
                     >
                         登录
                     </Button>
                 </div>
             </div>
+            {login && <LoginBox />}
         </>
     )
 }

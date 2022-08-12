@@ -1,5 +1,4 @@
 //音乐播放条组件
-import styles from "../components/style/index.module.css"
 import {
     StepBackwardOutlined,
     StepForwardOutlined,
@@ -9,12 +8,13 @@ import {
     SoundFilled,
     DownOutlined
 } from "@ant-design/icons"
+import styles from "../PlayBar/index.module.css";
 import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
 import pubsub from "pubsub-js"
-import { transTime } from "../utils/help"
-import { addLocalStorage } from "../utils/authorization"
-import { songStore } from "../mobx/song"
+import { transTime } from "../../utils/help"
+import { addLocalStorage } from "../../utils/authorization"
+import { songStore } from "../../mobx/song"
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
     //控制歌曲切换

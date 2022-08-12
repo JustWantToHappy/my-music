@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { useNavigate } from "react-router-dom"
-import  "./recommon.css"
+import  styles from "./recommon.module.css"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
@@ -13,11 +13,11 @@ const RecommonList = () => {
         })();
     }, []);
     return (
-        <div className="recommon">
-            <section className="title">
+        <div className={styles.recommon}>
+            <section className={styles.title}>
                 <b>最热歌单</b>
                 <span >更多</span>
-                <hr className="divider" />
+                <hr className={styles.divider} />
             </section>
             {highSongLists?.map(list => {
                 return <div key={list.id} onClick={() => {
@@ -40,7 +40,7 @@ const NewDisc = () => {
         })();
     }, []);
     return (
-        <div className="newBorn">
+        <div className={styles.newBorn}>
             <b>最新专辑</b>
             {newDiscs?.map(album => {
                 return <section key={album.id}>

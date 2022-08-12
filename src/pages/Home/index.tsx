@@ -1,7 +1,7 @@
 import React from 'react'
 import { Carousel } from 'antd';
 import { getRecommondmv } from "../../api/recommond"
-import "./index.css"
+import styles from "./index.module.css"
 import { RecommonList, NewDisc } from "./Recommon"
 export default function Container() {
     let { useEffect, useState } = React;
@@ -18,7 +18,7 @@ export default function Container() {
     };
     return (
         <>
-            <div className='container'>
+            <div className={styles.container}>
                 <Carousel arrows={true} afterChange={onChange} style={{ width: "75vw" }}>
                     {arr?.map(mv => {
                         return <div key={mv.id}>
@@ -28,7 +28,7 @@ export default function Container() {
                 </Carousel>
             </div>
             {/* 精选歌单和 */}
-            <div className="content">
+            <div className={styles.content}>
                 <RecommonList />
                 <NewDisc />
             </div>

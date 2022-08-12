@@ -1,0 +1,32 @@
+.head {
+    height: 13vh;
+    width: 100%;
+    position:fixed;
+    list-style: none;
+    z-index: 1000;
+    box-sizing: border-box;
+    background: #242424 !important;
+    border-bottom: 1px solid #000;
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 15px;
+}
+
+.head li{
+    cursor: pointer;
+}
+
+.head img{
+    width:40px;
+    height:40px;
+    border-radius: 50% 50% 40% 40%;
+}
+.is-active {
+    color: #1890ff;
+}
+
+.not-active {
+    color: white;
+}
