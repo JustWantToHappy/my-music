@@ -1,5 +1,5 @@
 import React from "react"
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 import { CloseOutlined } from "@ant-design/icons"
 import { Button } from "antd"
 const LoginBox = () => {

@@ -40,51 +40,49 @@ const PlayBar = (props: { song: Music.song }) => {
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         clearInterval(songStore.timer);
-        isPlay && playBar?.current.play();
-        if (isPlay) {
-            playBar.current.addEventListener("play", () => {
-                //音乐一旦开始播放，设置音量初始值
-                if (localStorage.getItem("volume")) {
-                    playBar.current.volume = parseFloat(localStorage.getItem("volume") as string);
-                } else {
-                    playBar.current.volume = 0.4;
-                }
-                setVoice(Math.floor(playBar.current.volume * 100));
-                let count = 0;
-                clearInterval(songStore.timer);
-                songStore.timer = null;
-                songStore.timer = setInterval(() => {
-                    setTime(playBar.current.currentTime * 1000);
-                }, 1000);
-            })
-            playBar.current.addEventListener("ended", () => {
-                let playway = localStorage.getItem("playway");
-                clearInterval(songStore.timer);
-                //1列表播放2顺序播放3单曲循环4随机播放
-                switch (playway) {
-                    case '1':
-                        pubsub.publish("playway", "1");
-                        break;
-                    case '2':
-                        pubsub.publish("playway", "2");
-                        pubsub.subscribe("stopPlay", function (_, data) {
-                            setPlay(false);
-                        })
-                        break;
-                    case '3':
-                        pubsub.publish("play", "");
-                        break;
-                    case '4':
-                        pubsub.publish("playway", "4");
-                        break;
-                    default:
-                        break;
-
-                }
-            })
-        }
-        return function () {
+        songStore.timer = setInterval(() => {
+            setTime(playBar.current.currentTime * 1000);
+        }, 1000);
+        playBar?.current.play();
+        playBar.current.addEventListener("play", () => {
+            //音乐一旦开始播放，设置音量初始值
+            if (localStorage.getItem("volume")) {
+                playBar.current.volume = parseFloat(localStorage.getItem("volume") as string);
+            } else {
+                playBar.current.volume = 0.4;
+            }
+            setVoice(Math.floor(playBar.current.volume * 100));
+            songStore.clearTimer();
+            songStore.timer = null;
+        })
+        playBar.current.addEventListener("ended", () => {
+            playBar.current.pause();
+            let playway = localStorage.getItem("playway");
             clearInterval(songStore.timer);
+            //1列表播放2顺序播放3单曲循环4随机播放
+            switch (playway) {
+                case '1':
+                    pubsub.publish("playway", "1");
+                    break;
+                case '2':
+                    pubsub.publish("playway", "2");
+                    pubsub.subscribe("stopPlay", function (_, data) {
+                        setPlay(false);
+                    })
+                    break;
+                case '3':
+                    pubsub.publish("play", "");
+                    break;
+                case '4':
+                    pubsub.publish("playway", "4");
+                    break;
+                default:
+                    break;
+
+            }
+        })
+        return function () {
+            songStore.clearTimer();
             songStore.timer = null;
         }
     }, [song]);
@@ -102,9 +100,9 @@ const PlayBar = (props: { song: Music.song }) => {
     //当拉取进度条之后触发，设置当前播放时间
     const changeCurrentTime = (value: number) => {
         playBar.current.currentTime = value / 1000;
-        songStore.timer=setInterval(()=>{
-            setTime(playBar.current.currentTime*1000);
-        },1000);
+        songStore.timer = setInterval(() => {
+            setTime(playBar.current.currentTime * 1000);
+        }, 1000);
     }
     // 点击播放或者暂停
     const playMusic = () => {
