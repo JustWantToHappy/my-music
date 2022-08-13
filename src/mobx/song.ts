@@ -1,4 +1,4 @@
-import { observable, computed, action } from "mobx"
+import { observable } from "mobx"
 let content: { timer: any,  clearTimer: () => void } = {
     //全局定时器
     timer: null,

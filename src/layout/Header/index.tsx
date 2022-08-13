@@ -34,8 +34,13 @@ export default function Header() {
 
     }
     //点击登录
-    function loginIn() {
-        setLogin(true);
+    function loginIn(type: boolean) {
+        console.log("sb")
+        if (!type) {
+            setLogin(false);
+        } else {
+            setLogin(true);
+        }
     }
     return (
         <>
@@ -69,13 +74,13 @@ export default function Header() {
                     <Avatar size="large" icon={<UserOutlined />} />
                     <Button type="text"
                         style={{ color: "white", }}
-                        onClick={loginIn}
+                        onClick={()=>{loginIn(true)}}
                     >
                         登录
                     </Button>
                 </div>
             </div>
-            {login && <LoginBox />}
+            {login && <LoginBox login={loginIn}/>}
         </>
     )
 }
