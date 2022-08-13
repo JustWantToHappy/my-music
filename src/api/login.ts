@@ -12,9 +12,9 @@ export function checkIsOver(key: string): Promise<any> {
     return request({ method: "get", url: `/login/qr/check?key=${key}&timestamp=${time}` });
 } */
 
-export function sendCode(phone: string): Promise<any> {
+export function sendCode(phone: string,ctcode:number): Promise<any> {
     let time = new Date().getTime();
-    return request({ method: "get", url: `/captcha/sent?phone=${phone}&timestamp=${time}` });
+    return request({ method: "get", url: `/captcha/sent?phone=${phone}&ctcode=${ctcode}&timestamp=${time}` });
 }
 
 
