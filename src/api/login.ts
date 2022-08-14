@@ -11,10 +11,19 @@ export function checkIsOver(key: string): Promise<any> {
     let time = new Date().getTime();
     return request({ method: "get", url: `/login/qr/check?key=${key}&timestamp=${time}` });
 } */
-
-export function sendCode(phone: string,ctcode:number): Promise<any> {
+//检验手机号是否已经注册
+export function hasRegistered(phone: string, ctcode: string): Promise<any> {
+    return request({ method: "get", url: `/cellphone/existence/check?phone=${phone}&countrycode=${ctcode}` });
+}
+//发送验证码
+export function sendCode(phone: string, ctcode: string): Promise<any> {
     let time = new Date().getTime();
     return request({ method: "get", url: `/captcha/sent?phone=${phone}&ctcode=${ctcode}&timestamp=${time}` });
+}
+//验证验证码
+export function verifyCode(phone: string, captcha: string, ctcode: string): Promise<any> {
+    let time = new Date().getTime();
+    return request({ method: "get", url: `/captcha/verify?phone=${phone}&captcha=${captcha}&ctcode=${ctcode}&timestamp=${time}` })
 }
 
 

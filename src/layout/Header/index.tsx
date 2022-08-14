@@ -5,10 +5,14 @@ import { Button, Input, Avatar } from "antd"
 import LoginBox from "../../components/Login";
 import "antd/dist/antd.min.css"
 import styles from "./index.module.css"
+import { deleteLocalStorage } from "../../utils/authorization"
 export default function Header() {
     const { Search } = Input;
     const [input, setInput] = React.useState("" as any);
     const [login, setLogin] = React.useState(false);
+    const [avatar, setAvatar] = React.useState<string | null>();
+    //用于判断用户是否已经登录
+    const [hasLogin, setHasLogin] = React.useState(false);
     const items: Array<{
         title: string, path: string
     }> = [{
@@ -35,13 +39,27 @@ export default function Header() {
     }
     //点击登录
     function loginIn(type: boolean) {
-        console.log("sb")
         if (!type) {
             setLogin(false);
+            if (localStorage.getItem("hasLogin") === 'true') {
+
+            }
         } else {
             setLogin(true);
         }
     }
+    //退出登录
+    function loginOut() {
+        deleteLocalStorage(["autoLogin", "nickname", "hasLogin","avatar"]);
+        setHasLogin(false);
+    }
+    React.useEffect(() => {
+        let hasLogin = localStorage.getItem("hasLogin");
+        if (hasLogin === 'true') {
+            setHasLogin(true);
+        }
+        setAvatar(localStorage.getItem("avatar"));
+    }, []);
     return (
         <>
             <div className={styles.head}>
@@ -71,16 +89,19 @@ export default function Header() {
                     />
                 </li>
                 <div>
-                    <Avatar size="large" icon={<UserOutlined />} />
-                    <Button type="text"
+                    <Avatar size="large" icon={<UserOutlined />} src={avatar} />
+                    {!hasLogin && <Button type="text"
                         style={{ color: "white", }}
-                        onClick={()=>{loginIn(true)}}
+                        onClick={() => { loginIn(true) }}
                     >
                         登录
-                    </Button>
+                    </Button>}
+                    {hasLogin && <Button onClick={() => { loginOut() }} type='text' style={{ color: 'white' }}>
+                        退出登录
+                    </Button>}
                 </div>
             </div>
-            {login && <LoginBox login={loginIn}/>}
+            {login && <LoginBox login={loginIn} />}
         </>
     )
 }

@@ -4,4 +4,10 @@ export function addLocalStorage(items: Array<{ key: string, value: string }>): v
         localStorage.setItem(item.key, item.value);
     })
 }
+//批量清除localstorage中的key-value
+export function deleteLocalStorage(keys: Array<string>) {
+    keys.forEach(key => {
+        localStorage.removeItem(key);
+    })
+}
 

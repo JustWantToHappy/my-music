@@ -4,16 +4,6 @@ import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
 import Song from "./Song"
 
-/* const Onmit = (props: { isLong: boolean | undefined } = { isLong: false }) => {
-    let { isLong } = props;
-    if (isLong) {
-        return (
-            <>...</>
-        )
-    } else {
-        return null;
-    }
-} */
 const PlayList = () => {
     const { id } = useParams();
     interface myList {
@@ -27,6 +17,7 @@ const PlayList = () => {
     };
     const [list, setList] = useState<myList>();
     const [songs, setSongs] = useState<Array<Music.song>>();
+    const [isLong, setLong] = useState(false);
     //拿取歌单信息
     useEffect(() => {
         (async function () {
@@ -44,7 +35,9 @@ const PlayList = () => {
             }
             setSongs(sgs.songs);
         })();
-    }, []);
+        let len = list?.playlist.description.length as number;
+        setLong(len >= 150);
+    }, [list,songs,isLong,id]);
     return (
         <>
             <div className={styles.container}>
@@ -60,7 +53,7 @@ const PlayList = () => {
                         <span>标签：{list?.playlist.tags.join("、")}</span>
                         <p>
                             {list?.playlist.description?.substring(0, 150)}
-                            ...
+                            {isLong&&'...'}
                         </p>
                         <span id="symbol"></span>
                     </span>

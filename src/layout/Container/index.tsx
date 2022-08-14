@@ -16,6 +16,14 @@ const Container = function () {
     pubsub.subscribe("play", function (_, data) {
         play();
     })
+    React.useEffect(() => {
+        //开启一个监听器，如果鼠标从视口底部移出，则显示音乐播放条
+        document.addEventListener("mouseleave", (e) => {
+            if (e.clientY >= window.innerHeight) {
+                pubsub.publish("showPlayBar", true);
+            }
+        })
+    }, []);
     return (
         <div>
             {element}

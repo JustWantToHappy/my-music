@@ -1,5 +1,5 @@
 //音乐播放条组件
-import styles from "./index.module.css"
+import styles from "./index.module.scss"
 import {
     StepBackwardOutlined,
     StepForwardOutlined,
@@ -7,7 +7,8 @@ import {
     PauseCircleOutlined,
     EllipsisOutlined,
     SoundFilled,
-    DownOutlined
+    DownOutlined,
+    UpOutlined
 } from "@ant-design/icons"
 import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
@@ -92,10 +93,15 @@ const PlayBar = (props: { song: Music.song }) => {
             songStore.clearTimer();
             songStore.timer = null;
         }
+        pubsub.subscribe("showPlayBar", function (_, data) {
+            if (data === true) {
+                setBar(true);
+            }
+        })
     }, [isPlay]);
     //播放条样式获取
     const getStyle = (type: string) => {
-        let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move'], styles['playbar-end']];
+        let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move']];
         return arrStyle.join(" ");
     }
     // 获取当前进度条事件
@@ -130,11 +136,19 @@ const PlayBar = (props: { song: Music.song }) => {
     const playNext = () => {
         pubsub.publish("changeMusic", "next");
     }
+    //收起播放条
+    const shrink = () => {
+        setBar(false);
+        
+    }
     return <>
         <div className={showBar ? getStyle("start") : getStyle("move")}>
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
-                <Tooltip placement="top" title={"收起"} >
-                    <DownOutlined />
+                <Tooltip placement="right" title={"展开"} >
+                    <UpOutlined />
+                </Tooltip>
+                <Tooltip placement="right" title={"收起"} >
+                    <DownOutlined onClick={shrink} />
                 </Tooltip>
             </div>
             {/* preload="auto"表示预加载音频 */}

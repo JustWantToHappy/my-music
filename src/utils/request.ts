@@ -1,9 +1,9 @@
 //axios的二次封装
 import axios, { AxiosInstance } from "axios"
-const request:AxiosInstance = axios.create({
+const request: AxiosInstance = axios.create({
     baseURL: "http://localhost:5000/",
     timeout: 5000,
-    withCredentials:false
+    withCredentials: false
 });
 //请求拦截器
 request.interceptors.request.use((config) => {
