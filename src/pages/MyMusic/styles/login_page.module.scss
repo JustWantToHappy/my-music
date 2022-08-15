@@ -1,0 +1,22 @@
+.loginPage{
+    width:100vw;
+    height:100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    img{
+        width:550px;
+        transform: translate(-50px,20px);
+    }
+}
+.des{
+    display: flex;
+    flex-direction: column;
+    height: 40vh;
+    padding-left:100px;
+    justify-content: space-around;
+    span{
+        text-indent: 4px;
+    }
+}

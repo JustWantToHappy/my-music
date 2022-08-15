@@ -31,6 +31,8 @@ const PlayBar = (props: { song: Music.song }) => {
     const [time, setTime] = React.useState(0)
     //音量条大小
     const [voice, setVoice] = React.useState(1);
+    //是否展开歌曲播放页面
+    const [expend,setExpend]=React.useState(false);
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         setSong(props.song);
@@ -139,13 +141,16 @@ const PlayBar = (props: { song: Music.song }) => {
     //收起播放条
     const shrink = () => {
         setBar(false);
-        
+    }
+    //展开播放条
+    const spread = () => {
+
     }
     return <>
         <div className={showBar ? getStyle("start") : getStyle("move")}>
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"展开"} >
-                    <UpOutlined />
+                    <UpOutlined onClick={spread} />
                 </Tooltip>
                 <Tooltip placement="right" title={"收起"} >
                     <DownOutlined onClick={shrink} />

@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRoutes } from "react-router-dom"
 import routes from "../../routes"
 import { PlayBar } from "../../components/PlayBar"
 import pubsub from "pubsub-js"
-const Container = function () {
+const Container = function (props:any) {
     const element = useRoutes(routes);
     const [song, setSong] = React.useState<Music.song>();
     //播放音乐

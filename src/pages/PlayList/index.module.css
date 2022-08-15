@@ -117,3 +117,9 @@
 .blank {
     height: 10vh;
 }
+
+/* 分页 */
+.pagination {
+    width: 100%;
+    marigin:0 auto;
+}

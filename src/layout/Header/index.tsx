@@ -6,6 +6,7 @@ import LoginBox from "../../components/Login";
 import "antd/dist/antd.min.css"
 import styles from "./index.module.css"
 import { deleteLocalStorage } from "../../utils/authorization"
+import PubSub from 'pubsub-js';
 export default function Header() {
     const { Search } = Input;
     const [input, setInput] = React.useState("" as any);
@@ -41,16 +42,13 @@ export default function Header() {
     function loginIn(type: boolean) {
         if (!type) {
             setLogin(false);
-            if (localStorage.getItem("hasLogin") === 'true') {
-
-            }
         } else {
             setLogin(true);
         }
     }
     //退出登录
     function loginOut() {
-        deleteLocalStorage(["autoLogin", "nickname", "hasLogin","avatar"]);
+        deleteLocalStorage(["autoLogin", "nickname", "hasLogin", "avatar"]);
         setHasLogin(false);
     }
     React.useEffect(() => {
@@ -59,6 +57,7 @@ export default function Header() {
             setHasLogin(true);
         }
         setAvatar(localStorage.getItem("avatar"));
+        PubSub.subscribe("login",()=>{setLogin(true)});
     }, []);
     return (
         <>
