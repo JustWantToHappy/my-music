@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { useNavigate } from "react-router-dom"
-import  styles from "./recommon.module.css"
+import styles from "./recommon.module.css"
+import {getImgsLoadEnd} from "../../utils/help"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
+    const listRef = useRef<HTMLDivElement>(null);
     const [highSongLists, setHighSongLists] = useState<Array<Music.highLists>>();
     useEffect(() => {
         (async () => {
@@ -12,8 +14,14 @@ const RecommonList = () => {
             setHighSongLists(lists.playlists);
         })();
     }, []);
+    useEffect(() => {
+        //只有图片加载完成后才显示
+        if(highSongLists&&highSongLists.length>0){
+            getImgsLoadEnd(highSongLists,"coverImgUrl",listRef);
+        }
+    }, [highSongLists])
     return (
-        <div className={styles.recommon}>
+        <div className={styles.recommon} ref={listRef}>
             <section className={styles.title}>
                 <b>最热歌单</b>
                 <span >更多</span>
@@ -33,14 +41,20 @@ const RecommonList = () => {
 //新碟上架
 const NewDisc = () => {
     const [newDiscs, setNewDiscs] = useState<Array<Music.album>>();
+    const albumRef=useRef<HTMLDivElement>(null);
     useEffect(() => {
         (async () => {
             const data = await getNewDiscs();
             setNewDiscs(data.albums);
         })();
     }, []);
+    useEffect(() => {
+        if (newDiscs && newDiscs.length > 0) {
+            getImgsLoadEnd(newDiscs,'picUrl',albumRef);
+        }
+    }, [newDiscs]);
     return (
-        <div className={styles.newBorn}>
+        <div className={styles.newBorn} ref={albumRef}>
             <b>最新专辑</b>
             {newDiscs?.map(album => {
                 return <section key={album.id}>
