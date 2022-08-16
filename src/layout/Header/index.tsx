@@ -39,9 +39,10 @@ export default function Header() {
 
     }
     //点击登录
-    function loginIn(type: boolean) {
+    function loginIn(type: boolean, operation: any) {
         if (!type) {
             setLogin(false);
+            typeof operation === 'object' ? setAvatar(localStorage.getItem("avatar")) : setAvatar("");
         } else {
             setLogin(true);
         }
@@ -50,6 +51,7 @@ export default function Header() {
     function loginOut() {
         deleteLocalStorage(["autoLogin", "nickname", "hasLogin", "avatar"]);
         setHasLogin(false);
+        setAvatar("");
     }
     React.useEffect(() => {
         let hasLogin = localStorage.getItem("hasLogin");
@@ -57,7 +59,7 @@ export default function Header() {
             setHasLogin(true);
         }
         setAvatar(localStorage.getItem("avatar"));
-        PubSub.subscribe("login",()=>{setLogin(true)});
+        PubSub.subscribe("login", () => { setLogin(true) });
     }, []);
     return (
         <>
@@ -91,7 +93,7 @@ export default function Header() {
                     <Avatar size="large" icon={<UserOutlined />} src={avatar} />
                     {!hasLogin && <Button type="text"
                         style={{ color: "white", }}
-                        onClick={() => { loginIn(true) }}
+                        onClick={() => { loginIn(true, null) }}
                     >
                         登录
                     </Button>}

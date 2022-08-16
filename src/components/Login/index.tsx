@@ -1,12 +1,18 @@
 import styles from "./index.module.scss";
-import { CloseOutlined, UserOutlined } from "@ant-design/icons"
+import { CloseOutlined, UserOutlined, MailOutlined, KeyOutlined } from "@ant-design/icons"
 import { Button, Input, Checkbox, message } from "antd"
 import { useState, useRef, useEffect } from "react"
-import { sendCode, hasRegistered, verifyCode } from "../../api/login"
+import { sendCode, hasRegistered } from "../../api/login"
 import { addLocalStorage } from "../../utils/authorization"
 const LoginBox = (props: any) => {
     const { login } = props;
+    //用于判断是登录还是注册
+    const [isLogin, setLogin] = useState(true);
     const codeBtn = useRef() as any;
+    //邮箱地址
+    const [email, setEmail] = useState("");
+    //邮箱密码
+    const [password, setPwd] = useState("");
     //手机号
     const [phone, setPhone] = useState("");
     //验证码
@@ -21,48 +27,45 @@ const LoginBox = (props: any) => {
     const [hasRegister, setRegister] = useState(true);
     const countSaver = useRef<NodeJS.Timeout>();
     //是否自动登录
-    const [isLogin, setLogin] = useState(false);
+    const [authLogin, setAuthLogin] = useState(false);
     //获取验证码
     const getCode = async () => {
+        //判断手机号是否合法
+        //判断密码是否合法
+        //判断验证码是否为空
+       /*  if (phone === '') {
+            message.warning("手机号不能为空")
+            return;
+        }
+        var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (!myreg.test(phone)) {
+            message.warning("手机号格式错误");
+            return;
+        }
         let registered = await hasRegistered(phone, ctCode);
         if (registered.exist !== 1) {
             setRegister(false);
             return;
         }
-        addLocalStorage([{ key: "avatar", value: registered.avatarUrl }, { key: "nickname", value: registered.nickname }]);
         let res = await sendCode(phone, ctCode);
         //获取验证码失败，超过一天之内获取的最大数
         if (res.code !== 200 || !res.data) {
-            setHasCode(false)
+            setHasCode(false);
         } else {
             countSaver.current = setInterval(() => {
                 if (count >= 0) {
                     setCount(count => count - 1);
                 }
             }, 1000);
-        }
+        } */
     }
-    const loginIn = async () => {
-        if (phone === '' || code === '') {
-            message.warning("手机号和验证码不能为空");
-            return;
-        }
-        try {
-            let res = await verifyCode(phone, code, ctCode);
-            //验证成功!
-            if (res.code === 200 && res.data) {
-                addLocalStorage([{ key: "autoLogin", value: `${isLogin}` }, { key: "hasLogin", value: "true" }]);
-                login(false);
-            }
-        } catch (e) {
-            message.error({
-                content: '手机号或验证码有误',
-                
-            })
-        }
-    }
-    const register = () => {
+    //登录注册
+    const LoginOrRegister=(isLogin:boolean)=>{
 
+        
+    }
+    const registerOrlogin = () => {
+        setLogin(!isLogin);
     }
     useEffect(() => {
         if (count < 0) {
@@ -78,13 +81,13 @@ const LoginBox = (props: any) => {
         <div className={styles.mask}>
             <ul className={styles.login}>
                 <li>
-                    <span>登录</span>
+                    <span>{isLogin && '登录'}{!isLogin && '注册'}</span>
                     <span><CloseOutlined onClick={() => { props.login(false) }} /></span>
                 </li>
 
                 <li>
-                    <p><small onClick={() => { register() }}>注册</small></p>
-                    <div>
+                    <p><small onClick={() => { registerOrlogin() }}>{isLogin && '注册'}{!isLogin && '登录'}</small></p>
+                    {!isLogin && <div>
                         <select name="select" onChange={(e) => { setCtCode(e.target.value) }}>
                             <option value="86">+86&nbsp;中国</option>
                             <option value="852">+852&nbsp;中国香港</option>
@@ -97,12 +100,19 @@ const LoginBox = (props: any) => {
                             {(count >= 60 || count < 0) && "获取验证码"}{count < 60 && count >= 0 && `${count}s`}
                         </Button>
                         {!hasCode && <p>!&nbsp;当天发送验证码的条数超过限制</p>}
-                        <small>手机登录</small>
-                        <Checkbox onChange={(e) => { console.log(setLogin(e.target.checked)) }}>自动登录</Checkbox>
+                        <small>手机注册</small>
                     </div>
+                    }
+                    {isLogin && <i>
+                        <Input size="large" placeholder="请输入邮箱地址" prefix={<MailOutlined />} allowClear onChange={(e) => { setEmail(e.target.value) }} />
+                        <Input.Password placeholder="请输入密码" allowClear prefix={<KeyOutlined />} onChange={(e) => { setPwd(e.target.value) }} />
+                        <Checkbox onChange={(e) => { console.log(setAuthLogin(e.target.checked)) }}>自动登录</Checkbox>
+                    </i>}
                 </li>
                 <li >
-                    <Button onClick={loginIn} style={{ width: '300px' }}>登录</Button>
+                    <Button onClick={()=>{
+                        LoginOrRegister(isLogin);
+                    }} style={{ width: '300px' }}>{isLogin && '登录'}{!isLogin && '注册'}</Button>
                 </li>
             </ul>
         </div >

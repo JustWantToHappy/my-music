@@ -1,5 +1,6 @@
 //音乐播放条组件
 import styles from "./index.module.scss"
+import fullStyles from "./full_screen.module.scss";
 import {
     StepBackwardOutlined,
     StepForwardOutlined,
@@ -8,7 +9,9 @@ import {
     EllipsisOutlined,
     SoundFilled,
     DownOutlined,
-    UpOutlined
+    FullscreenExitOutlined,
+    SyncOutlined,
+    FullscreenOutlined 
 } from "@ant-design/icons"
 import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
@@ -32,7 +35,7 @@ const PlayBar = (props: { song: Music.song }) => {
     //音量条大小
     const [voice, setVoice] = React.useState(1);
     //是否展开歌曲播放页面
-    const [expend,setExpend]=React.useState(false);
+    const [expend, setExpend] = React.useState(false);
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         setSong(props.song);
@@ -141,42 +144,74 @@ const PlayBar = (props: { song: Music.song }) => {
     //收起播放条
     const shrink = () => {
         setBar(false);
+        setSloud(false);
+    }
+    //收起全屏
+    const shrinkFullScreen = () => {
+        setExpend(false);
+        setBar(true);
+        setSloud(false);
+        let bar = myBarRef.current, img = imgRef.current;
+        (bar as any).className = styles.playbar;
+        (img as any).className = styles.coverImg;
     }
     //展开播放条
-    const spread = () => {
+    const myBarRef = React.useRef<HTMLDivElement>(null);
+    const imgRef = React.useRef<HTMLDivElement>(null);
 
+    const spread = () => {
+        setExpend(true);
+        setSloud(false);
+        let bar = myBarRef.current, img = imgRef.current;
+        (bar as any).className = fullStyles.playbar;
+        (img as any).className = fullStyles.coverImg;
     }
     return <>
-        <div className={showBar ? getStyle("start") : getStyle("move")}>
-            <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
+        <audio ref={playBar} src={url} preload="auto">
+            {/* preload="auto"表示预加载音频 */}
+        </audio>
+        <div className={showBar ? getStyle("start") : getStyle("move")} ref={myBarRef}>
+            {!expend && <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"展开"} >
-                    <UpOutlined onClick={spread} />
+                    <FullscreenOutlined onClick={spread}/>
                 </Tooltip>
                 <Tooltip placement="right" title={"收起"} >
                     <DownOutlined onClick={shrink} />
                 </Tooltip>
-            </div>
-            {/* preload="auto"表示预加载音频 */}
-            <audio ref={playBar} src={url} preload="auto">
-            </audio>
-            <div className={styles.playmusic}>
+            </div>}
+            {!expend && <div className={styles.playmusic} >
+                {/*  */}
                 {/* 播放上一首 */}
                 <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playLast} />
                 {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
                 {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
                 {/* 播放下一首 */}
                 <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNext} />
-            </div>
-            <div className={styles.coverImg}>
+            </div>}
+            <div className={styles.coverImg} ref={imgRef}>
                 <img src={song.al?.picUrl} alt="图片无法显示" />
             </div>
-            <div className={styles["music-bar"]}>
+            {expend && <div className={fullStyles.playmusic}>
+                <Tooltip title="还原" placement="bottom">
+                    <FullscreenExitOutlined className={fullStyles.shrink} onClick={shrinkFullScreen} />
+                </Tooltip>
+                <h2>{song.name}</h2>
+                <p>歌手:
+                    {song.ar?.map((per, index) => {
+                        if (index === 0)
+                            return <span key={index}>{per.name}</span>
+                    })}
+                </p>
+                <p>专辑:</p>
+                {/* 此处是歌单组件，待写 */}
+            </div>}
+            {!expend && <div className={styles["music-bar"]} >
                 {/* 歌曲名称 */}
-                <small style={{ marginLeft: "30px" }}>
+                <small >
                     {/* 歌手名称 */}
                     <span>{song.name}</span>
                     {/* 进度条 */}
-                    <span style={{ marginLeft: "3vw" }}>
+                    <span >
                         {song.ar?.map((per, index) => {
                             if (index === 0)
                                 return <span key={index}>{per.name}</span>
@@ -188,8 +223,8 @@ const PlayBar = (props: { song: Music.song }) => {
                     <Slider style={{ flex: "1" }} min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
                     <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
                 </span>
-            </div>
-            <div className={styles['play-method']}>
+            </div>}
+            {!expend && <div className={styles['play-method']}>
                 {/* 音量调整 */}
                 <span className={styles['play-sound']}>
                     {showSloud && <Slider vertical className={styles['play-sound-bar']} onChange={changeVoice} value={voice} />}
@@ -199,7 +234,28 @@ const PlayBar = (props: { song: Music.song }) => {
                 <Dropdown overlay={menu} placement="top" >
                     <EllipsisOutlined />
                 </Dropdown>
-            </div>
+            </div>}
+            {expend && <div className={fullStyles['music-bar']}>
+                <div>
+                    <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
+                </div>
+                <div>
+                    <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
+                    <span>
+                        <StepBackwardOutlined onClick={playLast} />
+                        {!isPlay && <PlayCircleOutlined onClick={() => { playMusic() }} />}
+                        {isPlay && <PauseCircleOutlined onClick={() => { playMusic() }} />}
+                        <StepForwardOutlined onClick={playNext} />
+                    </span>
+                    <i>
+                        <Dropdown overlay={menu} placement="top" >
+                        <SyncOutlined />
+                        </Dropdown>
+                        {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
+                        <SoundFilled onClick={() => { setSloud(!showSloud) }} />
+                    </i>
+                </div>
+            </div>}
         </div>
     </>
 }

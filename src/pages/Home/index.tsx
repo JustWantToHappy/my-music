@@ -3,7 +3,8 @@ import { Carousel } from 'antd';
 import { getRecommondmv } from "../../api/recommond"
 import styles from "./index.module.css"
 import { RecommonList, NewDisc } from "./Recommon"
-import {DoubleLeftOutlined,DoubleRightOutlined} from "@ant-design/icons"
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons"
+
 export default function Container() {
     let { useEffect, useState } = React;
     const [arr, setArr] = useState<Array<Music.recommomMv>>();
@@ -20,7 +21,7 @@ export default function Container() {
     return (
         <>
             <div className={styles.container}>
-            <DoubleLeftOutlined style={{color:'#fff',fontSize:"25px"}}/>
+                <DoubleLeftOutlined style={{ color: '#fff', fontSize: "25px" }} />
                 <Carousel arrows={true} afterChange={onChange} style={{ width: "75vw" }}>
                     {arr?.map(mv => {
                         return <div key={mv.id}>
@@ -28,14 +29,13 @@ export default function Container() {
                         </div>
                     })}
                 </Carousel>
-                <DoubleRightOutlined style={{color:'#fff',fontSize:"25px"}}/>
+                <DoubleRightOutlined style={{ color: '#fff', fontSize: "25px" }} />
             </div>
             {/* 精选歌单和 */}
             <div className={styles.content}>
                 <RecommonList />
                 <NewDisc />
             </div>
-            {/* test虚拟列表 */}
         </>
     )
 }
