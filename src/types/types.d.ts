@@ -54,5 +54,19 @@ declare namespace Music {
         description: string;//专辑描述
     }
 }
-//声明可以使用css模块化
-declare module "*.css";
+declare namespace User{
+    //用户信息
+    type account={
+        userId:number;
+        playlistCount:number;//歌单数量
+        nickname:string;//用户昵称
+        gender:number;//0表示女，1表示男
+        follows:number;//我关注的数量
+        followeds:number;//粉丝数量
+        city:number;//所在城市
+        province:number;//所在省份
+        birthday:number;//出生日期
+        backgroundUrl:string;//背景图
+        avatarUrl:string;//头像
+    }
+}

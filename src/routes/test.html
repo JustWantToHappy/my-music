@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+    <style>
+    #app {
+      height: 75px;
+      width: 100%;
+      overflow: hidden;
+      background-color: rgba(236, 223, 226, 0.64);
+    }
+    .wrap {
+      transform: translateY(0px);
+      transition: transform 0.4s;
+    }
+    .word {
+      color: blue;
+      height: 25px;
+      text-align: center;
+      transition: all 0.4s;
+      opacity: 0.2;
+    }
+    .active1 {
+      font-size: 20px;
+      opacity: 1;
+    }
+    .active2 {
+      font-size: 16px;
+      opacity: 0.6;
+    }
+    .active3 {
+      font-size: 12px;
+      opacity: 0.3;
+    }
+  </style>
+  <div id="app">
+    <div class="wrap">
+      <div class="word active1">打的费打分</div>
+      <div class="word active2">水电费水</div>
+      <div class="word active3">水电费</div>
+      <div class="word">水电费</div>
+      <div class="word">水电费</div>
+      <div class="word">水电费</div>
+      <div class="word">水电费</div>
+      <div class="word">水电费</div>
+      <div class="word">水电费</div>
+    </div>
+  </div>
+  <button class="aa">下一个</button>
+  <button class="bb">上一个</button>
+  <script>
+    var app = document.querySelector('#app');
+    var _wrap = document.querySelector('.wrap');
+    var _child = _wrap.children;
+    var _childEvt_length = _wrap.children.length-1;
+    let i = 0,index = 0,line = 25;
+    document.querySelector('.aa').onclick = function(){
+      if(index>=_childEvt_length)return;
+      i -= line;
+      index++;
+      _wrap.style.transform = 'translateY('+i+'px)'
+      _child[index].classList.remove('active1','active2','active3')
+      _child[index].classList.add('active1')
+      if(index>=_childEvt_length)return;
+      _child[index+1].classList.remove('active1','active2','active3')
+      _child[index+1].classList.add('active2')
+      if(index>=_childEvt_length-1)return;
+      _child[index+2].classList.remove('active1','active2','active3')
+      _child[index+2].classList.add('active3')
+    }
+    document.querySelector('.bb').onclick = function(){
+      if(i>=0)return;
+      i += line;
+      index--;
+      _wrap.style.transform = 'translateY('+i+'px)'
+      _child[index].classList.remove('active1','active2','active3')
+      _child[index].classList.add('active1')
+      if(index>=_childEvt_length)return;
+      _child[index+1].classList.remove('active1','active2','active3')
+      _child[index+1].classList.add('active2')
+      if(index>=_childEvt_length-1)return;
+      _child[index+2].classList.remove('active1','active2','active3')
+      _child[index+2].classList.add('active3')
+    }
+  </script>
+</body>
+</html>

@@ -46,7 +46,6 @@ ul {
         height: 250px;
         >p {
             height: 30px;
-
             >small {
                 float: right;
                 margin-right: 20px;
@@ -78,8 +77,8 @@ ul {
         >div {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            grid-row-gap:30px;
+            grid-template-rows: repeat(5, 1fr);
+            grid-row-gap:20px;
             >select{
                 grid-column: 2/3;
                 grid-row:1/2;
@@ -97,23 +96,22 @@ ul {
             }
             :nth-child(3){
                 grid-row: 2/3;
-                grid-column:2/4 ;
+                grid-column:2/5 ;
                 height:100%;
             }
             :nth-child(4){
-                grid-row:2/3;
-                grid-column:4/5;
+                grid-row:3/4;
+                grid-column:2/5;
                 height: 100%;
             }
-            >p{
-                position: absolute;
-                bottom:calc(350px/6 + 350px/12 + 20px);
-                left:calc(500px/5 - 5px);
-                color: #e33232;
+            :nth-child(5){
+                grid-row:4/5;
+                grid-column: 2/4;
             }
-            >small{
-                grid-row:3/4;
-                grid-column: 2/3;
+            :nth-child(6){
+                grid-row:4/5;
+                grid-column: 4/5;
+                height:100%;
             }
 
         }

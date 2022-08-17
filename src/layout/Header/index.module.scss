@@ -1,0 +1,63 @@
+.head {
+    height: 13vh;
+    width: 100%;
+    position: fixed;
+    list-style: none;
+    z-index: 20;
+    box-sizing: border-box;
+    background: #242424 !important;
+    border-bottom: 1px solid #000;
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 15px;
+
+    li {
+        cursor: pointer;
+    }
+
+    img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50% 50% 40% 40%;
+    }
+
+    @mixin div-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    >:last-child {
+        @include div-center();
+
+        >p {
+            @include div-center();
+            height: 100%;
+            flex-direction: column;
+            transform: translateY(1vh);
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.login-btn {
+    opacity: 0.7;
+    color:white;
+    &:hover {
+        opacity: 1;
+        color:white;
+    }
+}
+
+.is-active {
+    color: #1890ff;
+}
+
+.not-active {
+    color: white;
+}

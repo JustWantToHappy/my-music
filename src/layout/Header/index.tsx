@@ -4,12 +4,13 @@ import { NavLink } from "react-router-dom"
 import { Button, Input, Avatar } from "antd"
 import LoginBox from "../../components/Login";
 import "antd/dist/antd.min.css"
-import styles from "./index.module.css"
+import styles from "./index.module.scss"
 import { deleteLocalStorage } from "../../utils/authorization"
 import PubSub from 'pubsub-js';
 export default function Header() {
     const { Search } = Input;
     const [input, setInput] = React.useState("" as any);
+    //用于判断登录注册窗口是否显示
     const [login, setLogin] = React.useState(false);
     const [avatar, setAvatar] = React.useState<string | null>();
     //用于判断用户是否已经登录
@@ -43,13 +44,14 @@ export default function Header() {
         if (!type) {
             setLogin(false);
             typeof operation === 'object' ? setAvatar(localStorage.getItem("avatar")) : setAvatar("");
+            setHasLogin(true);
         } else {
             setLogin(true);
         }
     }
-    //退出登录
+    //退出登录,将本地中用户的敏感信息都清空
     function loginOut() {
-        deleteLocalStorage(["autoLogin", "nickname", "hasLogin", "avatar"]);
+        deleteLocalStorage(["autoLogin", "nickname", "hasLogin", "avatar", "userId"]);
         setHasLogin(false);
         setAvatar("");
     }
@@ -59,7 +61,7 @@ export default function Header() {
             setHasLogin(true);
         }
         setAvatar(localStorage.getItem("avatar"));
-        PubSub.subscribe("login", () => { setLogin(true) });
+        PubSub.subscribe("login", () => { setLogin(false) });
     }, []);
     return (
         <>
@@ -92,14 +94,20 @@ export default function Header() {
                 <div>
                     <Avatar size="large" icon={<UserOutlined />} src={avatar} />
                     {!hasLogin && <Button type="text"
-                        style={{ color: "white", }}
+                         className={styles['login-btn']}
                         onClick={() => { loginIn(true, null) }}
                     >
                         登录
                     </Button>}
-                    {hasLogin && <Button onClick={() => { loginOut() }} type='text' style={{ color: 'white' }}>
-                        退出登录
-                    </Button>}
+                    {
+                        hasLogin &&
+                        <p >
+                            <small>{localStorage.getItem("nickname")}</small>
+                            <Button onClick={() => { loginOut() }} type='text' className={styles['login-btn']}>
+                                退出登录
+                            </Button>
+                        </p>
+                    }
                 </div>
             </div>
             {login && <LoginBox login={loginIn} />}

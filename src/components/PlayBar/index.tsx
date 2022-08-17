@@ -11,7 +11,7 @@ import {
     DownOutlined,
     FullscreenExitOutlined,
     SyncOutlined,
-    FullscreenOutlined 
+    FullscreenOutlined
 } from "@ant-design/icons"
 import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
@@ -19,6 +19,8 @@ import pubsub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
 import { songStore } from "../../mobx/song"
+import { getLyricBySongId } from "../../api/song"
+import Lyric from "../Lyric";
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
     //控制歌曲切换
@@ -36,6 +38,9 @@ const PlayBar = (props: { song: Music.song }) => {
     const [voice, setVoice] = React.useState(1);
     //是否展开歌曲播放页面
     const [expend, setExpend] = React.useState(false);
+    //获取歌词
+    const [lyric, setLyric] = React.useState<string>('');
+    const [tlyric, setTlyric] = React.useState<string>('');
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         setSong(props.song);
@@ -102,7 +107,7 @@ const PlayBar = (props: { song: Music.song }) => {
             if (data === true) {
                 setBar(true);
             }
-        })
+        });
     }, [isPlay]);
     //播放条样式获取
     const getStyle = (type: string) => {
@@ -173,7 +178,7 @@ const PlayBar = (props: { song: Music.song }) => {
         <div className={showBar ? getStyle("start") : getStyle("move")} ref={myBarRef}>
             {!expend && <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"展开"} >
-                    <FullscreenOutlined onClick={spread}/>
+                    <FullscreenOutlined onClick={spread} />
                 </Tooltip>
                 <Tooltip placement="right" title={"收起"} >
                     <DownOutlined onClick={shrink} />
@@ -196,14 +201,14 @@ const PlayBar = (props: { song: Music.song }) => {
                     <FullscreenExitOutlined className={fullStyles.shrink} onClick={shrinkFullScreen} />
                 </Tooltip>
                 <h2>{song.name}</h2>
-                <p>歌手:
+                <p><>歌手:&nbsp;</>
                     {song.ar?.map((per, index) => {
                         if (index === 0)
-                            return <span key={index}>{per.name}</span>
+                            return <small key={index}>{per.name}</small>
                     })}
                 </p>
-                <p>专辑:</p>
-                {/* 此处是歌单组件，待写 */}
+                <p><>专辑:&nbsp;</><small>{song.al && song.al.name}</small></p>
+                <Lyric audioRef={playBar}  id={song.id} />
             </div>}
             {!expend && <div className={styles["music-bar"]} >
                 {/* 歌曲名称 */}
@@ -249,11 +254,13 @@ const PlayBar = (props: { song: Music.song }) => {
                     </span>
                     <i>
                         <Dropdown overlay={menu} placement="top" >
-                        <SyncOutlined />
+                            <SyncOutlined />
                         </Dropdown>
+                    </i>
+                    <p>
                         {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
                         <SoundFilled onClick={() => { setSloud(!showSloud) }} />
-                    </i>
+                    </p>
                 </div>
             </div>}
         </div>

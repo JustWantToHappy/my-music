@@ -41,3 +41,31 @@ export const getImgsLoadEnd = (arr: Array<any>, srcName: string, myRef: React.Re
         })
     }
 }
+//将00:00:000格式时间转为us级别
+export function transUsTime(time: string): number {
+    try {
+        let arr = time.split(":");
+        let num1 = Number(arr[0]) * 60 * 1e6;
+        let brr = arr[1].split(".");
+        let num2 = Number(brr[0]) * 1e6;
+        let num3 = Number(brr[1]) * 1000;
+        return num1 + num2 + num3;
+    } catch (e) {
+        console.log(e);
+    }
+    return 0;
+}
+//节流函数
+export function throttle(fn: Function, delay: number): Function {
+    let timer: any;
+    return function () {
+        var args = arguments;
+        if (timer) {
+            return;
+        }
+        timer = setTimeout(function() {
+            fn.apply(window, args);
+        }, delay)
+    }
+
+}

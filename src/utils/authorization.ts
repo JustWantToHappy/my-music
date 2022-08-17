@@ -1,3 +1,4 @@
+import Cookies from "js-cookie"
 //批量将key-value键值对添入localstorage
 export function addLocalStorage(items: Array<{ key: string, value: string }>): void {
     items.forEach((item) => {
@@ -10,4 +11,13 @@ export function deleteLocalStorage(keys: Array<string>) {
         localStorage.removeItem(key);
     })
 }
+//写入cookie
+export function addCookies(cookie: string) {
+    let arr = cookie.split("; ");
+    arr.forEach(str => {
+        let brr = str.split("=");
+        Cookies.set(brr[0], brr[1]);
+    })
+}
+//删除cookie
 
