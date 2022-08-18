@@ -4,6 +4,7 @@ import PlayList from "../pages/PlayList"
 import { Navigate } from "react-router-dom"
 import PageNotFound from "../pages/PageNotFound"
 import MyMusic from "../pages/MyMusic"
+import Artist from "../pages/Artist"
 const routes = [
     {
         path: "/home",
@@ -13,19 +14,24 @@ const routes = [
         path: "/",
         element: <Navigate to="/home" />
     },
-    //歌单
-    {
-        path:"/playlist/:id",
-        element:<PlayList/>
-    },
     //我的音乐
     {
-        path:"/mymc",
-        element:<MyMusic/>
+        path: "/mymc",
+        element: <MyMusic />
+    },
+    //歌单
+    {
+        path: "/playlist/:id",
+        element: <PlayList />
+    },
+    //歌手
+    {
+        path: "/artist",
+        element: <Artist />
     },
     {
-        path:"*",
-        element:<PageNotFound/>
+        path: "*",
+        element: <PageNotFound />
     }
 ]
 export default routes;

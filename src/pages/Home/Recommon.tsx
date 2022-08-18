@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { useNavigate } from "react-router-dom"
 import styles from "./recommon.module.css"
-import {getImgsLoadEnd} from "../../utils/help"
+import { getImgsLoadEnd } from "../../utils/help"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
@@ -16,8 +16,8 @@ const RecommonList = () => {
     }, []);
     useEffect(() => {
         //只有图片加载完成后才显示
-        if(highSongLists&&highSongLists.length>0){
-            getImgsLoadEnd(highSongLists,"coverImgUrl",listRef);
+        if (highSongLists && highSongLists.length > 0) {
+            getImgsLoadEnd(highSongLists, "coverImgUrl", listRef);
         }
     }, [highSongLists])
     return (
@@ -41,7 +41,8 @@ const RecommonList = () => {
 //新碟上架
 const NewDisc = () => {
     const [newDiscs, setNewDiscs] = useState<Array<Music.album>>();
-    const albumRef=useRef<HTMLDivElement>(null);
+    const albumRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
     useEffect(() => {
         (async () => {
             const data = await getNewDiscs();
@@ -50,9 +51,13 @@ const NewDisc = () => {
     }, []);
     useEffect(() => {
         if (newDiscs && newDiscs.length > 0) {
-            getImgsLoadEnd(newDiscs,'picUrl',albumRef);
+            getImgsLoadEnd(newDiscs, 'picUrl', albumRef);
         }
     }, [newDiscs]);
+    const toArtistPage = (singer: Music.singer) => {
+        let obj: { singer: Music.singer } = { singer };
+        navigate(`/artist?id=${singer.id}`, { state: singer });
+    }
     return (
         <div className={styles.newBorn} ref={albumRef}>
             <b>最新专辑</b>
@@ -60,7 +65,7 @@ const NewDisc = () => {
                 return <section key={album.id}>
                     <img src={album.picUrl} alt="图片无法显示" />
                     <div>
-                        <small>{album.artist.name}</small>
+                        <small onClick={() => { toArtistPage(album.artist) }}>{album.artist.name}</small>
                         <small>{album.name}</small>
                     </div>
                 </section>

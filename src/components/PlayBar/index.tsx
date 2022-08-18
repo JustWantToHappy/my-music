@@ -170,6 +170,7 @@ const PlayBar = (props: { song: Music.song }) => {
         let bar = myBarRef.current, img = imgRef.current;
         (bar as any).className = fullStyles.playbar;
         (img as any).className = fullStyles.coverImg;
+        
     }
     return <>
         <audio ref={playBar} src={url} preload="auto">
@@ -194,7 +195,7 @@ const PlayBar = (props: { song: Music.song }) => {
                 <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNext} />
             </div>}
             <div className={styles.coverImg} ref={imgRef}>
-                <img src={song.al?.picUrl} alt="图片无法显示" />
+                <img src={song.al?.picUrl} alt="logo" />
             </div>
             {expend && <div className={fullStyles.playmusic}>
                 <Tooltip title="还原" placement="bottom">

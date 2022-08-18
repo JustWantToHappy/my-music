@@ -2,7 +2,7 @@ import styles from "./index.module.scss";
 import { CloseOutlined, UserOutlined, MailOutlined, KeyOutlined, MobileOutlined } from "@ant-design/icons"
 import { Button, Input, Checkbox, message } from "antd"
 import { useState, useRef, useEffect } from "react"
-import { emailLogin } from "../../api/login"
+import { emailLogin } from "../../api/login_register"
 import { addLocalStorage, addCookies } from "../../utils/authorization"
 import PubSub from "pubsub-js";
 const LoginBox = (props: any) => {

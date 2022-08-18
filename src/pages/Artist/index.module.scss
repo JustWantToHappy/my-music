@@ -1,0 +1,33 @@
+.artist {
+    height:100vh;
+    width: 100vw;
+    padding-top:13vh;
+    overflow-x: hidden;
+}
+.content{
+    width:70%;
+    height:100%;
+    margin:0 auto;
+    display: flex;
+    flex-direction: column;
+    border-left:1px solid #D4D4D4;
+    border-right:1px solid #D4D4D4;
+    padding:20px;
+    >span{
+        display: flex;
+        align-items: center;
+        *{
+            padding:0 10px;
+        }
+    }
+    >img{
+        width: 50%;
+    }
+    >hr{
+        background-color:red;
+        margin-top:1vh;
+    }
+    >:last-child{
+       padding-bottom: 10vh;
+    }
+}

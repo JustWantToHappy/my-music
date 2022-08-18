@@ -42,6 +42,8 @@ declare namespace Music {
         albumSize?: number; // 专辑数量
         mvSize?: number; // mv 数量
         briefDesc?: string; // 简单描述
+        alias:string[];//别名
+        followed:boolean;//我是否关注
     }
     //专辑
     type album = {

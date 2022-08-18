@@ -37,19 +37,38 @@ const Lyric = (props: lyricType) => {
             type === 1 && await setTlyric(lyricArr);
         }
     }
+    //判断当前播放的歌词中前面的歌词空字符串个数
+    const getNullCount = (index: number): number => {
+        let count = 0;
+        for (let i = 0; i < index; i++) {
+            if (lyric[i].content === '') {
+                count++;
+            }
+        }
+        return count;
+    }
+
     const timeupdate = () => {
         audioRef.current.addEventListener('timeupdate', () => {
             let index = binarySearchLyric(audioRef.current.currentTime);
             if (index !== playIndex && index > 0) {
-                let tIndex = 0;
+                let tCount = 0;
                 for (let i = 0; i < tlyric.length; i++) {
                     if (lyric[index].time === tlyric[i].time) {
-                        tIndex = i;
+                        tCount = i;
                         break;
                     }
                 }
                 let ref = lyricRef.current as any;
-                ref.scrollTop = (tIndex) * 100 + (index - tIndex) * 50 - 150;
+                let nullCount = getNullCount(index);
+                console.log(lyric.slice(0, index));
+                //有翻译
+                if (tlyric.length > 0)
+                    ref.scrollTop = ((tCount) + index - nullCount) * 50 - 100;
+                else {
+                    //无翻译
+                    ref.scrollTop = (index - nullCount) * 50 - 100;
+                }
             }
             setIndex(index);
         });
@@ -57,26 +76,26 @@ const Lyric = (props: lyricType) => {
     //使用二分查找，根据准确的时间确定时间轴上的歌词,返回一个下标
     const binarySearchLyric = (time: number) => {
         let index = 0;
+        let min = 0, max = lyric.length - 1;
         if (lyric.length > 0) {
             let currentTime = Math.ceil(time * 1e6);
-            let min = 0, max = lyric.length - 1;
             let min_value = Number.MAX_VALUE;
             while (min <= max) {
-                let mid = Math.ceil((min + max) / 2);
+                let mid = Math.floor((max + min) / 2);
                 let diff = currentTime - transUsTime(lyric[mid].time);
                 if (diff < 0) {
-                    max--;
-                    min_value = Math.min(min_value, diff);
-                    index = mid;
+                    max = mid - 1;
                 } else if (diff > 0) {
-                    min++;
+                    if (min_value <= diff) {
+                        min = mid + 1;
+                    }
+                    min_value = Math.min(min_value, diff);
                 } else if (diff === 0) {
-                    index = mid;
                     break;
                 }
             }
         }
-        return index > 0 ? index - 1 : 0;
+        return min > 0 ? min - 1 : 0;
     }
     const getTlyricContent = (time: string) => {
         let content = "";
@@ -91,7 +110,6 @@ const Lyric = (props: lyricType) => {
     useEffect(() => {
         (async () => {
             let res = await getLyricBySongId(id);
-            // console.log(ref, 'ccc')
             handleStr(res.lrc.lyric, 0);
             handleStr(res.tlyric.lyric, 1);
         })();
