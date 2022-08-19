@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom"
 import PageNotFound from "../pages/PageNotFound"
 import MyMusic from "../pages/MyMusic"
 import Artist from "../pages/Artist"
+import Login from "../pages/MyMusic/LoginPage"
 const routes = [
     {
         path: "/home",
@@ -28,6 +29,11 @@ const routes = [
     {
         path: "/artist",
         element: <Artist />
+    },
+    //登录页面
+    {
+        path: "/login",
+        element: <Login />
     },
     {
         path: "*",

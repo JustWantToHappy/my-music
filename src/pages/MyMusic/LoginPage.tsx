@@ -1,6 +1,6 @@
 import { Button } from "antd"
 import styles from "./styles/login_page.module.scss"
-import { useState } from "react"
+import { useState} from "react"
 import PubSub from "pubsub-js"
 const LoginPage = () => {
     const login = () => {

@@ -1,11 +1,11 @@
 import React from 'react'
 import { UserOutlined } from '@ant-design/icons';
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Button, Input, Avatar } from "antd"
 import LoginBox from "../../components/Login";
 import "antd/dist/antd.min.css"
 import styles from "./index.module.scss"
-import { deleteLocalStorage } from "../../utils/authorization"
+import { addLocalStorage, deleteLocalStorage } from "../../utils/authorization"
 import PubSub from 'pubsub-js';
 export default function Header() {
     const { Search } = Input;
@@ -15,6 +15,7 @@ export default function Header() {
     const [avatar, setAvatar] = React.useState<string | null>();
     //用于判断用户是否已经登录
     const [hasLogin, setHasLogin] = React.useState(false);
+    const navigate = useNavigate();
     const items: Array<{
         title: string, path: string
     }> = [{
@@ -51,9 +52,12 @@ export default function Header() {
     }
     //退出登录,将本地中用户的敏感信息都清空
     function loginOut() {
-        deleteLocalStorage(["autoLogin", "nickname", "hasLogin", "avatar", "userId"]);
+        addLocalStorage([{ key: "hasLogin", value: 'false' }]);
+        deleteLocalStorage(["autoLogin", "nickname", "avatar", "userId"]);
         setHasLogin(false);
         setAvatar("");
+        //退出后跳转到首页
+        navigate("/home");
     }
     React.useEffect(() => {
         let hasLogin = localStorage.getItem("hasLogin");
@@ -61,7 +65,8 @@ export default function Header() {
             setHasLogin(true);
         }
         setAvatar(localStorage.getItem("avatar"));
-        PubSub.subscribe("login", () => { setLogin(false) });
+        //设置为true表示显示登录框
+        PubSub.subscribe("login", () => { setLogin(true) });
     }, []);
     return (
         <>
@@ -94,7 +99,7 @@ export default function Header() {
                 <div>
                     <Avatar size="large" icon={<UserOutlined />} src={avatar} />
                     {!hasLogin && <Button type="text"
-                         className={styles['login-btn']}
+                        className={styles['login-btn']}
                         onClick={() => { loginIn(true, null) }}
                     >
                         登录

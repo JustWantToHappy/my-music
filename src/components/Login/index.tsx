@@ -2,10 +2,14 @@ import styles from "./index.module.scss";
 import { CloseOutlined, UserOutlined, MailOutlined, KeyOutlined, MobileOutlined } from "@ant-design/icons"
 import { Button, Input, Checkbox, message } from "antd"
 import { useState, useRef, useEffect } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 import { emailLogin } from "../../api/login_register"
 import { addLocalStorage, addCookies } from "../../utils/authorization"
 import PubSub from "pubsub-js";
 const LoginBox = (props: any) => {
+    //下面这两个hook用于跳转登录成功后的路由组件
+    const location = useLocation();
+    const naviage = useNavigate();
     const { login } = props;
     //用于判断是登录还是注册
     const [isLogin, setLogin] = useState(true);
@@ -89,12 +93,18 @@ const LoginBox = (props: any) => {
             message.error("账号或密码错误")
         }
         try {
+            //登录成功
             addCookies(res.cookie);
             let user: User.account = res.profile;
             //将用户头像和id和昵称存入本地，用来维持登录状态
-            addLocalStorage([{ key: "authLogin", value: String(authLogin) }, { key: "hasLogin", value: "true" }, { key: "userId", value: String(user.userId) }, { key: "avatar", value: user.avatarUrl }, { key: 'nickname', value: user.nickname}]);
+            addLocalStorage([{ key: "authLogin", value: String(authLogin) }, { key: "hasLogin", value: "true" }, { key: "userId", value: String(user.userId) }, { key: "avatar", value: user.avatarUrl }, { key: 'nickname', value: user.nickname }]);
             //通知父组件关闭模态框
             login(false, []);
+            let { pathname } = location;
+            if (pathname === '/login') {
+                naviage("/mymc");
+            }
+
         } catch (e) {
             console.log(e);
         }

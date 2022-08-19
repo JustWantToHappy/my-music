@@ -1,0 +1,16 @@
+.my-music{
+    width:75vw;
+    height:87vh;
+    transform: translateY(13vh);
+    margin:0 auto;
+    display: flex;
+    
+}
+.navigate{
+    flex:1;
+    background-color: red;
+}
+.content{
+    flex:3;
+    background-color: green;
+}

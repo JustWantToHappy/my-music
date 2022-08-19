@@ -61,11 +61,11 @@ const Lyric = (props: lyricType) => {
                 }
                 let ref = lyricRef.current as any;
                 let nullCount = getNullCount(index);
-                console.log(lyric.slice(0, index));
+                // console.log(lyric.slice(0, index));
                 //有翻译
-                if (tlyric.length > 0)
+                if (tlyric.length > 0 && ref)
                     ref.scrollTop = ((tCount) + index - nullCount) * 50 - 100;
-                else {
+                else if (ref) {
                     //无翻译
                     ref.scrollTop = (index - nullCount) * 50 - 100;
                 }
