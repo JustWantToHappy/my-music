@@ -1,0 +1,28 @@
+.edit {
+    width: 100%;
+    padding-top: 2vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    >header {
+        height: 5vh;
+        display: flex;
+        align-items: center;
+    }
+
+}
+
+.form {
+    width:100%;
+    display: flex;
+    justify-content: space-around;
+    >:first-child{
+        width:40vw;
+    }
+    >:last-child{
+        width:10vw;
+        display: flex;
+        flex-direction: column;
+    }
+}

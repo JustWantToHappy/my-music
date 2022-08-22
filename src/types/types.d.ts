@@ -70,5 +70,19 @@ declare namespace User{
         birthday:number;//出生日期
         backgroundUrl:string;//背景图
         avatarUrl:string;//头像
+        description:string;
+
+    }
+    //用户歌单
+    type songList={
+        creator:account;//歌单建立者
+        createTime:number;
+        tags:[];
+        name:string;
+        id:number;
+        coverImgUrl:string;//歌单封面
+        updateTime:number;//更新时间
+        description:string;
+        playCount:number;//播放次数
     }
 }

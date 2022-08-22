@@ -100,13 +100,13 @@
         @include div-center();
 
         >small {
-            flex: 3;
+            flex: 4;
             @include div-center();
             justify-content: center;
         }
 
         >span {
-            flex: 2;
+            flex: 3;
             font-size: 30px;
             @include div-center();
             justify-content: space-around;
@@ -136,6 +136,16 @@
                 z-index: 22;
             }
         }
-
+        >div{
+            flex:1;
+            font-size:20px;
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+            &:hover{
+                opacity: 1;
+                cursor: pointer;
+            }
+        }
     }
 }

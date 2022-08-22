@@ -94,10 +94,11 @@ const LoginBox = (props: any) => {
         }
         try {
             //登录成功
+            console.log(res.cookie, '大笔')
             addCookies(res.cookie);
             let user: User.account = res.profile;
             //将用户头像和id和昵称存入本地，用来维持登录状态
-            addLocalStorage([{ key: "authLogin", value: String(authLogin) }, { key: "hasLogin", value: "true" }, { key: "userId", value: String(user.userId) }, { key: "avatar", value: user.avatarUrl }, { key: 'nickname', value: user.nickname }]);
+            addLocalStorage([{ key: "authLogin", value: String(authLogin) }, { key: "hasLogin", value: "true" }, { key: "userId", value: String(user.userId) }, { key: "avatar", value: user.avatarUrl }, { key: 'nickname', value: user.nickname }, { key: 'cookies', value: res.cookie }]);
             //通知父组件关闭模态框
             login(false, []);
             let { pathname } = location;

@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.25",
     "antd": "^4.21.7",
+    "antd-img-crop": "^4.2.4",
     "axios": "^0.27.2",
     "css-loader": "^6.7.1",
     "js-cookie": "^3.0.1",

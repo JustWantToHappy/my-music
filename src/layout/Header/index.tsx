@@ -53,7 +53,7 @@ export default function Header() {
     //退出登录,将本地中用户的敏感信息都清空
     function loginOut() {
         addLocalStorage([{ key: "hasLogin", value: 'false' }]);
-        deleteLocalStorage(["autoLogin", "nickname", "avatar", "userId"]);
+        deleteLocalStorage(["autoLogin", "nickname", "avatar", "userId", 'cookies']);
         setHasLogin(false);
         setAvatar("");
         //退出后跳转到首页

@@ -11,7 +11,8 @@ import {
     DownOutlined,
     FullscreenExitOutlined,
     SyncOutlined,
-    FullscreenOutlined
+    FullscreenOutlined,
+    PlusCircleOutlined
 } from "@ant-design/icons"
 import { Dropdown, Menu, Slider, Tooltip } from 'antd';
 import React from "react"
@@ -170,7 +171,7 @@ const PlayBar = (props: { song: Music.song }) => {
         let bar = myBarRef.current, img = imgRef.current;
         (bar as any).className = fullStyles.playbar;
         (img as any).className = fullStyles.coverImg;
-        
+
     }
     return <>
         <audio ref={playBar} src={url} preload="auto">
@@ -209,7 +210,7 @@ const PlayBar = (props: { song: Music.song }) => {
                     })}
                 </p>
                 <p><>专辑:&nbsp;</><small>{song.al && song.al.name}</small></p>
-                <Lyric audioRef={playBar}  id={song.id} />
+                <Lyric audioRef={playBar} id={song.id} />
             </div>}
             {!expend && <div className={styles["music-bar"]} >
                 {/* 歌曲名称 */}
@@ -240,6 +241,9 @@ const PlayBar = (props: { song: Music.song }) => {
                 <Dropdown overlay={menu} placement="top" >
                     <EllipsisOutlined />
                 </Dropdown>
+                <Tooltip placement="top" title='收藏'>
+                    <PlusCircleOutlined />
+                </Tooltip>
             </div>}
             {expend && <div className={fullStyles['music-bar']}>
                 <div>
@@ -258,6 +262,11 @@ const PlayBar = (props: { song: Music.song }) => {
                             <SyncOutlined />
                         </Dropdown>
                     </i>
+                    <div>
+                        <Tooltip placement="top" title='收藏'>
+                            <PlusCircleOutlined />
+                        </Tooltip>
+                    </div>
                     <p>
                         {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
                         <SoundFilled onClick={() => { setSloud(!showSloud) }} />

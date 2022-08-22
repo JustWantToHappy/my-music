@@ -124,9 +124,10 @@
     display: flex;
     transform: translateX(-2vw);
     justify-content: space-between;
-    margin-left:30px;
-    span:nth-child(2){
-        margin-left:3vw;
+    margin-left: 30px;
+
+    span:nth-child(2) {
+        margin-left: 3vw;
     }
 }
 
@@ -143,7 +144,15 @@
     flex: 1;
     display: flex;
     justify-content: space-evenly;
-    
+
+    >:last-child {
+        opacity: 0.8;
+
+        &:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+    }
 }
 
 .play-sound {

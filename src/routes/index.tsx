@@ -6,6 +6,8 @@ import PageNotFound from "../pages/PageNotFound"
 import MyMusic from "../pages/MyMusic"
 import Artist from "../pages/Artist"
 import Login from "../pages/MyMusic/LoginPage"
+import SongList from "../pages/MyMusic/SongList"
+import EditSongList from "../pages/MyMusic/EditSongList"
 const routes = [
     {
         path: "/home",
@@ -18,7 +20,17 @@ const routes = [
     //我的音乐
     {
         path: "/mymc",
-        element: <MyMusic />
+        element: <MyMusic />,
+        children: [
+            {
+                path: "mysonglist",
+                element: <SongList />
+            },
+            {
+                path: "editsonglist",
+                element: <EditSongList />
+            }
+        ]
     },
     //歌单
     {

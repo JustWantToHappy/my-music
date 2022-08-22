@@ -1,0 +1,86 @@
+.songlist {
+    width: 100%;
+
+    >header {
+        height: 45vh;
+        display: flex;
+
+        >:first-child {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            >img {
+                width: 60%;
+                margin-left: 3vw;
+            }
+        }
+    }
+}
+
+.content {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    >figure {
+        display: flex;
+        align-items: center;
+
+        >div {
+            transform: translateX(2vw);
+            display: flex;
+            flex-direction: column;
+        }
+
+        >img {
+            width: 20%;
+            border-radius: 3px;
+            margin: 3vh 0;
+        }
+    }
+}
+
+.btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 6vh;
+    align-items: center;
+
+    >span {
+        >:first-child {
+            cursor: pointer;
+        }
+        >:last-child{
+            opacity: 0.5;
+            &:hover{
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.head {
+    display: flex;
+    padding: 0 10px;
+    justify-content: space-between;
+    align-items: center;
+
+    >span {
+        display: flex;
+        align-items: center;
+
+        >small {
+            padding-left: 2vw;
+        }
+    }
+}
+
+.bar {
+    height: 3px;
+    width: 100%;
+    background-color: #C10D0C;
+}

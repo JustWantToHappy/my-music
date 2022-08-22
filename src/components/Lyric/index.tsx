@@ -110,8 +110,8 @@ const Lyric = (props: lyricType) => {
     useEffect(() => {
         (async () => {
             let res = await getLyricBySongId(id);
-            handleStr(res.lrc.lyric, 0);
-            handleStr(res.tlyric.lyric, 1);
+            res.lrc.lyric && handleStr(res.lrc.lyric, 0);
+            res.tlyric.lyric && handleStr(res.tlyric.lyric, 1);
         })();
     }, [id]);
     useEffect(() => {

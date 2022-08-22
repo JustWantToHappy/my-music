@@ -13,7 +13,7 @@ export function getHightSongLists(limit: number = 8): Promise<any> {
     })
 }
 //新碟上架
-export function getNewDiscs(limit: number = 5): Promise<any> {
+export function getNewDiscs(limit: number = 10): Promise<any> {
     return request({
         url: `/album/new?area=ALL&limit=${limit}`,
         method: "get"
