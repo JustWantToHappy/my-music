@@ -84,5 +84,6 @@ declare namespace User{
         updateTime:number;//更新时间
         description:string;
         playCount:number;//播放次数
+        trackCount:number;//歌单中歌曲数量
     }
 }

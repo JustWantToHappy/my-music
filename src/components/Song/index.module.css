@@ -39,6 +39,17 @@
 
 }
 
+.song-operation {
+    width: 3vw;
+    opacity: 0.7;
+}
+
+.song-operation:hover {
+    opacity: 1;
+    color: #F53F3F;
+    cursor: pointer;
+}
+
 /* 歌单列表中播放图标样式 ,分为默认形式和点击之后的样式*/
 .song-order-svg {
     font-size: 20px;
@@ -64,5 +75,5 @@
 /* 分页 */
 .pagination {
     width: 100%;
-    margin:0 auto;
+    margin: 0 auto;
 }

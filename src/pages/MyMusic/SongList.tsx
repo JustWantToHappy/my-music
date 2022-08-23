@@ -12,14 +12,18 @@ const SongList = () => {
         data: User.songList
         mylove: boolean
     }
-    const [search, setSearch] = useSearchParams();
+    const [search] = useSearchParams();
     const state = useLocation().state as myState;
     const currentlist = state.data;
     const mylove = state.mylove;
-    const id = search.get("id");
+    //歌单id
+    const [id, setId] = useState(search.get("id"));
+    if (id !== search.get("id")) {
+        setId(search.get("id"));
+    }
     const navigate = useNavigate();
     const [songlist, setList] = useState<Array<Music.song>>();
-    useEffect(() => {
+    const getData = () => {
         (async () => {
             let { songs } = await getListSong(parseInt(id as string));
             let arr: Array<Music.song> = [];
@@ -30,6 +34,16 @@ const SongList = () => {
             });
             setList(arr);
         })();
+    }
+    //根据路由的不同id获取歌单中不同歌曲
+    useEffect(() => {
+        getData();
+        PubSub.subscribe("getSongList", () => {
+            getData();
+        });
+    }, []);
+    useEffect(() => {
+        getData();
     }, [id]);
     //点击删除歌单
     const DeleteSongList = async () => {
@@ -78,7 +92,9 @@ const SongList = () => {
                 <small>播放{currentlist.playCount}次</small>
             </div>
             <div className={styles.bar}></div>
-            <Song songs={songlist} />
+            <div>
+                <Song songs={songlist} showOperation={true} />
+            </div>
         </div >
     )
 }

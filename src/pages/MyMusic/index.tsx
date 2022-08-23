@@ -5,6 +5,7 @@ import { DashOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu, Modal, Input } from 'antd';
 import { fetchUserSongList, createNewSongList } from "../../api/user"
+import { addLocalStorage } from "../../utils/authorization"
 import PubSub from "pubsub-js"
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -26,7 +27,7 @@ function getItem(
 const rootSubmenuKeys = ['add', 'sub1'];
 const Index = () => {
     const navigate = useNavigate();
-    const [search, setSearch] = useSearchParams();
+    const [search] = useSearchParams();
     const defaultKey = search.get("id");
     const [openKeys, setOpenKeys] = useState(['sub1']);
     const [items, setItems] = useState<Array<MenuItem>>([]);
@@ -85,6 +86,7 @@ const Index = () => {
         (async () => {
             let userId = isLogin();
             let { playlist } = await fetchUserSongList(userId);
+            console.log(playlist,'sbbbbb')
             setList(playlist);
             let arr = [];
             arr.push(getItem(
@@ -117,6 +119,11 @@ const Index = () => {
             console.log(e)
         }
     }, []);
+    useEffect(() => {
+        if (songlist) {
+            addLocalStorage([{ key: "songlist", value: JSON.stringify(songlist) }]);
+        }
+    }, [songlist]);
     return (
         <div className={styles['my-music']}>
             <div className={styles.navigate}>

@@ -21,6 +21,10 @@ export function updateCoverImage(id: string, cookie: string, formdata: FormData,
     });
 }
 //更新歌单信息
-export function updateSongList(id: string, name: string, desc?: string, tags?: string):Promise<any> {
+export function updateSongList(id: string, name: string, desc?: string, tags?: string): Promise<any> {
     return request({ method: "get", url: `/playlist/update?id=${id}&name=${name}&desc=${desc}&tags=${tags}` });
+}
+//将歌曲添加到歌单或者从歌单中移出,pid表示歌单id,songId表示歌曲id
+export function addOrDeleteSongFromSongList(op: string, pid: string, songId: number, cookie?: string): Promise<any> {
+    return request({ method: "get", url: `/playlist/tracks?op=${op}&pid=${pid}&tracks=${songId}&cookie=${cookie}&timestamp=${Date.now()}` })
 }

@@ -1,5 +1,7 @@
 import React from "react";
-import { musicIsUse } from "../api/songlist"
+import { addOrDeleteSongFromSongList } from "../api/user"
+import PubSub from "pubsub-js";
+import { message } from "antd"
 //将毫秒级别的时间转换为分秒级
 export function transTime(time: number, type: number): string {
     if (type === 1) {
@@ -35,7 +37,7 @@ export const getImgsLoadEnd = (arr: Array<any>, srcName: string, myRef: React.Re
             })
         })
         Promise.all(promises).then(res => {
-            console.log("加载完成")
+            // console.log("所有图片加载完成")
         }).catch(err => {
             console.log("网络异常或者其他程序异常,", err);
         })
@@ -54,4 +56,17 @@ export function transUsTime(time: string): number {
         console.log(e);
     }
     return 0;
+}
+//根据id从歌单中删除歌曲
+export async function removeSongFromSongList(songListId: string, songId: number) {
+    try {
+        let cookie = localStorage.getItem("cookies");
+        let res = await addOrDeleteSongFromSongList("del", songListId, songId, cookie as string);
+        if (res.status === 200) {
+            PubSub.publish("getSongList");
+            message.success("删除成功!", 1);
+        }
+    } catch (e) {
+        console.log(e);
+    }
 }

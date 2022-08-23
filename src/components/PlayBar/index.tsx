@@ -20,7 +20,7 @@ import pubsub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
 import { songStore } from "../../mobx/song"
-import { getLyricBySongId } from "../../api/song"
+import CollectModal from "../CollectModal";
 import Lyric from "../Lyric";
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
@@ -39,9 +39,8 @@ const PlayBar = (props: { song: Music.song }) => {
     const [voice, setVoice] = React.useState(1);
     //是否展开歌曲播放页面
     const [expend, setExpend] = React.useState(false);
-    //获取歌词
-    const [lyric, setLyric] = React.useState<string>('');
-    const [tlyric, setTlyric] = React.useState<string>('');
+    //是否显示收藏音乐模态框
+    const [collect, setCollect] = React.useState(false);
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         setSong(props.song);
@@ -53,7 +52,10 @@ const PlayBar = (props: { song: Music.song }) => {
     React.useEffect(() => {
         songStore.clearTimer();
         songStore.timer = null;
-        playBar?.current.play();
+        playBar.current.pause();
+        setTimeout(() => {
+            playBar.current.play();
+        }, 150)
         setTime(0);
         playBar.current.addEventListener("play", () => {
             //音乐一旦开始播放，设置音量初始值
@@ -168,6 +170,7 @@ const PlayBar = (props: { song: Music.song }) => {
     const spread = () => {
         setExpend(true);
         setSloud(false);
+        setCollect(false);
         let bar = myBarRef.current, img = imgRef.current;
         (bar as any).className = fullStyles.playbar;
         (img as any).className = fullStyles.coverImg;
@@ -177,6 +180,7 @@ const PlayBar = (props: { song: Music.song }) => {
         <audio ref={playBar} src={url} preload="auto">
             {/* preload="auto"表示预加载音频 */}
         </audio>
+        {collect && <CollectModal close={() => { setCollect(false) }} songId={song.id} />}
         <div className={showBar ? getStyle("start") : getStyle("move")} ref={myBarRef}>
             {!expend && <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"展开"} >
@@ -207,6 +211,7 @@ const PlayBar = (props: { song: Music.song }) => {
                     {song.ar?.map((per, index) => {
                         if (index === 0)
                             return <small key={index}>{per.name}</small>
+                        return (<span key={index}></span>)
                     })}
                 </p>
                 <p><>专辑:&nbsp;</><small>{song.al && song.al.name}</small></p>
@@ -221,7 +226,8 @@ const PlayBar = (props: { song: Music.song }) => {
                     <span >
                         {song.ar?.map((per, index) => {
                             if (index === 0)
-                                return <span key={index}>{per.name}</span>
+                                return <span key={index}>{per.name}</span>;
+                            return (<span key={index}></span>)
                         })}
                     </span>
                 </small>
@@ -241,9 +247,9 @@ const PlayBar = (props: { song: Music.song }) => {
                 <Dropdown overlay={menu} placement="top" >
                     <EllipsisOutlined />
                 </Dropdown>
-                <Tooltip placement="top" title='收藏'>
-                    <PlusCircleOutlined />
-                </Tooltip>
+                {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>
+                    <PlusCircleOutlined onClick={() => { setCollect(!collect) }} />
+                </Tooltip>}
             </div>}
             {expend && <div className={fullStyles['music-bar']}>
                 <div>
@@ -262,17 +268,13 @@ const PlayBar = (props: { song: Music.song }) => {
                             <SyncOutlined />
                         </Dropdown>
                     </i>
-                    <div>
-                        <Tooltip placement="top" title='收藏'>
-                            <PlusCircleOutlined />
-                        </Tooltip>
-                    </div>
                     <p>
                         {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
                         <SoundFilled onClick={() => { setSloud(!showSloud) }} />
                     </p>
                 </div>
             </div>}
+
         </div>
     </>
 }

@@ -1,21 +1,25 @@
 //歌单组件
-import { Table, Pagination } from 'antd';
+import { Table, Pagination, Popconfirm } from 'antd';
 import styles from "./index.module.css"
-import { transTime } from "../../utils/help"
-import { PlayCircleOutlined } from "@ant-design/icons"
+import { transTime, removeSongFromSongList } from "../../utils/help"
+import { PlayCircleOutlined, DeleteOutlined } from "@ant-design/icons"
 import React from "react"
 import { addLocalStorage } from "../../utils/authorization";
 import pubsub from "pubsub-js"
+import { useSearchParams } from "react-router-dom"
 import { musicIsUse } from '../../api/songlist';
 const { Column } = Table;
 
-const Song = (props: { songs: Array<Music.song> | undefined }) => {
+const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boolean }) => {
     //用于记录正在播放的歌曲，其值取true
     let playArr: Array<boolean> = Array(props.songs?.length).fill(false);
     const [arr, setArr] = React.useState(playArr);
     const [start, setStart] = React.useState(0);
     const [end, setEnd] = React.useState(20);
     const [pageSize, setPageSize] = React.useState(20);
+    //歌单id
+    const [search] = useSearchParams();
+    const songListId = search.get("id");
     const changePlayState = async (index: number): Promise<any> => {
         playArr[index] = true;
         setArr(playArr);
@@ -257,6 +261,17 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                         }
                     }
                 />
+                {props.showOperation && <Column title="操作" dataIndex="id"
+                    render={
+                        (text: number) => {
+                            return <div className={styles['song-operation']}>
+                                <Popconfirm title="从歌单中移出此歌曲" okText="确认" cancelText="取消" icon={<DeleteOutlined />} onConfirm={() => { removeSongFromSongList(songListId as string, text) }}>
+                                    <DeleteOutlined />
+                                </Popconfirm>
+                            </div>
+                        }
+                    }
+                />}
             </Table>
             <Pagination total={props.songs?.length} style={{ float: "right", marginTop: "5vh", marginRight: "2vw" }} pageSize={pageSize} hideOnSinglePage onChange={changeCurrentPage} pageSizeOptions={[10, 15, 20]} onShowSizeChange={(current, size) => { setPageSize(size) }} />
         </>

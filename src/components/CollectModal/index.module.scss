@@ -1,0 +1,71 @@
+.collect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 19;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.collect-content {
+    background: #fff;
+    width: 35vw;
+    height: 65vh;
+    overflow: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+
+    >header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding:0 2vw;
+        height: 7vh;
+        background-color: #242424;
+        >h4{
+            color: #fff;
+        }
+        >:last-child{
+            color: #fff;
+            opacity: 0.8;
+            &:hover{
+                opacity: 1;
+                cursor: pointer;
+            }
+        }
+
+    }
+
+}
+.collect-songlist{
+    height:10vh;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr;
+    >img{
+        height:8vh;
+        grid-column: 1/2;
+        margin:0 auto;
+        transform: translateY(1vh);
+    }
+    >div{
+        display: flex;
+        grid-column: 2/3;
+        flex-direction: column;
+        justify-content: space-around;
+        
+    }
+    &:hover{
+        background-color: #E6E8EB;
+        cursor: pointer;
+    }
+}
+.collect-divider{
+    height:1px;
+    background: #d4d4d4;
+}
