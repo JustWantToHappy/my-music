@@ -55,17 +55,3 @@ export function transUsTime(time: string): number {
     }
     return 0;
 }
-//节流函数
-export function throttle(fn: Function, delay: number): Function {
-    let timer: any;
-    return function () {
-        var args = arguments;
-        if (timer) {
-            return;
-        }
-        timer = setTimeout(function() {
-            fn.apply(window, args);
-        }, delay)
-    }
-
-}

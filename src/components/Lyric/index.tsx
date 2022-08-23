@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import styles from "./index.module.scss"
 import { getLyricBySongId } from "../../api/song"
-import { transUsTime, throttle } from "../../utils/help"
+import { transUsTime } from "../../utils/help"
 interface lyricType {
     audioRef: any,
     id: number

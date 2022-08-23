@@ -15,12 +15,12 @@ export function deleteSongList(id: number): Promise<any> {
     return request({ method: "get", url: `/playlist/delete?id=${id}&timestamp=${time}` });
 }
 //上传歌单封面
-export function updateCoverImage(id: string, cookie: string, formdata: FormData, imageSize: number = 300, imgX = 0, imgY = 0): Promise<any> {
+export function updateCoverImage(id: string, cookie: string, formdata: FormData, imageSize: number = 400): Promise<any> {
     return request({
-        method: "post", url: `/playlist/cover/update?id=${id}&cookie=${cookie}&imgSize=${imageSize}&imgX=0&imgY=0&timestamp=${Date.now()}`, headers: { "Content-Type": "multipart/formdata" }, data: formdata, withCredentials: true
+        method: "post", url: `/playlist/cover/update?id=${id}&cookie=${cookie}&imgSize=${imageSize}&timestamp=${Date.now()}`, headers: { "Content-Type": "multipart/formdata" }, data: formdata, withCredentials: true
     });
 }
 //更新歌单信息
-export function updateSongList(id: string, name: string, desc?: string, tags?: string) {
+export function updateSongList(id: string, name: string, desc?: string, tags?: string):Promise<any> {
     return request({ method: "get", url: `/playlist/update?id=${id}&name=${name}&desc=${desc}&tags=${tags}` });
 }

@@ -3,23 +3,12 @@ import { useNavigate } from "react-router-dom"
 import { Button, Divider, Form, Input, message, Upload } from "antd"
 import ImgCrop from "antd-img-crop"
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { useState } from "react"
-import axios from "axios"
-import { updateCoverImage } from "../../api/user"
+import { MouseEventHandler, useState } from "react"
+import { updateCoverImage, updateSongList } from "../../api/user"
+import { throttle } from "../../utils/throttle_debounce"
+import { dataURLToImage, fileToDataURL } from "../../utils"
 import styles from "./styles/editsonglist.module.scss"
-import constantsStore from "../../mobx/constants"
-interface UploadRequestOption<T = any> {
-    action: string,
-    file: File,
-    filename: string,
-    headers: { [key: string]: string },
-    method: string,
-    withCredentials: boolean,
-    onProgress?: (event: any) => void,
-    onError?: (event: any | ProgressEvent, body?: T) => void,
-    onSuccess?: (body: T, xhr: XMLHttpRequest) => void,
-
-}
+import PubSub from "pubsub-js";
 const EditSongList = () => {
     const { TextArea } = Input;
     const [search, setSearch] = useSearchParams();
@@ -36,10 +25,16 @@ const EditSongList = () => {
     const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
+    //上传封面之前校验图片
     const beforeUpload = (file: UploadFile) => {
         if (!(file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif' || file.type === 'image/jpg')) {
             message.warning("上传的文件格式不正确");
             return false;
+        }
+        let { size } = file;
+        const isLt5M = size && size / 1024 / 1024 < 5;
+        if (!isLt5M) {
+            message.warning("图片大小必须小于5M");
         }
         return true;
     }
@@ -58,23 +53,43 @@ const EditSongList = () => {
         imgWindow?.document.write(image.outerHTML);
     };
     const uploadImage = async (e: any) => {
-        console.log(e, '上传');
-        var formData = new FormData();
-        formData.append("imgFile", e.file);
-        try {
-            let res = await updateCoverImage(id as string, localStorage.getItem("cookies") as string, formData);
-            if (res.code === 200) {
-                e.onSuccess("上传成功");
-            } else {
-                e.onError("上传失败");
+        const upload = async (width: number, height: number) => {
+            //图片尺寸
+            let imageSize = Math.min(width, height);
+            var formData = new FormData();
+            formData.append("imgFile", e.file);
+            try {
+                let res = await updateCoverImage(id as string, localStorage.getItem("cookies") as string, formData, imageSize);
+                if (res.code === 200) {
+                    e.onSuccess("上传成功");
+                } else {
+                    e.onError("上传失败");
+                }
+            } catch (e) {
+                console.log(e);
             }
-        } catch (e) {
-            console.log(e);
         }
+        fileToDataURL(e.file).then(dataURL => {
+            return Promise.resolve(dataURLToImage(dataURL));
+        }).then(image => {
+            //此时拿到的image对象是经过裁剪得到的新Image,不是原文件
+            upload(image.width, image.height);
+        }).catch(e => {
+            console.log(e);
+        })
     }
     //提交表单数据
-    const submitFormData=()=>{
-        
+    const submitFormData = async () => {
+        if (name === '') {
+            message.warning({
+                content: "歌单名不能为空!",
+            })
+            return;
+        }
+        let res = await updateSongList(id as string, name, desc);
+        if (res.code === 200) {
+            PubSub.publish("refresh", true);
+        }
     }
     return (
         <div className={styles.edit}>
@@ -107,7 +122,7 @@ const EditSongList = () => {
                         />
                     </Form.Item>
                     <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button onClick={submitFormData}>提交保存</Button>
+                        <Button onClick={throttle(submitFormData, 600) as MouseEventHandler}>提交保存</Button>
                         <Button style={{ transform: 'translateX(1vw)' }} onClick={() => { navigate(-1) }}>取消</Button>
                     </Form.Item>
                 </Form>
