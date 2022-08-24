@@ -45,6 +45,8 @@ export const getImgsLoadEnd = (arr: Array<any>, srcName: string, myRef: React.Re
 }
 //将00:00:000格式时间转为us级别
 export function transUsTime(time: string): number {
+    if (time === "")
+        return 0;
     try {
         let arr = time.split(":");
         let num1 = Number(arr[0]) * 60 * 1e6;

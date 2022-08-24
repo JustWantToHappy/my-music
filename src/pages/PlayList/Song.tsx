@@ -1,4 +1,4 @@
-//歌单组件
+//歌单组件,此组件目前尚未使用
 import { Table, Pagination } from 'antd';
 import styles from "./index.module.css"
 import { transTime } from "../../utils/help"
@@ -109,6 +109,7 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                 let playway = localStorage.getItem("playway");
                 let len = props.songs?.length as number;
                 let obj = JSON.parse(localStorage.getItem("song") as string);
+                // console.log(obj, 122, 'Song.tsx');
                 let brr = Array(len).fill(false);
                 if (type === 'last') {
                     switch (playway) {
@@ -258,7 +259,7 @@ const Song = (props: { songs: Array<Music.song> | undefined }) => {
                     }
                 />
             </Table>
-            <Pagination total={props.songs?.length} style={{ float: "right", marginTop: "5vh", marginRight: "2vw" }} pageSize={pageSize} hideOnSinglePage onChange={changeCurrentPage} pageSizeOptions={[10, 15, 20]} onShowSizeChange={(current,size)=>{setPageSize(size)}}/>
+            <Pagination total={props.songs?.length} style={{ float: "right", marginTop: "5vh", marginRight: "2vw" }} pageSize={pageSize} hideOnSinglePage onChange={changeCurrentPage} pageSizeOptions={[10, 15, 20]} onShowSizeChange={(current, size) => { setPageSize(size) }} />
         </>
     )
 };

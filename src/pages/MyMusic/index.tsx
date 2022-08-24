@@ -86,7 +86,6 @@ const Index = () => {
         (async () => {
             let userId = isLogin();
             let { playlist } = await fetchUserSongList(userId);
-            console.log(playlist,'sbbbbb')
             setList(playlist);
             let arr = [];
             arr.push(getItem(
