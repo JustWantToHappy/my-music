@@ -1,0 +1,106 @@
+.my-recommend {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+
+    >h3 {
+        font-weight: 700;
+    }
+
+    >span {
+        height: 2px;
+        background-color: #C10D0C;
+    }
+
+    >div {
+        display: grid;
+        margin-top: 2vh;
+        grid-template-columns: repeat(5, 1fr);
+        grid-row-gap: 20px;
+        grid-template-rows: repeat(2, 1fr);
+        grid-column-gap: 40px;
+    }
+}
+
+//推荐歌单样式
+.content {
+    display: flex;
+    flex-direction: column;
+
+    >div {
+        background-size: 100% 100%;
+        width: 150px;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        cursor: pointer;
+
+        >figcaption {
+            color: #fff;
+            height: 30px;
+            background: #242424;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            opacity: 0.7;
+            cursor: auto;
+
+            >:last-child {
+                cursor: pointer;
+                opacity: 0.7;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    >span {
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}
+
+//推荐歌曲样式
+.songs-recommend {
+    display: flex;
+    flex-direction: column;
+
+    >div {
+        border-radius: 3px;
+        border: 1px solid #d4d4d4;
+        display: flex;
+        flex-direction: column;
+        height: 150px;
+        width: 150px;
+        &:hover{
+            cursor: pointer;
+        }
+        >:first-child {
+            flex: 1;
+            background: #C10D0C;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        >:last-child {
+            flex: 3;
+            background: #fff;
+            font-size:40px;
+            font-weight: 700;
+            text-align: center;
+        }
+    }
+    >footer{
+        cursor: pointer;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+}

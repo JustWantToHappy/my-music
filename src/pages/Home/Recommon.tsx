@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { useNavigate } from "react-router-dom"
-import styles from "./recommon.module.css"
+import styles from "./recommon.module.scss"
 import { getImgsLoadEnd } from "../../utils/help"
 //最热歌单
 const RecommonList = () => {

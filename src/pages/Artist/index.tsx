@@ -28,7 +28,6 @@ const Artist = () => {
             let song: Music.song;
             song = {
                 index: i + 1,
-                key: i,
                 al: res.songs[i].al,
                 album: res.songs[i].al,
                 ar: res.songs[i].ar,

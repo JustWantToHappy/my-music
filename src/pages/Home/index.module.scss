@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    justify-content: center;
+    background-color: #242424;
+    align-items: center;
+}
+
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 12.5vw + 20px);
+    padding-bottom: 10vh;
+}
+
+.my-recommon {
+    width: 75vw;
+    margin: 3vh auto;
+    border: 2px solid #eee;
+    padding:0 10px;
+}

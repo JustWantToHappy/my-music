@@ -21,3 +21,23 @@ export const dataURLToImage = (dataURL: string | null | undefined): Promise<HTML
     });
     return promise;
 }
+//将歌曲播放次数转换单位
+export const transPlayCount = (count: number): string => {
+    if (count < 1e5) {
+        return String(count);
+    } else if (count < 1e8) {
+        return Math.floor(count / 1e4) + "万";
+    }
+    return Math.floor(count / 1e8) + "亿";
+}
+//将阿拉伯数字转为汉字
+export const transNumber = (count: number): string => {
+    const arr = ['一', '二', '三', '四', '五', '六', '天'];
+    let str: string = "";
+    arr.forEach((ele: string, index: number) => {
+        if (index + 1 === count) {
+            str = ele;
+        }
+    })
+    return str;
+}

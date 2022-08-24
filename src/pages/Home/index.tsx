@@ -1,8 +1,9 @@
 import React from 'react'
 import { Carousel } from 'antd';
 import { getRecommondmv } from "../../api/recommond"
-import styles from "./index.module.css"
+import styles from "./index.module.scss"
 import { RecommonList, NewDisc } from "./Recommon"
+import MyRecommend from './MyRecommend';
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons"
 
 export default function Container() {
@@ -31,7 +32,10 @@ export default function Container() {
                 </Carousel>
                 <DoubleRightOutlined style={{ color: '#fff', fontSize: "25px" }} />
             </div>
-            {/* 精选歌单和 */}
+            {localStorage.getItem("hasLogin") === 'true' && <div className={styles['my-recommon']}>
+                <MyRecommend />
+            </div>}
+            {/* 精选歌单和新碟上架*/}
             <div className={styles.content}>
                 <RecommonList />
                 <NewDisc />
