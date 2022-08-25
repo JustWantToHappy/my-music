@@ -14,11 +14,12 @@ import {
     FullscreenOutlined,
     PlusCircleOutlined
 } from "@ant-design/icons"
-import { Dropdown, Menu, Slider, Tooltip } from 'antd';
+import { Dropdown, Menu, message, Slider, Tooltip } from 'antd';
 import React from "react"
 import pubsub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
+import { throttle } from "../../utils/throttle_debounce"
 import { songStore } from "../../mobx/song"
 import CollectModal from "../CollectModal";
 import Lyric from "../Lyric";
@@ -43,6 +44,8 @@ const PlayBar = (props: { song: Music.song }) => {
     const [collect, setCollect] = React.useState(false);
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
+        playBar.current.currentTime = 0;
+        playBar.current.pause();
         setSong(props.song);
         setBar(true);
         setPlay(true);
@@ -52,9 +55,17 @@ const PlayBar = (props: { song: Music.song }) => {
     React.useEffect(() => {
         songStore.clearTimer();
         songStore.timer = null;
-        playBar.current.pause();
         setTimeout(() => {
-            playBar.current.play();
+            var promise = playBar.current.play();
+            promise.then((res: any) => {
+            }).catch((e: any) => {
+                console.log(e);
+                throttle(message.info({
+                    content: "当前音乐为付费内容",
+                    style: { marginTop: "40vh" }
+                }, 2), 5000);
+                setPlay(false);
+            })
         }, 150)
         setTime(0);
         playBar.current.addEventListener("play", () => {

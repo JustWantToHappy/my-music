@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from "react-router-dom"
 import { fetchMyRecommendSongList, fetchMyRecommendSongs } from "../../api/songlist"
 import styles from "./my-recommend.module.scss"
 import { getImgsLoadEnd } from "../../utils/help"
 import { transPlayCount, transNumber } from "../../utils"
+import playList from "../../utils/playlist"
 import { PlayCircleOutlined, CustomerServiceOutlined } from "@ant-design/icons"
 export default function MyRecommend() {
     const [songList, setSongList] = useState<Array<User.recommendList>>([]);
@@ -13,7 +14,6 @@ export default function MyRecommend() {
     useEffect(() => {
         (async () => {
             const res = await fetchMyRecommendSongList();
-            console.log(res, 'lll');
             if (res.code === 200) {
                 setSongList(res.recommend);
                 getImgsLoadEnd(res.recommend, "picUrl", myRef);
@@ -23,7 +23,6 @@ export default function MyRecommend() {
     useEffect(() => {
         (async () => {
             const { data } = await fetchMyRecommendSongs();
-            console.log(data, 'hhh');
             if (data.code === 200) {
                 let arr: Array<Music.song> = [];
                 data.dailySongs.forEach((song: Music.song, index: number) => {
@@ -33,6 +32,10 @@ export default function MyRecommend() {
             }
         })();
     }, []);
+    const playRecommendSongList = (event: React.MouseEvent, id: number) => {
+        playList(id);
+        // event.stopPropagation();阻止事件向上冒泡
+    }
     return (
         <div className={styles['my-recommend']} ref={myRef}>
             <h3>个性推荐</h3>
@@ -54,12 +57,12 @@ export default function MyRecommend() {
                 {songList.slice(0, 9).map((songlist: User.recommendList) => {
                     return <div key={songlist.id} className={styles.content} onClick={() => { navigate(`/playlist/${songlist.id}`) }}>
                         <div style={{ backgroundImage: `url(${songlist.picUrl})`, backgroundRepeat: "no-repeat" }}>
-                            <figcaption>
+                            <figcaption onClick={(e) => { e.stopPropagation(); }}>
                                 <span>
                                     <CustomerServiceOutlined />
                                     <small>{transPlayCount(songlist.playcount)}</small>
                                 </span>
-                                <PlayCircleOutlined onClick={(e)=>{alert("sb");}}/>
+                                <PlayCircleOutlined onClick={(e) => { playRecommendSongList(e, songlist.id); }} />
                             </figcaption>
                         </div>
                         <span>{songlist.name}</span>
