@@ -6,6 +6,7 @@ import { getImgsLoadEnd } from "../../utils/help"
 import { transPlayCount, transNumber } from "../../utils"
 import playList from "../../utils/playlist"
 import { PlayCircleOutlined, CustomerServiceOutlined } from "@ant-design/icons"
+import songsStore from "../../mobx/songs"
 export default function MyRecommend() {
     const [songList, setSongList] = useState<Array<User.recommendList>>([]);
     const [songs, setSongs] = useState<Array<Music.song>>([]);
@@ -33,6 +34,7 @@ export default function MyRecommend() {
         })();
     }, []);
     const playRecommendSongList = (event: React.MouseEvent, id: number) => {
+        songsStore.origin = "home";
         playList(id);
         // event.stopPropagation();阻止事件向上冒泡
     }

@@ -19,10 +19,10 @@ import React from "react"
 import pubsub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
-import { throttle } from "../../utils/throttle_debounce"
 import { songStore } from "../../mobx/song"
 import CollectModal from "../CollectModal";
 import Lyric from "../Lyric";
+import { useLocation } from "react-router-dom"
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
     //控制歌曲切换
@@ -42,15 +42,24 @@ const PlayBar = (props: { song: Music.song }) => {
     const [expend, setExpend] = React.useState(false);
     //是否显示收藏音乐模态框
     const [collect, setCollect] = React.useState(false);
+    //用于判断是否需要vip
+    const [isFree, setFree] = React.useState(true);
+    const { pathname } = useLocation();
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         playBar.current.currentTime = 0;
         playBar.current.pause();
         setSong(props.song);
+        setFree(true);
         setBar(true);
         setPlay(true);
     }
-
+    React.useEffect(() => {
+        if (isFree === false) {
+            message.info({ content: "此歌曲需要vip", style: { marginTop: '40vh' } }, 1);
+            setFree(true);
+        }
+    }, [isFree])
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         songStore.clearTimer();
@@ -58,13 +67,13 @@ const PlayBar = (props: { song: Music.song }) => {
         setTimeout(() => {
             var promise = playBar.current.play();
             promise.then((res: any) => {
-            }).catch((e: any) => {
-                console.log(e);
-                throttle(message.info({
-                    content: "当前音乐为付费内容",
-                    style: { marginTop: "40vh" }
-                }, 2), 5000);
-                setPlay(false);
+            }).catch((err: Error) => {
+                //需要vip才能听
+                if (err.message === 'Failed to load because no supported source was found.') {
+                    setPlay(false);
+                    setFree(false);
+                }
+                //...也可能报错play is interpreted
             })
         }, 150)
         setTime(0);
@@ -83,29 +92,13 @@ const PlayBar = (props: { song: Music.song }) => {
             }, 1000);
         })
         playBar.current.addEventListener("ended", () => {
-            let playway = localStorage.getItem("playway");
             clearInterval(songStore.timer);
-            //1列表播放2顺序播放3单曲循环4随机播放
-            switch (playway) {
-                case '1':
-                    pubsub.publish("playway", "1");
-                    break;
-                case '2':
-                    pubsub.publish("playway", "2");
-                    pubsub.subscribe("stopPlay", function (_, data) {
-                        setPlay(false);
-                    })
-                    break;
-                case '3':
-                    pubsub.publish("play", "");
-                    break;
-                case '4':
-                    pubsub.publish("playway", "4");
-                    break;
-                default:
-                    break;
-
-            }
+            console.log(pathname)
+            pubsub.publish("changeMusic", "next");
+            //通知播放条停止播放
+            pubsub.subscribe("stopPlay", () => {
+                setPlay(false);
+            })
         })
         return function () {
             songStore.clearTimer();
@@ -142,7 +135,7 @@ const PlayBar = (props: { song: Music.song }) => {
         }, 1000);
     }
     // 点击播放或者暂停
-    const playMusic = () => {
+    const playMusic = async () => {
         setPlay(!isPlay);
         isPlay ? playBar.current.pause() : playBar.current.play();
     }
@@ -290,7 +283,7 @@ const PlayBar = (props: { song: Music.song }) => {
     </>
 }
 const menu = () => {
-    //默认时列表播放
+    //默认时列表播放,改变播放方式
     let playWay = localStorage.getItem("playway") || '1';
     const getPlayWay = (event: any) => {
         addLocalStorage([{ key: "playway", value: event.key }]);
