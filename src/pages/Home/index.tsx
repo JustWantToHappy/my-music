@@ -5,10 +5,12 @@ import styles from "./index.module.scss"
 import { RecommonList, NewDisc } from "./Recommon"
 import MyRecommend from './MyRecommend';
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons"
+import { Outlet, useLocation } from "react-router-dom"
 
 export default function Container() {
     let { useEffect, useState } = React;
     const [arr, setArr] = useState<Array<Music.recommomMv>>();
+    const { pathname } = useLocation();
     //当页面初始化时调用
     useEffect(() => {
         (async () => {
@@ -21,7 +23,8 @@ export default function Container() {
     };
     return (
         <>
-            <div className={styles.container}>
+            <Outlet />
+            {pathname === '/home' && <div className={styles.container}>
                 <DoubleLeftOutlined style={{ color: '#fff', fontSize: "25px" }} />
                 <Carousel arrows={true} afterChange={onChange} style={{ width: "75vw" }}>
                     {arr?.map(mv => {
@@ -31,15 +34,16 @@ export default function Container() {
                     })}
                 </Carousel>
                 <DoubleRightOutlined style={{ color: '#fff', fontSize: "25px" }} />
-            </div>
-            {localStorage.getItem("hasLogin") === 'true' && <div className={styles['my-recommon']}>
+            </div>}
+            {localStorage.getItem("hasLogin") === 'true' && pathname === '/home' && <div className={styles['my-recommon']}>
                 <MyRecommend />
             </div>}
             {/* 精选歌单和新碟上架*/}
-            <div className={styles.content}>
+            {pathname === '/home' && <div className={styles.content}>
                 <RecommonList />
                 <NewDisc />
-            </div>
+            </div>}
+
         </>
     )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from "react-router-dom"
-import { fetchMyRecommendSongList, fetchMyRecommendSongs } from "../../api/songlist"
+import { fetchMyRecommendSongList } from "../../api/songlist"
 import styles from "./my-recommend.module.scss"
 import { getImgsLoadEnd } from "../../utils/help"
 import { transPlayCount, transNumber } from "../../utils"
@@ -9,7 +9,6 @@ import { PlayCircleOutlined, CustomerServiceOutlined } from "@ant-design/icons"
 import songsStore from "../../mobx/songs"
 export default function MyRecommend() {
     const [songList, setSongList] = useState<Array<User.recommendList>>([]);
-    const [songs, setSongs] = useState<Array<Music.song>>([]);
     const myRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     useEffect(() => {
@@ -21,22 +20,15 @@ export default function MyRecommend() {
             }
         })();
     }, []);
-    useEffect(() => {
-        (async () => {
-            const { data } = await fetchMyRecommendSongs();
-            if (data.code === 200) {
-                let arr: Array<Music.song> = [];
-                data.dailySongs.forEach((song: Music.song, index: number) => {
-                    arr.push({ ...song, index: index + 1, album: song.al, artists: song.ar });
-                })
-                setSongs(arr);
-            }
-        })();
-    }, []);
+    //播放每日推荐歌单的歌曲
     const playRecommendSongList = (event: React.MouseEvent, id: number) => {
         songsStore.origin = "home";
         playList(id);
         // event.stopPropagation();阻止事件向上冒泡
+    }
+    //播放每日推荐的歌曲
+    const playRecommendSongs = () => {
+        navigate("/home/dailyrecommend");
     }
     return (
         <div className={styles['my-recommend']} ref={myRef}>
@@ -44,7 +36,7 @@ export default function MyRecommend() {
             <span></span>
             <div>
                 <div className={styles['songs-recommend']}>
-                    <div>
+                    <div onClick={playRecommendSongs} >
                         <h3>
                             星期{transNumber(new Date().getDay())}
                         </h3>
@@ -52,7 +44,7 @@ export default function MyRecommend() {
                             {new Date().getDate()}
                         </span>
                     </div>
-                    <footer>
+                    <footer onClick={playRecommendSongs}>
                         每日歌曲推荐
                     </footer>
                 </div>

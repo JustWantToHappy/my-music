@@ -22,7 +22,6 @@ import { addLocalStorage } from "../../utils/authorization"
 import { songStore } from "../../mobx/song"
 import CollectModal from "../CollectModal";
 import Lyric from "../Lyric";
-import { useLocation } from "react-router-dom"
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
     //控制歌曲切换
@@ -44,7 +43,6 @@ const PlayBar = (props: { song: Music.song }) => {
     const [collect, setCollect] = React.useState(false);
     //用于判断是否需要vip
     const [isFree, setFree] = React.useState(true);
-    const { pathname } = useLocation();
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         playBar.current.currentTime = 0;
@@ -93,7 +91,6 @@ const PlayBar = (props: { song: Music.song }) => {
         })
         playBar.current.addEventListener("ended", () => {
             clearInterval(songStore.timer);
-            console.log(pathname)
             pubsub.publish("changeMusic", "next");
             //通知播放条停止播放
             pubsub.subscribe("stopPlay", () => {

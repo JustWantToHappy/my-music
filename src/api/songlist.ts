@@ -11,10 +11,6 @@ export function getListSong(id: number): Promise<any> {
 export function musicIsUse(id: number): Promise<any> {
     return request.get(`/check/music?id=${id}`);
 }
-//获取每日推荐歌曲(登录状态下)
-export function fetchMyRecommendSongs(): Promise<any> {
-    return request({ method: "get", url: '/recommend/songs' });
-}
 //获取每日推荐歌单(登录状态下)
 export function fetchMyRecommendSongList(): Promise<any> {
     return request({ method: "get", url: `/recommend/resource` });

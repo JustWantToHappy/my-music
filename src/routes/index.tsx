@@ -8,10 +8,17 @@ import Artist from "../pages/Artist"
 import Login from "../pages/MyMusic/LoginPage"
 import SongList from "../pages/MyMusic/SongList"
 import EditSongList from "../pages/MyMusic/EditSongList"
+import DailySongsRecommend from "../pages/Home/DailyRecommendSongs"
 const routes = [
     {
         path: "/home",
-        element: <Home />
+        element: <Home />,
+        children: [
+            {
+                path: "dailyrecommend",
+                element: <DailySongsRecommend />
+            }
+        ]
     },
     {
         path: "/",
