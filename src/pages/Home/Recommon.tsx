@@ -24,7 +24,7 @@ const RecommonList = () => {
         <div className={styles.recommon} ref={listRef}>
             <section className={styles.title}>
                 <b>最热歌单</b>
-                <span >更多</span>
+                <span onClick={()=>{navigate("/home/allplaylist")}}>更多</span>
                 <hr className={styles.divider} />
             </section>
             {highSongLists?.map(list => {

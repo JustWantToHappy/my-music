@@ -26,7 +26,7 @@ export default function Container() {
             <Outlet />
             {pathname === '/home' && <div className={styles.container}>
                 <DoubleLeftOutlined style={{ color: '#fff', fontSize: "25px" }} />
-                <Carousel arrows={true} afterChange={onChange} style={{ width: "75vw" }}>
+                <Carousel arrows={true} afterChange={onChange} style={{ width: "75vw" }} autoplay>
                     {arr?.map(mv => {
                         return <div key={mv.id}>
                             <img src={mv.cover} alt="图片无法显示" style={{ width: '100%', height: '70vh' }} />

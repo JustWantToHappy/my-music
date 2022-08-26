@@ -54,6 +54,13 @@ declare namespace Music {
         publishTime: number;//发布时间
         description: string;//专辑描述
     }
+    //精品歌单标签
+    type tags = {
+        id: number;
+        name: string;
+        type: number;
+        category: number;//5个分类(0~4)
+    }
 }
 declare namespace User {
     //用户信息
