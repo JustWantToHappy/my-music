@@ -15,3 +15,7 @@ export function musicIsUse(id: number): Promise<any> {
 export function fetchMyRecommendSongList(): Promise<any> {
     return request({ method: "get", url: `/recommend/resource` });
 }
+//歌单分类接口,包括语种以及场景、风格等
+export function songlistCategory(): Promise<any> {
+    return request({ method: "get", url: `/playlist/catlist` })
+}

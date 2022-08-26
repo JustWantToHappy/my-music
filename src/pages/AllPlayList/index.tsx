@@ -2,18 +2,29 @@ import { useState, useEffect } from 'react'
 import { Button } from "antd"
 import { DownOutlined, GlobalOutlined, DatabaseOutlined, CoffeeOutlined, SmileOutlined, ThunderboltOutlined, TagsFilled } from "@ant-design/icons"
 import styles from "./styles/index.module.scss"
-import { getPlayListTags } from "../../api/recommond"
+import { songlistCategory } from "../../api/songlist"
 import SongList from './SongList'
 export default function AllPlayList() {
-    const [tags, setTags] = useState<Array<Music.tags>>();
+    const [tags, setTags] = useState<Array<Music.tag>>();
     const [title, setTitle] = useState("全部");
     const [showTags, setShowTags] = useState(false);
+    //表示当前标签下的歌单总数
+    const [count, setCount] = useState(0);
+    //表示所有歌单
+    const [all, setAll] = useState<Music.tag>();
+    //表示总分类类别
+    const [category, setCategory] = useState<{ [key: number]: string }>();
     useEffect(() => {
         (async () => {
-            const res = await getPlayListTags();
-            if (res.code === 200) {
-                console.log(res.tags);
-                setTags(res.tags);
+            const res = await songlistCategory();
+            //more字段表示还有分页,categories表示分类的类别有哪些
+            let { code, all, categories, sub, more } = res;
+            if (code === 200) {
+                setTags(sub);
+                setAll(all);
+                //默认是全部歌单
+                setCount(all.resourceCount);
+                setCategory(categories);
             }
         })();
     }, []);
@@ -35,29 +46,32 @@ export default function AllPlayList() {
                     </Button>
                 </span>
             </header>
-            {showTags && <SongTags tags={tags as Array<Music.tags>} setTitle={() => setTitle("全部")} setShowTags={() => setShowTags(false)} />}
+            {showTags &&
+                <SongTags
+                    category={category as { [key: number]: string }}
+                    tags={tags as Array<Music.tag>}
+                    setTitle={(str: string) => { setTitle(str) }}
+                    setShowTags={() => setShowTags(false)}
+                    setTotal={(count: number) => setCount(count)} />}
             <hr />
             <div className={styles.content}>
-                <SongList cat={title} />
+                <SongList cat={title} total={count} />
             </div>
         </div>
     )
 }
 //标签框
-const SongTags = (props: { tags: Array<Music.tags>, setTitle: () => void, setShowTags: () => void }) => {
-    const { tags, setTitle, setShowTags } = props;
-    let category: number[] = [];
-    tags.forEach(tag => {
-        if (!category.includes(tag.category)) {
-            category.push(tag.category);
-        }
-    })
-    category.sort((a, b) => a - b);
+const SongTags = (props: { tags: Array<Music.tag>, category: { [key: number]: string }, setTitle: (str: string) => void, setShowTags: () => void, setTotal: (count: number) => void }) => {
+    const { tags, setTitle, setShowTags, category } = props;
+    let categories: number[] = [];
+    for (let index of Object.keys(category)) {
+        categories.push(parseInt(index));
+    }
     return (
         <div className={styles.tags}>
             <header>
                 <Button onClick={() => {
-                    setTitle();
+                    setTitle("全部");
                     setShowTags();
                 }}>
                     <span>全部风格</span>
@@ -87,18 +101,18 @@ const SongTags = (props: { tags: Array<Music.tags>, setTitle: () => void, setSho
                 </li>
             </ul>
             <div className={styles['tags-content']}>
-                {category.map((num: number) => {
+                {categories.map((num: number) => {
                     return (
                         <div key={num} className={styles['tags-category']}>
                             {tags.map(tag => {
                                 if (tag.category === num) {
-                                    return <div key={tag.id} className={styles.tag}>
+                                    return <div key={tag.name} className={styles.tag}>
                                         <span>&nbsp;&nbsp;</span>
-                                        <span>{tag.name}</span>
+                                        <span onClick={() => { setTitle(tag.name); setShowTags() }}>{tag.name}</span>
                                         <span>&nbsp;&nbsp;|</span>
                                     </div>
                                 } else {
-                                    return <div key={tag.id}></div>
+                                    return <div key={tag.name}></div>
                                 }
                             })}
                         </div>

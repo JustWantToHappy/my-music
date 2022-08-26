@@ -1,6 +1,5 @@
 .playlist {
     width: 75vw;
-    height: 87vh;
     border: 1px solid #d4d4d4;
     transform: translateY(13vh);
     margin: 0 auto;
@@ -27,7 +26,7 @@
 .all-select {
     display: flex;
     align-items: center;
-    width: 15vw;
+    width: 20vw;
     justify-content: space-between;
 
     h2 {
@@ -37,11 +36,10 @@
     span {}
 }
 
-.content {}
 
 //歌曲分类标签样式
 .tags {
-    height: 70vh;
+    height: 80vh;
     width: 55vw;
     background-color: #fff;
     border: 1px solid #d4d4d4;
@@ -57,7 +55,7 @@
         width: 0;
         height: 0;
         position: absolute;
-        left: 17%;
+        left: 25%;
         top: -15px;
         border-top: solid 0 transparent;
         border-right: solid 15px transparent;
@@ -107,7 +105,8 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: repeat(5, 1fr);
-    padding-left: 1vw;
+    grid-row-gap:3vh;
+    padding: 0 1vw;
 }
 
 .tags-category {
@@ -115,12 +114,11 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    line-height: 5vh;
+    line-height: 3vh;
 
-    &:nth-child(3) {
-        transform: translateY(-5px);
-    }
-    &:nth-child(4),&:nth-child(5){
+
+    &:nth-child(4),
+    &:nth-child(5) {
         transform: translateY(-8px);
     }
 }

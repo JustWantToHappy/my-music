@@ -23,7 +23,3 @@ export function getNewDiscs(limit: number = 9): Promise<any> {
         method: "get"
     })
 }
-//精品歌单标签列表，包括语种以及场景、风格等
-export function getPlayListTags(): Promise<any> {
-    return request({ method: "get", url: "/playlist/highquality/tags" });
-}

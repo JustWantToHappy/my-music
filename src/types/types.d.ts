@@ -55,11 +55,13 @@ declare namespace Music {
         description: string;//专辑描述
     }
     //精品歌单标签
-    type tags = {
-        id: number;
+    type tag = {
         name: string;
         type: number;
         category: number;//5个分类(0~4)
+        hot:boolean;//表示是否最火
+        resourceCount:number;//表示该标签下歌曲数量
+
     }
 }
 declare namespace User {
