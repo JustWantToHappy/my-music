@@ -46,12 +46,14 @@
         justify-content: space-around;
         opacity: 0.7;
         font-size: 16px;
+        cursor: text;
         >span {
             opacity: 0.6;
         }
 
         >span:last-child:hover {
             opacity: 1;
+            cursor: pointer;
         }
     }
 }

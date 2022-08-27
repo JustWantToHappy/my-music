@@ -50,11 +50,60 @@
     margin-right: 5%;
 }
 
-.list>span>p {
+/* 文字展开收起样式 */
+.wrap {
     grid-column: 2/4;
     grid-row: 3/4;
+    display: flex;
 }
 
+.wrap>p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: justify;
+}
+
+.wrap>p>label {
+    float: right;
+    clear: both;
+    cursor: pointer;
+}
+
+.wrap>p>label::before {
+    content: '展开';
+    margin-left:20px;
+}
+
+.wrap>p>label:hover {
+    color: #409EFF;
+}
+
+/* 使用before伪元素生成标签体内容 */
+.wrap>p:before {
+    content: "";
+    float: right;
+    width: 0;
+    height: calc(100% - 20px);
+}
+
+.wrap>input {
+    display: none;
+}
+
+/* 点击展开按钮后显示多行 */
+.wrap>input:checked+p {
+    -webkit-line-clamp: 999;
+    max-height: none;
+}
+
+/* 点击展开按钮后，标签体内容变为收起 */
+.wrap>input:checked+p>label::before {
+    content: "收起";
+}
+
+/*  */
 .songs {
     padding: 20px;
 }
@@ -121,5 +170,5 @@
 /* 分页 */
 .pagination {
     width: 100%;
-    margin:0 auto;
+    margin: 0 auto;
 }

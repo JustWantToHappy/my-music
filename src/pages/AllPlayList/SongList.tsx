@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from "react-router-dom"
 import { Pagination } from "antd"
 import { CustomerServiceOutlined, PlayCircleOutlined } from "@ant-design/icons"
 import type { PaginationProps } from 'antd';
@@ -6,9 +7,11 @@ import styles from "./styles/songlist.module.scss"
 import { fetchSongLists } from "../../api/recommond"
 import { transPlayCount } from "../../utils"
 import { debounce } from "../../utils/throttle_debounce"
+import songsStore from "../../mobx/songs"
 import playList from '../../utils/playlist';
 export default function SongList(props: { cat: string, total: number }) {
     const { cat, total } = props;
+    const navigate = useNavigate();
     //当前标签
     const [tag, setTag] = useState(cat);
     //每页显示的歌单数量
@@ -32,6 +35,15 @@ export default function SongList(props: { cat: string, total: number }) {
         console.log(page, pageSize);
         setCurrent(page);
     };
+    //点击播放按钮播放音乐
+    const playMusic = (id: number) => {
+        songsStore.origin = 'home';
+        playList(id);
+    }
+    //点击封面前往歌单
+    const playSongList = (id: number) => {
+        navigate(`/playlist/${id}`);
+    }
     useEffect(() => {
         (async () => {
             //more为true表示还有分页
@@ -45,41 +57,47 @@ export default function SongList(props: { cat: string, total: number }) {
             }
         })();
     }, [tag, current]);
+    //实现路由懒加载
     useEffect(() => {
+        //回到顶部
+        window.scrollTo({
+            left: 0,
+            top: 0,
+            behavior: 'smooth'
+        })
         //获取所有图片
         const imgs = document.getElementsByClassName("songlist-image");
         //获取可视高度
         const viewHeight = window.innerHeight || document.documentElement.clientHeight;
-        //num用于统计当前显示到了哪一张图片
-        let num = 0;
         const loadImage = () => {
+            let num = 0;
             for (let i = num; i < imgs.length; i++) {
                 let distance = viewHeight - imgs[i].getBoundingClientRect().top;
-                if (distance >= 0) {
+                if (distance >= 0 && imgs[i].getBoundingClientRect().top >= 0) {
                     imgs[i].setAttribute("src", imgs[i].getAttribute("data-src") as string);
+                    console.log(imgs && imgs.length > 0 && imgs[0].getAttribute("data-src"));
                     num += 1;
                 }
             }
         }
         window.addEventListener("scroll", () => {
-            let ref = myRef && myRef.current;
             debounce(loadImage, 300);
         });
     }, [tag, current]);
     return (
         <>
-            <div className={styles.songlist} ref={myRef}>
+            <div className={styles.songlist} ref={myRef} >
                 {songLists && songLists.map(songlist => {
-                    return <div key={songlist.id}>
-                        <div className={styles.content}>
-                            {<img data-src={songlist.coverImgUrl} alt="加载中..." className='songlist-image' />}
+                    return <div key={songlist.id} >
+                        <div className={styles.content} >
+                            {<img data-src={songlist.coverImgUrl} alt="加载中..." className='songlist-image' onClick={() => playSongList(songlist.id)} />}
                             <div>
-                                <span>
+                                <span >
                                     <CustomerServiceOutlined />
                                     <span>{transPlayCount(songlist.playCount)}</span>
                                 </span>
                                 <span>
-                                    <PlayCircleOutlined />
+                                    <PlayCircleOutlined onClick={() => { playMusic(songlist.id) }} />
                                 </span>
                             </div>
                         </div>
@@ -87,10 +105,17 @@ export default function SongList(props: { cat: string, total: number }) {
                     </div>
                 })}
             </div>
+            <div className={styles.test}>
+                <div>
+                    <small>sb</small>
+                    <small>zz</small>
+                </div>
+            </div>
             {/* 分页 */}
             <footer className={styles.footer}>
                 <Pagination current={current} onChange={onChange} total={total} pageSize={pageSize} hideOnSinglePage />
             </footer>
+
         </>
     )
 }

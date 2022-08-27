@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button } from "antd"
+import { Button, Tag } from "antd"
 import { DownOutlined, GlobalOutlined, DatabaseOutlined, CoffeeOutlined, SmileOutlined, ThunderboltOutlined, TagsFilled } from "@ant-design/icons"
 import styles from "./styles/index.module.scss"
 import { songlistCategory } from "../../api/songlist"
@@ -14,6 +14,7 @@ export default function AllPlayList() {
     const [all, setAll] = useState<Music.tag>();
     //表示总分类类别
     const [category, setCategory] = useState<{ [key: number]: string }>();
+    //表示当前
     useEffect(() => {
         (async () => {
             const res = await songlistCategory();
@@ -41,9 +42,9 @@ export default function AllPlayList() {
                     </span>
                 </div>
                 <span>
-                    <Button type="primary" danger>
+                    <Tag color="#cd201f">
                         热门
-                    </Button>
+                    </Tag>
                 </span>
             </header>
             {showTags &&

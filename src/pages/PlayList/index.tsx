@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { Button } from "antd"
 import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
 // import Song from "./Song"
@@ -18,7 +19,6 @@ const PlayList = () => {
     };
     const [list, setList] = useState<myList>();
     const [songs, setSongs] = useState<Array<Music.song>>();
-    const [isLong, setLong] = useState(false);
     //拿取歌单信息
     useEffect(() => {
         (async function () {
@@ -37,8 +37,7 @@ const PlayList = () => {
             setSongs(sgs.songs);
         })();
         let len = list?.playlist.description.length as number;
-        setLong(len >= 150);
-    }, [list,songs,isLong,id]);
+    }, [list, songs, id]);
     return (
         <>
             <div className={styles.container}>
@@ -52,11 +51,13 @@ const PlayList = () => {
                             <span>{list?.playlist.creator.nickname}</span>
                         </div>
                         <span>标签：{list?.playlist.tags.join("、")}</span>
-                        <p>
-                            {list?.playlist.description?.substring(0, 150)}
-                            {isLong&&'...'}
-                        </p>
-                        <span id="symbol"></span>
+                        <div className={styles.wrap}>
+                            <input type='checkbox' id='exp' />
+                            <p>
+                                <label htmlFor="exp"></label>
+                                {list?.playlist.description}
+                            </p>
+                        </div>
                     </span>
                     <span className={styles.songs}>
                         <div >
