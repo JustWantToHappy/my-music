@@ -10,6 +10,8 @@ import SongList from "../pages/MyMusic/SongList"
 import EditSongList from "../pages/MyMusic/EditSongList"
 import DailySongsRecommend from "../pages/Home/DailyRecommendSongs"
 import AllPlayList from "../pages/AllPlayList"
+import Album from "../pages/Album"
+import Rank from "../pages/Rank"
 const routes = [
     {
         path: "/home",
@@ -17,13 +19,18 @@ const routes = [
         children: [
             {
                 //所有歌单
-                path:"allplaylist",
-                element:<AllPlayList/>
+                path: "allplaylist",
+                element: <AllPlayList />
             },
-            {   
+            {
                 //个人推荐歌曲页面
                 path: "dailyrecommend",
                 element: <DailySongsRecommend />
+            },
+            //专辑
+            {
+                path: "album",
+                element: <Album />
             }
         ]
     },
@@ -60,6 +67,11 @@ const routes = [
     {
         path: "/login",
         element: <Login />
+    },
+    //排行榜
+    {
+        path: "/rank",
+        element: <Rank />
     },
     {
         path: "*",

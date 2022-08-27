@@ -16,6 +16,7 @@
     "antd-img-crop": "^4.2.4",
     "axios": "^0.27.2",
     "css-loader": "^6.7.1",
+    "dayjs": "^1.11.5",
     "js-cookie": "^3.0.1",
     "mobx": "^6.6.1",
     "mobx-react": "^7.5.2",

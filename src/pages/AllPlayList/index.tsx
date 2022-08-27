@@ -23,6 +23,7 @@ export default function AllPlayList() {
             if (code === 200) {
                 setTags(sub);
                 setAll(all);
+                console.log(all.resourceCount,'hhhh')
                 //默认是全部歌单
                 setCount(all.resourceCount);
                 setCategory(categories);

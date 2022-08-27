@@ -3,6 +3,7 @@ import { Table, Pagination, Popconfirm } from 'antd';
 import styles from "./index.module.css"
 import { transTime, removeSongFromSongList } from "../../utils/help"
 import { PlayCircleOutlined, DeleteOutlined } from "@ant-design/icons"
+import { useNavigate } from "react-router-dom"
 import React, { useEffect } from "react"
 import { addLocalStorage } from "../../utils/authorization";
 import pubsub from "pubsub-js"
@@ -22,6 +23,7 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
     //歌单id
     const [search] = useSearchParams();
     const songListId = search.get("id");
+    const navigate = useNavigate();
     async function randomPlay() {
         while (true) {
             let index = Math.ceil((songsStore.data?.length as number) * Math.random());
@@ -174,7 +176,6 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
             <Table
                 dataSource={props.songs?.slice(start, end)}
                 pagination={false}
-            // scroll={{ y: 385 }}实现固定表头
             >
                 <Column dataIndex="index" key="index" width={100} render={
                     (text: number) => {
@@ -192,18 +193,18 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                         return <span className={styles['song-header']}>{text}</span>
                     }}
                 />
-                <Column title="时长" dataIndex="dt" width={100}
+                <Column title="时长" dataIndex="dt" width={100} key="dt"
                     render={(text) => {
                         return <li>{transTime(text, 1)}</li>
                     }}
                 />
-                <Column title="歌手" dataIndex="ar"
+                <Column title="歌手" dataIndex="ar" key="ar"
                     render={(singers: Array<Music.song>) => {
                         return <div className={styles.song}>
                             {
                                 singers.slice(0, 3).map(singer => {
                                     return (
-                                        <span key={singer.id}>
+                                        <span key={singer.id} onClick={() => { navigate(`/artist?id=${singer.id}`); }}>
                                             {singer.name}
                                         </span>
                                     )
@@ -212,14 +213,14 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                         </div>
                     }}
                 />
-                <Column title="专辑" dataIndex="al"
+                <Column title="专辑" dataIndex="al" key="al"
                     render={
                         (album) => {
                             return <span className={styles['song-album']}>{album.name}</span>
                         }
                     }
                 />
-                {props.showOperation && <Column title="操作" dataIndex="id"
+                {props.showOperation && <Column title="操作" dataIndex="id" key="id"
                     render={
                         (text: number) => {
                             return <div className={styles['song-operation']}>

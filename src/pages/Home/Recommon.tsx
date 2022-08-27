@@ -24,7 +24,7 @@ const RecommonList = () => {
         <div className={styles.recommon} ref={listRef}>
             <section className={styles.title}>
                 <b>最热歌单</b>
-                <span onClick={()=>{navigate("/home/allplaylist")}}>更多</span>
+                <span onClick={() => { navigate("/home/allplaylist") }}>更多</span>
                 <hr className={styles.divider} />
             </section>
             {highSongLists?.map(list => {
@@ -55,7 +55,6 @@ const NewDisc = () => {
         }
     }, [newDiscs]);
     const toArtistPage = (singer: Music.singer) => {
-        let obj: { singer: Music.singer } = { singer };
         navigate(`/artist?id=${singer.id}`, { state: singer });
     }
     return (
@@ -63,10 +62,10 @@ const NewDisc = () => {
             <b>最新专辑</b>
             {newDiscs?.map(album => {
                 return <section key={album.id}>
-                    <img src={album.picUrl} alt="图片无法显示" />
+                    <img src={album.picUrl} alt="图片无法显示" onClick={() => { navigate(`album?id=${album.id}`) }} />
                     <div>
                         <small onClick={() => { toArtistPage(album.artist) }}>{album.artist.name}</small>
-                        <small>{album.name}</small>
+                        <small onClick={() => { navigate(`album?id=${album.id}`) }}>{album.name}</small>
                     </div>
                 </section>
 

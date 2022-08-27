@@ -32,7 +32,6 @@ export default function SongList(props: { cat: string, total: number }) {
     }
     //点击不同页码时候触发
     const onChange: PaginationProps['onChange'] = page => {
-        console.log(page, pageSize);
         setCurrent(page);
     };
     //点击播放按钮播放音乐
@@ -75,7 +74,6 @@ export default function SongList(props: { cat: string, total: number }) {
                 let distance = viewHeight - imgs[i].getBoundingClientRect().top;
                 if (distance >= 0 && imgs[i].getBoundingClientRect().top >= 0) {
                     imgs[i].setAttribute("src", imgs[i].getAttribute("data-src") as string);
-                    console.log(imgs && imgs.length > 0 && imgs[0].getAttribute("data-src"));
                     num += 1;
                 }
             }

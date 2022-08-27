@@ -1,5 +1,5 @@
 import request from "../utils/request"
-//歌单详细信息
+//歌单详情
 export function fetchList(id: number): Promise<any> {
     return request.get(`/playlist/detail?id=${id}`);
 }

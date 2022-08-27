@@ -43,12 +43,12 @@ declare namespace Music {
     type singer = {
         id: number;
         name: string;
-        picUrl: string;
+        cover: string;
         musicSize?: number; //歌曲数量
         albumSize?: number; // 专辑数量
+        videoCount?: number;//视频数量
         mvSize?: number; // mv 数量
         briefDesc?: string; // 简单描述
-        alias: string[];//别名
         followed: boolean;//我是否关注
     }
     //专辑
@@ -60,6 +60,9 @@ declare namespace Music {
         artist: singer;//歌手
         publishTime: number;//发布时间
         description: string;//专辑描述
+        blurPicUrl: string;//专辑封面?
+        type: string;
+        size: number;//歌曲数量
     }
     //精品歌单标签
     type tag = {
@@ -69,6 +72,26 @@ declare namespace Music {
         hot: boolean;//表示是否最火
         resourceCount: number;//表示该标签下歌曲数量
 
+    }
+    //排行榜榜单
+    type rank = {
+        //'S'表示飙升榜，'N'表示新歌榜，'O'表示原创榜，'H'表示热歌榜，没有该字段表示普通榜单
+        ToplistType: string;
+        coverImgUrl: string;
+        createTime: number;//创建时间
+        description: string;
+        id: number;
+        name: string;
+        playCount: number;//播放次数
+        subscribedCount: number;//订阅次数
+        trackCount: number;//所有歌曲数量
+        trackNumberUpdateTime: number;
+        trackUpdateTime: number;
+        //该榜单前几名的歌曲名和歌手名
+        tracks: Array<{ first: string, second: string }>
+        updateFrequency: string;//更行频率
+        updateTime: number;//上次更新时间
+        tags:string[];//榜单标签
     }
 }
 declare namespace User {
@@ -100,6 +123,7 @@ declare namespace User {
         description: string;
         playCount: number;//播放次数
         trackCount: number;//歌单中歌曲数量
+
     }
     //用户推荐歌单
     type recommendList = {

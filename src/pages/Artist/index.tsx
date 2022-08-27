@@ -1,73 +1,88 @@
 import styles from "./index.module.scss"
-import { useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { useState, useEffect } from "react"
 import Song from "../../components/Song"
-import { fetchAllSongBySingerId, fetchFiftySongs, fetchSingerDes } from "../../api/artist"
+import { fetchSingerDetails, fetchAllSongBySingerId, fetchFiftySongs, fetchSingerDes } from "../../api/artist"
 import { Tabs } from 'antd';
 import React from 'react';
 
 const { TabPane } = Tabs;
 
-const onChange = (key: string) => {
-};
 
 
 const Artist = () => {
-    const location = useLocation();
-    let singer = location.state as Music.singer;
+    const [search] = useSearchParams();
+    const id = search.get("id") as string;
+    //歌手
+    const [singer, setSinger] = useState<Music.singer>();
     //歌手所有歌曲
-    const [songs, setSongs] = useState<Array<Music.song>>();
+    const [songs, setSongs] = useState<Array<Music.song>>([]);
     //歌手50首热门歌曲
-    const [fiftySongs, setFifty] = useState<Array<Music.song>>();
+    const [fiftySongs, setFifty] = useState<Array<Music.song>>([]);
     //歌手介绍
     const [desc, setDesc] = useState("")
-    const handleRequst = (res: any) => {
-        let arr: Array<Music.song> = [];
-        // console.log(res.songs[0])
-        for (let i = 0; i < res.songs.length; i++) {
-            let song: Music.song;
-            song = {
-                index: i + 1,
-                al: res.songs[i].al,
-                album: res.songs[i].al,
-                ar: res.songs[i].ar,
-                artists: res.songs[i].ar,
-                id: res.songs[i].id,
-                name: res.songs[i].name,
-                dt: res.songs[i].dt,
-                publishTime: 0
+    const handleResponse = (res: any): Array<Music.song> => {
+        if (res.code === 200) {
+            let arr: Array<Music.song> = [];
+            for (let i = 0; i < res.songs.length; i++) {
+                let song = { ...res.songs[i], index: i + 1, key: i };
+                arr.push(song);
             }
-            arr.push(song);
+            return arr;
         }
-        return arr;
+        return [];
     }
     const getAllSongs = async () => {
-        let res = await fetchAllSongBySingerId(singer.id);
-        let arr = handleRequst(res);
-        setSongs(arr);
+        let res = await fetchAllSongBySingerId(id);
+        setSongs(handleResponse(res));
     }
     const getFiftySongs = async () => {
-        let res = await fetchFiftySongs(singer.id);
-        let arr = handleRequst(res);
-        setFifty(arr);
+        let res = await fetchFiftySongs(id);
+        setFifty(handleResponse(res));
     }
     const getSingerDes = async () => {
-        let res = await fetchSingerDes(singer.id);
+        let res = await fetchSingerDes(id);
         setDesc(res.briefDesc);
     }
+    //点击不同tab时调用
+    const onChange = (key: string) => {
+        if (key === '1' && songs.length === 0) {
+            getAllSongs();
+        } else if (key === '2' && fiftySongs.length === 0) {
+            getFiftySongs();
+        } else if (key === '3' && desc === '') {
+            getSingerDes();
+        }
+    };
     useEffect(() => {
-        getAllSongs();
-        getFiftySongs();
-        getSingerDes();
+        (async () => {
+            let res = await fetchSingerDetails(id);
+            const { artist } = res.data;
+            if (res.code === 200) {
+                let per: Music.singer = { ...artist, ...res.data };
+                setSinger(per);
+                getAllSongs();
+            }
+        })();
     }, []);
     return (
         <div className={styles.artist}>
             <div className={styles.content}>
-                <span>
-                    <h1>{singer.name}</h1>
-                    <span> {singer.alias.join("、")}</span>
-                </span>
-                <img src={singer.picUrl} alt="logo" />
+                <header>
+                    <div>
+                        <h1>{singer && singer.name}</h1>
+                        <img src={singer && singer.cover} alt="logo" />
+                    </div>
+                    <div>
+                        <label>歌曲数量:{singer?.musicSize}</label>
+                        <label>专辑数量:{singer?.albumSize}</label>
+                        <label >mv数量:{singer?.mvSize}</label>
+                        <p>
+                            <label >简要描述:</label>
+                            {singer?.briefDesc}
+                        </p>
+                    </div>
+                </header>
                 <hr />
                 <Tabs defaultActiveKey="1" onChange={onChange}>
                     <TabPane tab="全部歌曲" key="1">
