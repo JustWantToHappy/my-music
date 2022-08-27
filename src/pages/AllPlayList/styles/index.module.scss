@@ -33,9 +33,12 @@
         transform: translateY(3px);
     }
 
-    span {}
 }
 
+.content{
+    display: flex;
+    flex-direction: column;
+}
 
 //歌曲分类标签样式
 .tags {
@@ -45,6 +48,7 @@
     border: 1px solid #d4d4d4;
     box-shadow: 0 2px 27px 6px rgba(0, 0, 0, .12);
     position: absolute;
+    z-index:10;
     transform: translateY(10vh);
     display: grid;
     grid-template-columns: 1fr 5fr;

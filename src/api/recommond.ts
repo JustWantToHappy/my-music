@@ -6,15 +6,8 @@ export function getRecommondmv(pageNums: number = 8): Promise<any> {
     })
 }
 //最热歌单
-export function getHightSongLists(limit: number = 16, cat?: string, offset?: number, order?: string): Promise<any> {
-    if (cat !== undefined) {
-        return request({
-            url: `/top/playlist/highquality?limit=${limit}&cat=${cat}&offset=${offset}&order=${order}`,
-            method: "get"
-        })
-    } else {
-        return request({ method: "get", url: `/top/playlist/highquality?limit=${limit}` });
-    }
+export function getHightSongLists(limit: number = 16): Promise<any> {
+    return request({ method: "get", url: `/top/playlist/highquality?limit=${limit}` });
 }
 //新碟上架
 export function getNewDiscs(limit: number = 9): Promise<any> {
@@ -22,4 +15,8 @@ export function getNewDiscs(limit: number = 9): Promise<any> {
         url: `/album/new?area=ALL&limit=${limit}`,
         method: "get"
     })
+}
+//根据不同标签获取歌单
+export function fetchSongLists(order: string = 'hot', cat: string, limit: number, offset: number): Promise<any> {
+    return request({ method: "get", url: `/top/playlist?order=${order}&cat=${cat}&limit=${limit}&offset=${offset}` });
 }

@@ -1,10 +1,63 @@
-.songlist{
-    width:100%;
-    margin-top:5vh;
-    background-color: red;
+.songlist {
+    width: 100%;
+    margin-top: 5vh;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-column-gap:2vw;
+    grid-row-gap:3vh;
+    >div {
+        width: 12vw;
+
+        >span {
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+        }
+    }
+
 }
-footer{
-    margin-top:5vh;
+
+.content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 12vw;
+    height: 12vw;
+    cursor: pointer;
+
+    >img {
+        position: absolute;
+        width: 100%;
+    }
+
+    >div {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 24%;
+        background-color: #242424;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        opacity: 0.7;
+        font-size: 16px;
+        >span {
+            opacity: 0.6;
+        }
+
+        >span:last-child:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.footer {
+    margin: 5vh 0;
     display: flex;
     flex-direction: row-reverse;
 }

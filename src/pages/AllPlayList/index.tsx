@@ -17,7 +17,7 @@ export default function AllPlayList() {
     useEffect(() => {
         (async () => {
             const res = await songlistCategory();
-            //more字段表示还有分页,categories表示分类的类别有哪些
+            //more字段为true表示还有分页,categories表示分类的类别有哪些
             let { code, all, categories, sub, more } = res;
             if (code === 200) {
                 setTags(sub);
@@ -52,7 +52,8 @@ export default function AllPlayList() {
                     tags={tags as Array<Music.tag>}
                     setTitle={(str: string) => { setTitle(str) }}
                     setShowTags={() => setShowTags(false)}
-                    setTotal={(count: number) => setCount(count)} />}
+                    setTotal={(count: number) => setCount(count)}
+                    defaultTotal={all?.resourceCount} />}
             <hr />
             <div className={styles.content}>
                 <SongList cat={title} total={count} />
@@ -61,11 +62,16 @@ export default function AllPlayList() {
     )
 }
 //标签框
-const SongTags = (props: { tags: Array<Music.tag>, category: { [key: number]: string }, setTitle: (str: string) => void, setShowTags: () => void, setTotal: (count: number) => void }) => {
-    const { tags, setTitle, setShowTags, category } = props;
+const SongTags = (props: { tags: Array<Music.tag>, category: { [key: number]: string }, setTitle: (str: string) => void, setShowTags: () => void, setTotal: (count: number) => void, defaultTotal: number | undefined }) => {
+    const { tags, setTitle, setShowTags, category, setTotal, defaultTotal } = props;
     let categories: number[] = [];
     for (let index of Object.keys(category)) {
         categories.push(parseInt(index));
+    }
+    const changeTag = (tag: Music.tag) => {
+        setTitle(tag.name);
+        setShowTags();
+        setTotal(tag.resourceCount);
     }
     return (
         <div className={styles.tags}>
@@ -73,6 +79,8 @@ const SongTags = (props: { tags: Array<Music.tag>, category: { [key: number]: st
                 <Button onClick={() => {
                     setTitle("全部");
                     setShowTags();
+                    if (defaultTotal)
+                        setTotal(defaultTotal);
                 }}>
                     <span>全部风格</span>
                 </Button>
@@ -108,7 +116,7 @@ const SongTags = (props: { tags: Array<Music.tag>, category: { [key: number]: st
                                 if (tag.category === num) {
                                     return <div key={tag.name} className={styles.tag}>
                                         <span>&nbsp;&nbsp;</span>
-                                        <span onClick={() => { setTitle(tag.name); setShowTags() }}>{tag.name}</span>
+                                        <span onClick={() => { changeTag(tag) }}>{tag.name}</span>
                                         <span>&nbsp;&nbsp;|</span>
                                     </div>
                                 } else {

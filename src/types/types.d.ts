@@ -26,11 +26,18 @@ declare namespace Music {
         description: string;
         id: number;
         name: string;
-        creator: any;
         tags: string[];//标签
         subscribers: any;//貌似是用户的信息头像，关于歌单的评论等
-        creator: any;//制作歌单的人信息 
+        creator: User.account;//制作歌单的人信息 
         tracks: Array<song>;//歌单中每一首歌曲信息
+        playCount: number;//播放次数
+        highQuality: true;
+        commentCount: number;//歌单评论数
+        commentThreadId: number;//歌单评论id
+        createTime: number;//歌单创建时间
+        shareCount: number;//分享数
+        trackCount: number;//歌单中所有歌曲数量
+        copywriter: string;//歌单签名
     }
     //歌手
     type singer = {
@@ -59,8 +66,8 @@ declare namespace Music {
         name: string;
         type: number;
         category: number;//5个分类(0~4)
-        hot:boolean;//表示是否最火
-        resourceCount:number;//表示该标签下歌曲数量
+        hot: boolean;//表示是否最火
+        resourceCount: number;//表示该标签下歌曲数量
 
     }
 }
