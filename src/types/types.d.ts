@@ -21,7 +21,8 @@ declare namespace Music {
         publishTime: number;//歌曲发布时间
     }
     //歌单
-    type highLists = {
+    type list = {
+        ToplistType:string;
         coverImgUrl: string;
         description: string;
         id: number;

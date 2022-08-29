@@ -21,7 +21,7 @@ export default function SongList(props: { cat: string, total: number }) {
     //当前标签下歌单总数
     const [count, setCount] = useState(total);
     //存放歌单
-    const [songLists, setSongLists] = useState<Array<Music.highLists>>([])
+    const [songLists, setSongLists] = useState<Array<Music.list>>([])
     //
     const [num, setNum] = useState(0);
     //当前容器

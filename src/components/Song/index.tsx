@@ -65,106 +65,108 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
     }
     useEffect(() => {
         pubsub.subscribe("changeMusic", async (_, type: string) => {
-            try {
-                let target = 0;
-                let playway = localStorage.getItem("playway");
-                let len = songsStore.data?.length as number;
-                let obj = JSON.parse(localStorage.getItem("song") as string);
-                let brr = Array(len).fill(false);
-                if (type === 'last') {
-                    switch (playway) {
-                        case '1':
-                            target = (obj.index - 2 + len) % len;
-                            while (true) {
-                                let id = songsStore.data && songsStore.data[target].id;
-                                let { message } = await musicIsUse(id as number);
-                                if (message === 'ok') {
-                                    brr[target + 1] = true;
-                                    setArr(brr);
-                                    addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
-                                    pubsub.publish("play", true);
-                                    break;
-                                } else {
-                                    target = (target - 1 + len) % len;
-                                }
-                            }
-                            break;
-                        case '2':
-                            target = obj.index - 2;
-                            while (true && target >= 0) {
-                                let id = songsStore.data && songsStore.data[target].id;
-                                let { message } = await musicIsUse(id as number);
-                                if (message === 'ok') {
-                                    if (target >= 0) {
+            if (songsStore.origin === 'other') {
+                try {
+                    let target = 0;
+                    let playway = localStorage.getItem("playway");
+                    let len = songsStore.data?.length as number;
+                    let obj = JSON.parse(localStorage.getItem("song") as string);
+                    let brr = Array(len).fill(false);
+                    if (type === 'last') {
+                        switch (playway) {
+                            case '1':
+                                target = (obj.index - 2 + len) % len;
+                                while (true) {
+                                    let id = songsStore.data && songsStore.data[target].id;
+                                    let { message } = await musicIsUse(id as number);
+                                    if (message === 'ok') {
                                         brr[target + 1] = true;
                                         setArr(brr);
                                         addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
                                         pubsub.publish("play", true);
                                         break;
+                                    } else {
+                                        target = (target - 1 + len) % len;
                                     }
-                                } else {
-                                    target -= 1;
                                 }
-                            }
-                            break;
-                        case '3':
-                            pubsub.publish("play", true);
-                            break;
-                        case '4':
-                            randomPlay();
-                            break;
-                        default:
-                            break;
-                    }
+                                break;
+                            case '2':
+                                target = obj.index - 2;
+                                while (true && target >= 0) {
+                                    let id = songsStore.data && songsStore.data[target].id;
+                                    let { message } = await musicIsUse(id as number);
+                                    if (message === 'ok') {
+                                        if (target >= 0) {
+                                            brr[target + 1] = true;
+                                            setArr(brr);
+                                            addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
+                                            pubsub.publish("play", true);
+                                            break;
+                                        }
+                                    } else {
+                                        target -= 1;
+                                    }
+                                }
+                                break;
+                            case '3':
+                                pubsub.publish("play", true);
+                                break;
+                            case '4':
+                                randomPlay();
+                                break;
+                            default:
+                                break;
+                        }
 
-                } else if (type === 'next') {
-                    switch (playway) {
-                        case '1':
-                            target = (obj.index) % len;
-                            while (true) {
-                                let id = songsStore.data && songsStore.data[target].id;
-                                let { message } = await musicIsUse(id as number);
-                                if (message === 'ok') {
-                                    brr[target + 1] = true;
-                                    setArr(brr);
-                                    addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
-                                    pubsub.publish("play", true);
-                                    break;
-                                } else {
-                                    target = (target + 1) % len;
+                    } else if (type === 'next') {
+                        switch (playway) {
+                            case '1':
+                                target = (obj.index) % len;
+                                while (true) {
+                                    let id = songsStore.data && songsStore.data[target].id;
+                                    let { message } = await musicIsUse(id as number);
+                                    if (message === 'ok') {
+                                        brr[target + 1] = true;
+                                        setArr(brr);
+                                        addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
+                                        pubsub.publish("play", true);
+                                        break;
+                                    } else {
+                                        target = (target + 1) % len;
+                                    }
                                 }
-                            }
-                            break;
-                        case '2':
-                            target = obj.index;
-                            if (target >= len) {
-                                pubsub.publish("stopPlay", true);
-                            }
-                            while (true && target < len) {
-                                let id = songsStore.data && songsStore.data[target].id;
-                                let { message } = await musicIsUse(id as number);
-                                if (message === 'ok') {
-                                    brr[target + 1] = true;
-                                    setArr(brr);
-                                    addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
-                                    pubsub.publish("play", true);
-                                    break;
-                                } else {
-                                    target++;
+                                break;
+                            case '2':
+                                target = obj.index;
+                                if (target >= len) {
+                                    pubsub.publish("stopPlay", true);
                                 }
-                            }
-                            break;
-                        case '3':
-                            pubsub.publish("play", true);
-                            break;
-                        case '4':
-                            randomPlay();
-                            break;
-                        default:
-                            break;
+                                while (true && target < len) {
+                                    let id = songsStore.data && songsStore.data[target].id;
+                                    let { message } = await musicIsUse(id as number);
+                                    if (message === 'ok') {
+                                        brr[target + 1] = true;
+                                        setArr(brr);
+                                        addLocalStorage([{ key: "song", value: JSON.stringify(songsStore.data && songsStore.data[target]) }]);
+                                        pubsub.publish("play", true);
+                                        break;
+                                    } else {
+                                        target++;
+                                    }
+                                }
+                                break;
+                            case '3':
+                                pubsub.publish("play", true);
+                                break;
+                            case '4':
+                                randomPlay();
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-            } catch (e) { }
+                } catch (e) { }
+            }
         })
     }, []);
     const changeCurrentPage = (current: number, size: number) => {

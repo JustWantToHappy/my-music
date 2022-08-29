@@ -7,7 +7,7 @@ import { getImgsLoadEnd } from "../../utils/help"
 const RecommonList = () => {
     const navigate = useNavigate();
     const listRef = useRef<HTMLDivElement>(null);
-    const [highSongLists, setHighSongLists] = useState<Array<Music.highLists>>();
+    const [highSongLists, setHighSongLists] = useState<Array<Music.list>>();
     useEffect(() => {
         (async () => {
             const lists = await getHightSongLists();

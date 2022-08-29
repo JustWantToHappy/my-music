@@ -4,6 +4,7 @@ import PubSub from "pubsub-js";
 import { getListSong, musicIsUse } from "../api/songlist"
 import { addLocalStorage } from "../utils/authorization"
 import songsStore from "../mobx/songs"
+//传入歌单id
 export default async function playList(id: number) {
     try {
         let { songs } = await getListSong(id);

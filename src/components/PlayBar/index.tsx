@@ -88,14 +88,14 @@ const PlayBar = (props: { song: Music.song }) => {
             songStore.timer = setInterval(() => {
                 setTime(playBar.current.currentTime * 1000);
             }, 1000);
-        })
-        playBar.current.addEventListener("ended", () => {
-            clearInterval(songStore.timer);
-            pubsub.publish("changeMusic", "next");
             //通知播放条停止播放
             pubsub.subscribe("stopPlay", () => {
                 setPlay(false);
             })
+        })
+        playBar.current.addEventListener("ended", () => {
+            clearInterval(songStore.timer);
+            pubsub.publish("changeMusic", "next");
         })
         return function () {
             songStore.clearTimer();

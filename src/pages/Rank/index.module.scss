@@ -65,4 +65,47 @@
 .content {
     border-left: 1px solid #eee;
     flex: 3;
+    padding: 4vh 3vw;
+
+    >header {
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+
+        img {
+            width: 100%;
+        }
+
+        div {
+            padding: 2vh 3vw;
+            display: flex;
+            justify-content: space-around;
+            flex-direction: column;
+
+            h2 {
+                font-weight: 500;
+            }
+        }
+    }
+
+    hr {
+        height: 2px;
+        background: #F53F3F;
+    }
+}
+
+.header {
+    margin-top:4vh;
+    span {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        div{
+            display: table-cell;
+            vertical-align: center;
+        }
+        h2 {
+            display: inline;
+            margin-right:2vw;
+        }
+    }
 }
