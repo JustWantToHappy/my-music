@@ -63,6 +63,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-align: justify;
+    line-height: 1.75em;
 }
 
 .wrap>p>label {
@@ -73,7 +74,7 @@
 
 .wrap>p>label::before {
     content: '展开';
-    margin-left:20px;
+    margin-left: 20px;
 }
 
 .wrap>p>label:hover {

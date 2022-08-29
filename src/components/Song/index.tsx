@@ -217,8 +217,8 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                 />
                 <Column title="专辑" dataIndex="al" key="al"
                     render={
-                        (album) => {
-                            return <span className={styles['song-album']}>{album.name}</span>
+                        (album: Music.album) => {
+                            return <span className={styles['song-album']} onClick={() => navigate(`/home/album?id=${album.id}`)}>{album.name}</span>
                         }
                     }
                 />

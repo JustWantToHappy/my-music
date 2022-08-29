@@ -64,6 +64,7 @@ const Artist = () => {
                 getAllSongs();
             }
         })();
+        window.scrollTo(0, 0);
     }, []);
     return (
         <div className={styles.artist}>

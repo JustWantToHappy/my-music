@@ -88,13 +88,13 @@ const LoginBox = (props: any) => {
         if (!verifyEmail()) {
             return;
         }
-        let res = await emailLogin(email, password);
-        if (res.message === '账号或密码错误' || res.code !== 200) {
-            message.error("账号或密码错误")
-        }
         try {
+            let res = await emailLogin(email, password);
+            if (res.message === '账号或密码错误' || res.code !== 200) {
+                message.error("账号或密码错误")
+                return;
+            }
             //登录成功
-            console.log(res.cookie, '大笔')
             addCookies(res.cookie);
             let user: User.account = res.profile;
             //将用户头像和id和昵称存入本地，用来维持登录状态
@@ -108,6 +108,7 @@ const LoginBox = (props: any) => {
 
         } catch (e) {
             console.log(e);
+            message.error("账号不存在")
         }
         // console.log(res, 'Login/index.tsx')res.token不知道有用不
     }

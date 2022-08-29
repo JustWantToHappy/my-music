@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from "react-router-dom"
 import { Table, message } from 'antd';
 import { PlayCircleOutlined } from "@ant-design/icons"
 import dayjs from 'dayjs';
@@ -10,6 +11,7 @@ import PubSub from 'pubsub-js';
 import { playNextMusic } from "../../utils/playMusic"
 export default function RankSong(props: { songs: Array<Music.song> | undefined }) {
     const { Column } = Table;
+    const navigate = useNavigate();
     //用于表示当前正在播放的歌曲
     const [song, setSong] = useState<Music.song>();
     const [songs, setSongs] = useState<Array<Music.song>>(props.songs as Music.song[]);
@@ -44,7 +46,7 @@ export default function RankSong(props: { songs: Array<Music.song> | undefined }
                 let jsonStr2 = localStorage.getItem("songs");
                 const songs = jsonStr2 && JSON.parse(jsonStr2);
                 if (song && songs && songsStore.origin === 'rank') {
-                    const nextIndex = await playNextMusic(song, songs,type);
+                    const nextIndex = await playNextMusic(song, songs, type);
                     nextIndex !== -1 && setSong(songs[nextIndex]);
                     PubSub.publish("play", true);
                 }
@@ -77,7 +79,7 @@ export default function RankSong(props: { songs: Array<Music.song> | undefined }
                         <>
                             {ar.slice(0, 2).map((artist, index) => {
                                 return <span key={artist.id} className={styles.artist}>
-                                    <span> {artist.name}</span>
+                                    <span onClick={() => { navigate(`/artist?id=${artist.id}`) }}> {artist.name}</span>
                                     {ar.length > 1 && index < 1 && ' / '}
                                 </span>
                             })}

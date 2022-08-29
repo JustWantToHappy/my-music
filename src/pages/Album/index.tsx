@@ -27,6 +27,7 @@ export default function Album() {
                 setSongs(arr);
             }
         })();
+        window.scrollTo(0, 0);
     }, []);
     return (
         <div className={styles.album}>

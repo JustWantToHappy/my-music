@@ -46,23 +46,27 @@ export default function Header() {
             setLogin(false);
             typeof operation === 'object' ? setAvatar(localStorage.getItem("avatar")) : setAvatar("");
             setHasLogin(true);
+            
         } else {
             setLogin(true);
         }
     }
     //退出登录,将本地中用户的敏感信息都清空
     function loginOut() {
-        addLocalStorage([{ key: "hasLogin", value: 'false' }]);
-        deleteLocalStorage(["autoLogin", "nickname", "avatar", "userId", 'cookies']);
+        let authLogin = localStorage.getItem("authLogin");
+        if (!authLogin || authLogin === 'false')
+            deleteLocalStorage(["nickname", "avatar", "userId", 'cookies']);
+        addLocalStorage([{ key: "hasLogin", value: "false" }]);
         setHasLogin(false);
         setAvatar("");
         //退出后跳转到首页
         navigate("/home");
     }
     React.useEffect(() => {
-        let hasLogin = localStorage.getItem("hasLogin");
-        if (hasLogin === 'true') {
+        let authLogin = localStorage.getItem("authLogin");
+        if (authLogin === 'true') {
             setHasLogin(true);
+            addLocalStorage([{ key: "hasLogin", value: "true" }]);
         }
         setAvatar(localStorage.getItem("avatar"));
         //设置为true表示显示登录框
@@ -107,7 +111,6 @@ export default function Header() {
                     {
                         hasLogin &&
                         <p >
-                            <small>{localStorage.getItem("nickname")}</small>
                             <Button onClick={() => { loginOut() }} type='text' className={styles['login-btn']}>
                                 退出登录
                             </Button>

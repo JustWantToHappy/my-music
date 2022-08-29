@@ -47,6 +47,7 @@ export default function Rank() {
                 (async () => {
                     const res = await fetchList(parseInt(id as string));
                     if (res.code === 200) {
+                        console.log(res.playlist, 'songslist');
                         setSongList(res.playlist);
                     }
                 })();
@@ -54,6 +55,7 @@ export default function Rank() {
                     const res = await getListSong(parseInt(id as string));
                     if (res.code === 200) {
                         let arr: Array<Music.song> = [];
+                        // console.log(res.songs, 'songs');
                         for (let i = 0; i < res.songs.length; i++) {
                             let song = { ...res.songs[i], index: i + 1, key: i };
                             arr.push(song);

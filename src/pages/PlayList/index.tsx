@@ -38,6 +38,9 @@ const PlayList = () => {
         })();
         let len = list?.playlist.description.length as number;
     }, [list, songs, id]);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <>
             <div className={styles.container}>
