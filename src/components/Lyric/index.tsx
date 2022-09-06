@@ -20,6 +20,10 @@ const Lyric = (props: lyricType) => {
     }
     const lyricRef = useRef<HTMLDivElement>(null);
     //用于分割歌词
+    enum TransLate {
+        notTrans,//无歌词翻译
+        hasTrans//有歌词翻译
+    }
     const handleStr = async (lyricStr: string, type: number) => {
         if (lyricStr.length > 0) {
             let arr = lyricStr.split("\n");
@@ -33,8 +37,8 @@ const Lyric = (props: lyricType) => {
                 }
                 lyricArr.push(obj);
             })
-            type === 0 && await setLyric(lyricArr);
-            type === 1 && await setTlyric(lyricArr);
+            type === TransLate.notTrans && await setLyric(lyricArr);
+            type === TransLate.hasTrans && await setTlyric(lyricArr);
         }
     }
     //判断当前播放的歌词中前面的歌词空字符串个数

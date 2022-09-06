@@ -1,6 +1,8 @@
 import { musicIsUse } from "../api/songlist"
 import { addLocalStorage } from "../utils/authorization"
 import PubSub from "pubsub-js";
+import constantsStore from "../mobx/constants"
+const { playWay } = constantsStore;
 //播放下一首音乐
 export async function playNextMusic(song: Music.song, songs: Array<Music.song>, type: string): Promise<number> {
     let nextIndex = await getSongIndex(song, songs, type);
@@ -31,7 +33,7 @@ async function getSongIndex(song: Music.song, songs: Array<Music.song>, type: st
     let index = song.index - 1;
     let nextIndex = -1;
     switch (playway) {
-        case '1':
+        case playWay.ListPlay:
             while (true) {
                 type === 'last' && (index = (index - 1 + songs.length) % songs.length);
                 type === 'next' && (index = (index + 1) % songs.length);
@@ -42,7 +44,7 @@ async function getSongIndex(song: Music.song, songs: Array<Music.song>, type: st
                 }
             }
             break;
-        case '2':
+        case playWay.OrderPlay:
             PubSub.publish("stopPlay", true);
             while (true) {
                 type === 'next' && (index = index + 1);
@@ -58,9 +60,9 @@ async function getSongIndex(song: Music.song, songs: Array<Music.song>, type: st
                 }
             }
             break;
-        case '3':
+        case playWay.SingleCycle:
             break;
-        case '4':
+        case playWay.RandomPlay:
             nextIndex = await getRandomPlayMusicIndex(song, songs);
             break;
         default:

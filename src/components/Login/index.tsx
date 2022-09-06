@@ -126,12 +126,17 @@ const LoginBox = (props: any) => {
     useEffect(() => {
 
     }, [hasRegister]);
+    //关闭模态框
+    const closeLoginBox = () => {
+        login(false);
+        
+    }
     return (
         <div className={styles.mask}>
             <ul className={styles.login}>
                 <li>
                     <span>{isLogin && '登录'}{!isLogin && '注册'}</span>
-                    <span><CloseOutlined onClick={() => { props.login(false) }} /></span>
+                    <span><CloseOutlined onClick={closeLoginBox} /></span>
                 </li>
 
                 <li>

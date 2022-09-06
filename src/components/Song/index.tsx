@@ -10,10 +10,12 @@ import pubsub from "pubsub-js"
 import { useSearchParams } from "react-router-dom"
 import { musicIsUse } from '../../api/songlist';
 import songsStore from "../../mobx/songs"
+import constantsStore from "../../mobx/constants"
 const { Column } = Table;
 
 const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boolean }) => {
     songsStore.data = props.songs as Music.song[];
+    const { playWay } = constantsStore;
     //用于记录正在播放的歌曲，其值取true
     let playArr: Array<boolean> = Array(songsStore.data?.length).fill(false);
     const [arr, setArr] = React.useState(playArr);
@@ -74,7 +76,7 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                     let brr = Array(len).fill(false);
                     if (type === 'last') {
                         switch (playway) {
-                            case '1':
+                            case playWay.ListPlay:
                                 target = (obj.index - 2 + len) % len;
                                 while (true) {
                                     let id = songsStore.data && songsStore.data[target].id;
@@ -90,7 +92,7 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                                     }
                                 }
                                 break;
-                            case '2':
+                            case playWay.OrderPlay:
                                 target = obj.index - 2;
                                 while (true && target >= 0) {
                                     let id = songsStore.data && songsStore.data[target].id;
@@ -108,10 +110,10 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                                     }
                                 }
                                 break;
-                            case '3':
+                            case playWay.SingleCycle:
                                 pubsub.publish("play", true);
                                 break;
-                            case '4':
+                            case playWay.RandomPlay:
                                 randomPlay();
                                 break;
                             default:
@@ -120,7 +122,7 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
 
                     } else if (type === 'next') {
                         switch (playway) {
-                            case '1':
+                            case playWay.ListPlay:
                                 target = (obj.index) % len;
                                 while (true) {
                                     let id = songsStore.data && songsStore.data[target].id;
@@ -136,7 +138,7 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                                     }
                                 }
                                 break;
-                            case '2':
+                            case playWay.OrderPlay:
                                 target = obj.index;
                                 if (target >= len) {
                                     pubsub.publish("stopPlay", true);
@@ -155,10 +157,10 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                                     }
                                 }
                                 break;
-                            case '3':
+                            case playWay.SingleCycle:
                                 pubsub.publish("play", true);
                                 break;
-                            case '4':
+                            case playWay.RandomPlay:
                                 randomPlay();
                                 break;
                             default:
@@ -238,6 +240,5 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
         </>
     )
 };
-
 
 export default React.memo(Song);

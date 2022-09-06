@@ -4,6 +4,8 @@ import PubSub from "pubsub-js";
 import { getListSong, musicIsUse } from "../api/songlist"
 import { addLocalStorage } from "../utils/authorization"
 import songsStore from "../mobx/songs"
+import constantsStore from "../mobx/constants"
+const { playWay } = constantsStore;
 //传入歌单id
 export default async function playList(id: number) {
     try {
@@ -52,7 +54,7 @@ const getLastSongIndex = async (index: number, song: Music.song, songs: Array<Mu
     let former = index;
     if (song && songs.length > 0) {
         switch (playway) {
-            case '1':
+            case playWay.ListPlay:
                 while (true) {
                     index = (index - 1 + songs.length) % songs.length;
                     let res = await musicIsUse(songs[index].id);
@@ -61,7 +63,7 @@ const getLastSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                     }
                 }
                 break;
-            case '2':
+            case playWay.OrderPlay:
                 while (index > 0) {
                     index--;
                     let res = await musicIsUse(songs[index].id);
@@ -70,7 +72,7 @@ const getLastSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                     }
                 }
                 break;
-            case '4':
+            case playWay.RandomPlay:
                 while (true) {
                     index = Math.ceil(songs.length * Math.random());
                     let res = await musicIsUse(songs[index].id);
@@ -93,7 +95,7 @@ const getNextSongIndex = async (index: number, song: Music.song, songs: Array<Mu
     let former = index;
     if (songs && songs.length > 0) {
         switch (playway) {
-            case '1':
+            case playWay.ListPlay:
                 while (true) {
                     index = (index + 1) % songs.length;
                     let res = await musicIsUse(songs[index].id);
@@ -102,7 +104,7 @@ const getNextSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                     }
                 }
                 break;
-            case '2':
+            case playWay.OrderPlay:
                 while (index < songs.length) {
                     index++;
                     let res = await musicIsUse(songs[index].id);
@@ -111,7 +113,7 @@ const getNextSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                     }
                 }
                 break;
-            case '4':
+            case playWay.RandomPlay:
                 while (true) {
                     index = Math.ceil(songs.length * Math.random());
                     let res = await musicIsUse(songs[index].id);

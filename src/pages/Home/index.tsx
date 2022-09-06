@@ -6,17 +6,23 @@ import { RecommonList, NewDisc } from "./Recommon"
 import MyRecommend from './MyRecommend';
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons"
 import { Outlet, useLocation } from "react-router-dom"
-
+import PubSub from 'pubsub-js';
 export default function Container() {
     let { useEffect, useState } = React;
     const [arr, setArr] = useState<Array<Music.recommomMv>>();
     const { pathname } = useLocation();
+    //当登录后显示个人推荐
+    const [hasLogin, setHasLogin] = useState(false);
     //当页面初始化时调用
     useEffect(() => {
         (async () => {
             const mvs = await getRecommondmv();
             setArr(mvs.data);
         })();
+        PubSub.subscribe("showRecommend", (_,show:boolean) => {
+            setHasLogin(show);
+        })
+        localStorage.getItem("hasLogin") === 'true' && setHasLogin(true);
     }, []);
     const onChange = (currentSlide: number) => {
         // console.log(currentSlide);
@@ -35,7 +41,7 @@ export default function Container() {
                 </Carousel>
                 <DoubleRightOutlined style={{ color: '#fff', fontSize: "25px" }} />
             </div>}
-            {localStorage.getItem("hasLogin") === 'true' && pathname === '/home' && <div className={styles['my-recommon']}>
+            {hasLogin && pathname === '/home' && <div className={styles['my-recommon']}>
                 <MyRecommend />
             </div>}
             {/* 精选歌单和新碟上架*/}

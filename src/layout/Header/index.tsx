@@ -45,8 +45,9 @@ export default function Header() {
         if (!type) {
             setLogin(false);
             typeof operation === 'object' ? setAvatar(localStorage.getItem("avatar")) : setAvatar("");
-            setHasLogin(true);
-            
+            localStorage.getItem("hasLogin") === 'true' && setHasLogin(true);
+            //显示个人推荐
+            localStorage.getItem("hasLogin") === 'true' && PubSub.publish("showRecommend", true);
         } else {
             setLogin(true);
         }
@@ -59,6 +60,7 @@ export default function Header() {
         addLocalStorage([{ key: "hasLogin", value: "false" }]);
         setHasLogin(false);
         setAvatar("");
+        PubSub.publish("showRecommend", false);
         //退出后跳转到首页
         navigate("/home");
     }
@@ -111,7 +113,7 @@ export default function Header() {
                     {
                         hasLogin &&
                         <p >
-                            <Button onClick={() => { loginOut() }} type='text' className={styles['login-btn']}>
+                            <Button onClick={() => { loginOut(); }} type='text' className={styles['login-btn']}>
                                 退出登录
                             </Button>
                         </p>
