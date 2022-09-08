@@ -12,6 +12,7 @@ import DailySongsRecommend from "../pages/Home/DailyRecommendSongs"
 import AllPlayList from "../pages/AllPlayList"
 import Album from "../pages/Album"
 import Rank from "../pages/Rank"
+import SearchPage from "../pages/Search"
 const routes = [
     {
         path: "/home",
@@ -72,6 +73,11 @@ const routes = [
     {
         path: "/rank",
         element: <Rank />
+    },
+    //搜索
+    {
+        path: "/search",
+        element: <SearchPage />
     },
     {
         path: "*",

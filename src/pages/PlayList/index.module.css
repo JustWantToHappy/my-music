@@ -26,7 +26,7 @@
 }
 
 .list>span>img:first-child {
-    width: 80%;
+    width:80%;
     margin: 0 auto;
     grid-column: 1/2;
     grid-row: 1/3;
@@ -107,6 +107,7 @@
 /*  */
 .songs {
     padding: 20px;
+    margin-top:2vh;
 }
 
 .songs>:nth-child(1) {

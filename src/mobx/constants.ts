@@ -7,8 +7,20 @@ enum playway {
     SingleCycle = '3',
     RandomPlay = '4'
 }
+//搜索类型
+enum Search {
+    SingleSong=1,
+    Album = 10,
+    Singer = 100,
+    SongList = 1000,
+    User = 1002,
+    MV = 1004,
+    Lyric = 1006,
+    Station = 1009
+}
 const constantsStore = {
     publicURL: "http://localhost:5000",
-    playWay: playway
+    playWay: playway,
+    SearchList:Search
 }
 export default observable(constantsStore);

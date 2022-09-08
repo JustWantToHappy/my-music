@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { Button } from "antd"
 import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
 // import Song from "./Song"
@@ -36,7 +35,6 @@ const PlayList = () => {
             }
             setSongs(sgs.songs);
         })();
-        let len = list?.playlist.description.length as number;
     }, [list, songs, id]);
     useEffect(() => {
         window.scrollTo(0, 0);

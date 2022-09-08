@@ -25,7 +25,7 @@ export default function Container() {
         localStorage.getItem("hasLogin") === 'true' && setHasLogin(true);
     }, []);
     const onChange = (currentSlide: number) => {
-        // console.log(currentSlide);
+
     };
     return (
         <>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { NavLink, useNavigate } from "react-router-dom"
 import { Button, Input, Avatar } from "antd"
 import LoginBox from "../../components/Login";
@@ -8,8 +8,7 @@ import styles from "./index.module.scss"
 import { addLocalStorage, deleteLocalStorage } from "../../utils/authorization"
 import PubSub from 'pubsub-js';
 export default function Header() {
-    const { Search } = Input;
-    const [input, setInput] = React.useState("" as any);
+    const [input, setInput] = React.useState("");
     //用于判断登录注册窗口是否显示
     const [login, setLogin] = React.useState(false);
     const [avatar, setAvatar] = React.useState<string | null>();
@@ -36,10 +35,6 @@ export default function Header() {
     }
         ];
 
-    //点击搜索按钮时进行搜索
-    function search() {
-
-    }
     //点击登录
     function loginIn(type: boolean, operation: any) {
         if (!type) {
@@ -74,6 +69,12 @@ export default function Header() {
         //设置为true表示显示登录框
         PubSub.subscribe("login", () => { setLogin(true) });
     }, []);
+    //搜索框回车
+    const search: React.KeyboardEventHandler<HTMLInputElement> | undefined = (event: React.KeyboardEvent) => {
+        if (event.key.includes("Enter") && input.length > 0) {
+            navigate(`/search?keywords=${input}`)
+        }
+    }
     return (
         <>
             <div className={styles.head}>
@@ -93,13 +94,15 @@ export default function Header() {
                     )
                 })}
                 <li>
-                    <Search
+                    <Input
                         allowClear
+                        prefix={<SearchOutlined />}
                         placeholder='音乐/电台/视频/歌手'
+                        style={{ borderRadius: "20px" }}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setInput(event.target.value);
                         }}
-                        onSearch={search}
+                        onKeyDown={search}
                     />
                 </li>
                 <div>

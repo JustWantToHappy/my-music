@@ -85,26 +85,28 @@ const Index = () => {
     const getData = () => {
         (async () => {
             let userId = isLogin();
-            let { playlist } = await fetchUserSongList(userId);
-            setList(playlist);
-            let arr = [];
-            arr.push(getItem(
-                <span>
-                    新建歌单
-                </span>,
-                'add',
-                <PlusCircleOutlined />
-            ))
-            let brr: Array<MenuItem> = [];
-            playlist && playlist.forEach((list: User.songList) => {
-                brr.push(getItem(list.name, list.id, <img src={list.coverImgUrl} alt='logo' style={{ width: '40px' }} />));
-            })
-            arr.push(getItem('我创建的歌单', 'sub1', <DashOutlined />, brr));
-            setItems(arr);
-            if (playlist.length > 0) {
-                navigate(`/mymc/mysonglist?id=${playlist[1].id}`, { state: { data: playlist[1], mylove: false } })
-            } else {
-                navigate(`mysonglist?id=${playlist[0].id}`, { state: { data: playlist[0], mylove: true } })
+            if (localStorage.getItem("hasLogin") === 'true') {
+                let { playlist } = await fetchUserSongList(userId);
+                setList(playlist);
+                let arr = [];
+                arr.push(getItem(
+                    <span>
+                        新建歌单
+                    </span>,
+                    'add',
+                    <PlusCircleOutlined />
+                ))
+                let brr: Array<MenuItem> = [];
+                playlist && playlist.forEach((list: User.songList) => {
+                    brr.push(getItem(list.name, list.id, <img src={list.coverImgUrl} alt='logo' style={{ width: '40px' }} />));
+                })
+                arr.push(getItem('我创建的歌单', 'sub1', <DashOutlined />, brr));
+                setItems(arr);
+                if (playlist.length > 0) {
+                    navigate(`/mymc/mysonglist?id=${playlist[1].id}`, { state: { data: playlist[1], mylove: false } })
+                } else {
+                    navigate(`mysonglist?id=${playlist[0].id}`, { state: { data: playlist[0], mylove: true } })
+                }
             }
         })();
     }
