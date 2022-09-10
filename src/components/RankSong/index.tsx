@@ -32,13 +32,6 @@ export default function RankSong(props: { songs: Array<Music.song> | undefined }
         }
     }
     useEffect(() => {
-        window.scrollTo({
-            left: 0,
-            top: 0,
-            behavior: 'smooth'
-        })
-    }, [songs]);
-    useEffect(() => {
         PubSub.subscribe("changeMusic", async (_, type: string) => {
             if (songsStore.origin === 'rank') {
                 let jsonStr1 = localStorage.getItem("song");

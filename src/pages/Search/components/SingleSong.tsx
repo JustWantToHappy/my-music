@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Table, Pagination } from 'antd';
+import { useNavigate } from "react-router-dom"
 import { PlayCircleOutlined } from "@ant-design/icons"
 import dayjs from 'dayjs';
 import styles from "../styles/single_song.module.scss"
 import { getSearchContent } from "../../../api/search"
+import { addLocalStorage } from "../../../utils/authorization"
+import PubSub from 'pubsub-js';
 const { Column } = Table;
 export default function SingleSong(props: { keywords: string | null }) {
   const [search, setSearch] = useState("");
@@ -13,6 +16,9 @@ export default function SingleSong(props: { keywords: string | null }) {
   const [total, setTotal] = useState(0);
   //每页显示条数
   const [pageSize] = useState(30);
+  //用于表示当前正在播放的音乐
+  const [id, setId] = useState(0);
+  const navigate = useNavigate();
   if (search !== props.keywords) {
     setCurrent(1);
     props.keywords && setSearch(props.keywords);
@@ -33,32 +39,42 @@ export default function SingleSong(props: { keywords: string | null }) {
   useEffect(() => {
     getData(current);
   }, [search]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   //当切换不同页码时调用
   const changeCurrentPage = (page: number) => {
     setCurrent(page);
     getData(page);
   }
+  //点击播放音乐
+  const playMusic = (song: Music.song, e: React.MouseEvent) => {
+    setId(song.id);
+    let items = [{ key: "isPlay", value: "true" }, { key: "song", value: JSON.stringify(song) }, { key: "songs", value: JSON.stringify([song]) }];
+    addLocalStorage(items);
+    PubSub.publish("play", true);
+  }
   return (
     <div className={styles.songs}>
       <Table dataSource={songs} showHeader={false} pagination={false} >
-        <Column title="歌曲名称" dataIndex="name" key="name" render={(name: string) => (
+        <Column title="歌曲名称" dataIndex="name" key="name" render={(name: string, currentSong: Music.song) => (
           <>
-            <span className={styles.playLogo}>
-              <PlayCircleOutlined />
+            <span className={styles.playLogo} onClick={(e) => playMusic(currentSong, e)} >
+              <PlayCircleOutlined style={id === currentSong.id ? { color: '#f53f3f', opacity: 1 } : {}} />
+              <span >{name}</span>
             </span>
-            <span >{name}</span>
           </>
         )} />
         <Column title="歌手名称" dataIndex="ar" key="ar" render={(singers: Music.singer[]) => (
           <>
-            {singers.map(singer => singer.name).slice(0, 2).map((name: string, index: number) => {
-              return <span key={index} className={styles.singername}>{name}{index === 0 && singers.length >= 2 && '/'}</span>
+            {singers.slice(0, 2).map((singer: Music.singer, index: number) => {
+              return <span key={index} className={styles.singername} onClick={() => { navigate(`/artist?id=${singer.id}`) }}>{singer.name}{index === 0 && singers.length >= 2 && '/'}</span>
             })}
           </>
         )} />
-        <Column title="歌曲名称" dataIndex="al" key="al" render={(al: Music.album) => (
+        <Column title="专辑" dataIndex="al" key="al" render={(al: Music.album) => (
           <>
-            <span className={styles.songname}>《{al.name}》</span>
+            <span className={styles.songname} onClick={() => { navigate(`/home/album?id=${al.id}`) }}>《{al.name}》</span>
           </>
         )} />
         <Column

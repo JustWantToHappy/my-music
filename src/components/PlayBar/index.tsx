@@ -10,13 +10,13 @@ import {
     SoundFilled,
     DownOutlined,
     FullscreenExitOutlined,
-    SyncOutlined,
+    UnorderedListOutlined,
     FullscreenOutlined,
     PlusCircleOutlined
 } from "@ant-design/icons"
 import { Dropdown, Menu, message, Slider, Tooltip } from 'antd';
 import React from "react"
-import pubsub from "pubsub-js"
+import PubSub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
 import { songStore } from "../../mobx/song"
@@ -89,13 +89,22 @@ const PlayBar = (props: { song: Music.song }) => {
                 setTime(playBar.current.currentTime * 1000);
             }, 1000);
             //通知播放条停止播放
-            pubsub.subscribe("stopPlay", () => {
+            PubSub.subscribe("stopPlay", () => {
                 setPlay(false);
             })
         })
         playBar.current.addEventListener("ended", () => {
             clearInterval(songStore.timer);
-            pubsub.publish("changeMusic", "next");
+            let songsStr = localStorage.getItem("songs");
+            let songsLen = 0;
+            if (songsStr) {
+                const songs: Array<Music.song> = JSON.parse(songsStr);
+                songs && (() => {
+                    songsLen = songs.length;
+                })();
+            }
+            songsLen > 1 && PubSub.publish("changeMusic", "next");
+            songsLen === 1 && setPlay(false);
         })
         return function () {
             songStore.clearTimer();
@@ -107,12 +116,17 @@ const PlayBar = (props: { song: Music.song }) => {
             songStore.clearTimer();
             songStore.timer = null;
         }
-        pubsub.subscribe("showPlayBar", function (_, data) {
+        PubSub.subscribe("showPlayBar", function (_, data) {
             if (data === true) {
                 setBar(true);
             }
         });
     }, [isPlay]);
+    React.useEffect(() => {
+        window.addEventListener("click", () => {
+            setSloud(false);
+        })
+    }, []);
     //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move']];
@@ -144,11 +158,11 @@ const PlayBar = (props: { song: Music.song }) => {
     }
     //播放上一首音乐
     const playLast = () => {
-        pubsub.publish("changeMusic", "last");
+        PubSub.publish("changeMusic", "last");
     }
     //播放下一首音乐
     const playNext = () => {
-        pubsub.publish("changeMusic", "next");
+        PubSub.publish("changeMusic", "next");
     }
     //收起播放条
     const shrink = () => {
@@ -242,7 +256,7 @@ const PlayBar = (props: { song: Music.song }) => {
                 {/* 音量调整 */}
                 <span className={styles['play-sound']}>
                     {showSloud && <Slider vertical className={styles['play-sound-bar']} onChange={changeVoice} value={voice} />}
-                    <SoundFilled className={styles['play-sound-btn']} onClick={() => { setSloud(!showSloud) }} />
+                    <SoundFilled className={styles['play-sound-btn']} onClick={(e) => { e.stopPropagation(); setSloud(!showSloud); }} />
                 </span>
                 {/* 播放方式 */}
                 <Dropdown overlay={menu} placement="top" >
@@ -266,12 +280,12 @@ const PlayBar = (props: { song: Music.song }) => {
                     </span>
                     <i>
                         <Dropdown overlay={menu} placement="top" >
-                            <SyncOutlined />
+                            <UnorderedListOutlined />
                         </Dropdown>
                     </i>
                     <p>
                         {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
-                        <SoundFilled onClick={() => { setSloud(!showSloud) }} />
+                        <SoundFilled onClick={(e) => { e.stopPropagation(); setSloud(!showSloud) }} />
                     </p>
                 </div>
             </div>}

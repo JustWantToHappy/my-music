@@ -99,19 +99,13 @@ export default function SongList(props: { cat: string, total: number }) {
                                 </span>
                             </div>
                         </div>
-                        <span>{songlist.name}</span>
+                        <span onClick={() => playSongList(songlist.id)} >{songlist.name}</span>
                     </div>
                 })}
             </div>
-            <div className={styles.test}>
-                <div>
-                    <small>sb</small>
-                    <small>zz</small>
-                </div>
-            </div>
             {/* 分页 */}
             <footer className={styles.footer}>
-                <Pagination current={current} onChange={onChange} total={total} pageSize={pageSize} hideOnSinglePage />
+                <Pagination current={current} onChange={onChange} total={total} pageSize={pageSize} hideOnSinglePage showSizeChanger={false}/>
             </footer>
 
         </>

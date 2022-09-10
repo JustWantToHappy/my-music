@@ -172,13 +172,12 @@
 
 /* 音量调整条 */
 .play-sound-bar {
-    height: 100px;
+    height: 18vh;
     position: absolute;
-    float: top;
-    top: -104px;
+    z-index:22;
+    top: -19vh;
     background: #242424;
     opacity: 0.7;
     width: 40px;
     padding: 0 18px;
-    padding-top: 1px;
 }

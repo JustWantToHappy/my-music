@@ -82,7 +82,7 @@
 }
 
 /* 使用before伪元素生成标签体内容 */
-.wrap>p:before {
+.wrap>p::before {
     content: "";
     float: right;
     width: 0;

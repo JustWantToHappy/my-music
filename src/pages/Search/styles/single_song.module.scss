@@ -3,22 +3,25 @@
 }
 
 .playLogo {
-    margin-right: 1vw;
-    opacity: 0.5;
-    font-size: 1.2em;
+    >:first-child {
+        margin-right: 1vw;
+        opacity: 0.5;
+        font-size: 1.2em;
+    }
 
-    &:hover {
+    >:first-child:hover {
         cursor: pointer;
         opacity: 1;
     }
 
-    &+span {
+    >span {
         &:hover {
             text-decoration: underline;
             cursor: pointer;
         }
     }
 }
+
 
 .singername {
     &:hover {

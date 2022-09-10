@@ -17,7 +17,7 @@
     @include bar();
     top: 0;
     left: 0;
-    animation: slide-up 1s ease-in-out;
+    animation: slide-up 0.5s ease-in-out;
 
 }
 
@@ -61,7 +61,6 @@
     align-items: center;
     flex-direction: column;
     padding-top: 10px;
-
     .shrink {
         position: fixed;
         z-index: 21;
@@ -91,6 +90,7 @@
 
     >:nth-child(1) {
         width: 98%;
+        margin-right: 1%;
         flex: 1;
     }
 
@@ -100,7 +100,7 @@
         @include div-center();
 
         >small {
-            flex: 4;
+            flex: 5;
             @include div-center();
             justify-content: center;
         }
@@ -108,14 +108,24 @@
         >span {
             flex: 3;
             font-size: 30px;
-            @include div-center();
-            justify-content: space-around;
+
+            :nth-child(2) {
+                margin: 0 3vw;
+            }
+
+            >:hover {
+                color: #409EFF;
+            }
+
+            >:nth-child(2) {
+                color: #409EFF;
+                opacity: 0.6;
+            }
         }
 
         >i {
             flex: 2;
             cursor: pointer;
-            @include div-center();
 
             >:first-child {
                 font-size: 21px;
@@ -125,24 +135,26 @@
         >p {
             flex: 1;
             @include div-center();
-            flex-direction: column;
-            transform: translateY(1vh);
             height: 100%;
+            transform: translateY(1vh);
 
             .soundBar {
                 position: absolute;
                 height: 100px;
-                bottom: 5vh;
+                bottom: 7vh;
                 z-index: 22;
+                background-color: black;
             }
         }
-        >div{
-            flex:1;
-            font-size:20px;
+
+        >div {
+            flex: 1;
+            font-size: 20px;
             display: flex;
             align-items: center;
             opacity: 0.8;
-            &:hover{
+
+            &:hover {
                 opacity: 1;
                 cursor: pointer;
             }

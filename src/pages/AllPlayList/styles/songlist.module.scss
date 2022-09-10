@@ -3,8 +3,9 @@
     margin-top: 5vh;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-column-gap:2vw;
-    grid-row-gap:3vh;
+    grid-column-gap: 2vw;
+    grid-row-gap: 3vh;
+
     >div {
         width: 12vw;
 
@@ -31,6 +32,7 @@
     >img {
         position: absolute;
         width: 100%;
+
     }
 
     >div {
@@ -47,6 +49,7 @@
         opacity: 0.7;
         font-size: 16px;
         cursor: text;
+
         >span {
             opacity: 0.6;
         }

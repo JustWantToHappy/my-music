@@ -236,7 +236,7 @@ const Song = (props: { songs: Array<Music.song> | undefined, showOperation?: boo
                     }
                 />}
             </Table>
-            <Pagination total={props.songs?.length} style={{ float: "right", marginTop: "5vh", marginRight: "2vw" }} pageSize={pageSize} hideOnSinglePage onChange={changeCurrentPage} pageSizeOptions={[10, 15, 20]} onShowSizeChange={(current, size) => { setPageSize(size) }} />
+            <Pagination total={props.songs?.length} style={{ float: "right", marginTop: "5vh", marginRight: "2vw" }} pageSize={pageSize} hideOnSinglePage onChange={changeCurrentPage} showSizeChanger={false} onShowSizeChange={(current, size) => { setPageSize(size) }} />
         </>
     )
 };
