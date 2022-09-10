@@ -51,6 +51,10 @@ declare namespace Music {
         mvSize?: number; // mv 数量
         briefDesc?: string; // 简单描述
         followed: boolean;//我是否关注
+        blacklist:boolean;//用户是否在黑名单中
+        identifyTag:string[];//身份标签
+        identities:string[];
+        user:User.account
     }
     //专辑
     type album = {

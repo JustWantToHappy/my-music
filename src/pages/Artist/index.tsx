@@ -2,19 +2,20 @@ import styles from "./index.module.scss"
 import { useSearchParams } from "react-router-dom"
 import { useState, useEffect } from "react"
 import Song from "../../components/Song"
+import { fetchUserDetail } from "../../api/user"
 import { fetchSingerDetails, fetchAllSongBySingerId, fetchFiftySongs, fetchSingerDes } from "../../api/artist"
 import { Tabs } from 'antd';
 import React from 'react';
 
 const { TabPane } = Tabs;
-
-
-
 const Artist = () => {
     const [search] = useSearchParams();
     const id = search.get("id") as string;
+    var level: number;//用户等级
     //歌手
     const [singer, setSinger] = useState<Music.singer>();
+    //歌手的其他信息
+    const [user, setUser] = useState<User.account>();
     //歌手所有歌曲
     const [songs, setSongs] = useState<Array<Music.song>>([]);
     //歌手50首热门歌曲
@@ -58,10 +59,15 @@ const Artist = () => {
         (async () => {
             let res = await fetchSingerDetails(id);
             const { artist } = res.data;
+            let per: Music.singer;
             if (res.code === 200) {
-                let per: Music.singer = { ...artist, ...res.data };
+                console.log(res, 'hhh')
+                per = { ...artist, ...res.data };
                 setSinger(per);
                 getAllSongs();
+                const response = await fetchUserDetail(per.user.userId);
+                // console.log(response, 'zzz');
+                setUser(response.profile);
             }
         })();
         window.scrollTo(0, 0);
@@ -71,17 +77,31 @@ const Artist = () => {
             <div className={styles.content}>
                 <header>
                     <div>
-                        <h1>{singer && singer.name}</h1>
                         <img src={singer && singer.cover} alt="logo" />
                     </div>
                     <div>
-                        <label>歌曲数量:{singer?.musicSize}</label>
-                        <label>专辑数量:{singer?.albumSize}</label>
-                        <label >mv数量:{singer?.mvSize}</label>
                         <p>
-                            <label >简要描述:</label>
-                            {singer?.briefDesc}
+                            <h2>{singer?.name}</h2>
+                            <h4 >{user?.followed ? "已" : "未"}关注</h4>
+                             <div>
+                                <span>粉丝数量：</span>
+                                <span style={{color:'#f53f3f'}}> {user?.followeds}</span>
+                             </div>
                         </p>
+                        <span></span>
+                        <div>
+                            <small>歌曲数量:{singer?.musicSize}</small>
+                            <small>专辑数量:{singer?.albumSize}</small>
+                            <small >mv数量:{singer?.mvSize}</small>
+                        </div>
+                        <footer>
+                            <p>
+                                个人介绍：{user?.description}
+                            </p>
+                            <p>
+                                所在地区:{'xxxxx'}
+                            </p>
+                        </footer>
                     </div>
                 </header>
                 <hr />

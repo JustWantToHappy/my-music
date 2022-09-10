@@ -1,4 +1,9 @@
 import request from "../utils/request";
+//获取用户详细信息
+export function fetchUserDetail(id: number | string):Promise<any> {
+    let time = new Date().getTime();
+    return request({ method: "get", url: `/user/detail?uid=${id}&timestamp=${time}` });
+}
 //获取用户歌单
 export function fetchUserSongList(id: string): Promise<any> {
     let time = new Date().getTime();
