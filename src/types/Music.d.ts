@@ -45,6 +45,7 @@ declare namespace Music {
         id: number;
         name: string;
         cover: string;
+        picUrl:string;
         musicSize?: number; //歌曲数量
         albumSize?: number; // 专辑数量
         videoCount?: number;//视频数量

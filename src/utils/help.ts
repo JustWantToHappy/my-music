@@ -72,4 +72,20 @@ export async function removeSongFromSongList(songListId: string, songId: number)
         console.log(e);
     }
 }
-
+//当图片资源都加载完毕后，然后将图片真正的url给img元素
+export function getRealURL(imgs: string[], elements: HTMLCollectionOf<Element>) {
+    const promises = imgs.map((src,index:number) => {
+        return new Promise((resolve, reject) => {
+            let loadImg = new Image();
+            loadImg.src=src;
+            loadImg.onload = () => {
+                elements[index].setAttribute("src",src);
+            }
+        })
+    })
+    Promise.all(promises).then(res => {
+        //图片全部加载完毕
+    }).catch(err => {
+        //程序出现其他异常
+    })
+}

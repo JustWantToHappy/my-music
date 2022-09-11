@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { Input, Tabs } from "antd"
 import styles from "./styles/index.module.scss"
-import { getSearchContent } from "../../api/search"
 import constantsStore from "../../mobx/constants"
 import SingleSong from './components/SingleSong'
+import Singer from './components/Singer'
 
 export default function SearchPage() {
   const [input] = useSearchParams();
@@ -14,8 +14,6 @@ export default function SearchPage() {
   //搜索关键字
   const keywords = input.get("keywords");
   const [search, setSearch] = useState<string | null>("");
-  //搜索类型 
-  const [searchType, setSearchType] = useState(SearchList.SingleSong);
   //标签之间的间隔
   const [tabGap, setTabGap] = useState(0);
   //搜索的歌曲
@@ -46,11 +44,12 @@ export default function SearchPage() {
       </header>
       {/* 导航 */}
       <div className={styles.tabs} >
-        <Tabs size="large" tabBarGutter={tabGap} centered defaultActiveKey={String(SearchList.SingleSong)}>
+        <Tabs size="large" tabBarGutter={tabGap} centered defaultActiveKey={String(SearchList.SingleSong)} >
           <Tabs.TabPane tab="单曲" key={SearchList.SingleSong}>
-            <SingleSong keywords={keywords}/>
+            <SingleSong keywords={keywords} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="歌手" key={SearchList.Singer}>
+            <Singer keywords={keywords} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="专辑" key={SearchList.Album}>
           </Tabs.TabPane>

@@ -1,0 +1,36 @@
+.singer {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: 25px;
+    grid-row-gap: 30px;
+    padding: 20px;
+}
+
+.artist {
+    display: flex;
+    flex-direction: column;
+
+    img {
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    span {
+        margin: 0 auto;
+        margin-top: 2px;
+
+        &:hover {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            cursor: pointer;
+        }
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+    margin-bottom: 11vh;
+}
