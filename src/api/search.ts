@@ -3,5 +3,6 @@ import request from "../utils/request";
 export function getSearchContent(keywords: string, currentPage: number, limit: number = 30, type: number = 1): Promise<any> {
     //偏移量
     let offset = (currentPage - 1) * limit;
-    return request({ method: "get", url: `/cloudsearch?keywords=${keywords}&offset=${offset}&limit=${limit}&type=${type}` })
+    let time=Date.now();
+    return request({ method: "get", url: `/cloudsearch?keywords=${keywords}&offset=${offset}&limit=${limit}&type=${type}&timestamp=${time}` })
 }

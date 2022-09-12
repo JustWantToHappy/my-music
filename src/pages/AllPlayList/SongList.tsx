@@ -37,7 +37,7 @@ export default function SongList(props: { cat: string, total: number }) {
     //点击播放按钮播放音乐
     const playMusic = (id: number) => {
         songsStore.origin = 'home';
-        playList(id);
+        playList(id,"songlist");
     }
     //点击封面前往歌单
     const playSongList = (id: number) => {

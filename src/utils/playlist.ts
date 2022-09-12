@@ -1,15 +1,15 @@
 //播放列表,id为歌单id
 import PubSub from "pubsub-js";
 //获取歌单中每一首歌曲
-import { getListSong, musicIsUse } from "../api/songlist"
+import { getListSong, musicIsUse,fetchAlbumDetails } from "../api/songlist"
 import { addLocalStorage } from "../utils/authorization"
 import songsStore from "../mobx/songs"
 import constantsStore from "../mobx/constants"
 const { playWay } = constantsStore;
-//传入歌单id
-export default async function playList(id: number) {
+//传入歌单id,type表示播放的类型
+export default async function playList(id: number,type:string) {
     try {
-        let { songs } = await getListSong(id);
+        let { songs } = type==='songlist'?await getListSong(id):await fetchAlbumDetails(id);
         let index = 0;
         for (let i = 0; i < songs.length; i++) {
             let res = await musicIsUse(songs[i].id);
@@ -74,9 +74,9 @@ const getLastSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                 break;
             case playWay.RandomPlay:
                 while (true) {
-                    index = Math.ceil(songs.length * Math.random());
-                    let res = await musicIsUse(songs[index].id);
-                    if (res.message === 'ok') {
+                    index = Math.round(songs.length * Math.random());
+                    let res = index<songs.length&&await musicIsUse(songs[index].id);
+                    if (res&&res.message === 'ok') {
                         break;
                     }
                 }
@@ -105,7 +105,7 @@ const getNextSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                 }
                 break;
             case playWay.OrderPlay:
-                while (index < songs.length) {
+                while (index < songs.length-1) {
                     index++;
                     let res = await musicIsUse(songs[index].id);
                     if (res.message === 'ok') {
@@ -115,9 +115,9 @@ const getNextSongIndex = async (index: number, song: Music.song, songs: Array<Mu
                 break;
             case playWay.RandomPlay:
                 while (true) {
-                    index = Math.ceil(songs.length * Math.random());
-                    let res = await musicIsUse(songs[index].id);
-                    if (res.message === 'ok') {
+                    index = Math.round(songs.length * Math.random());
+                    let res = index<songs.length&&await musicIsUse(songs[index].id);
+                    if (res&&res.message === 'ok') {
                         break;
                     }
                 }

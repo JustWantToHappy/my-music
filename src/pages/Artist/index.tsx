@@ -96,7 +96,7 @@ const Artist = () => {
                         </div>
                         <footer>
                             <p>
-                                个人介绍：{user?.description}
+                                个人介绍：{user?.description||'无'}
                             </p>
                             <p>
                                 所在地区:{'xxxxx'}

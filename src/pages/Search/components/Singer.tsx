@@ -51,7 +51,7 @@ export default function Singer(props: { keywords: string | null }) {
                 })}
             </div>
             <div className={styles.pagination}>
-                <Pagination defaultCurrent={current} total={total} showSizeChanger={false} pageSize={pageSize} onChange={(page: number) => { changePage(page) }} />
+                <Pagination defaultCurrent={current} total={total} showSizeChanger={false} pageSize={pageSize} onChange={(page: number) => { changePage(page) }} hideOnSinglePage={true}/>
             </div>
         </>
     )

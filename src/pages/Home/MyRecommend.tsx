@@ -23,7 +23,7 @@ export default function MyRecommend() {
     //播放每日推荐歌单的歌曲
     const playRecommendSongList = (event: React.MouseEvent, id: number) => {
         songsStore.origin = "home";
-        playList(id);
+        playList(id,"songlist");
         // event.stopPropagation();阻止事件向上冒泡
     }
     //播放每日推荐的歌曲

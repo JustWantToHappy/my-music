@@ -5,7 +5,7 @@ import styles from "./styles/index.module.scss"
 import constantsStore from "../../mobx/constants"
 import SingleSong from './components/SingleSong'
 import Singer from './components/Singer'
-
+import Album from './components/Album'
 export default function SearchPage() {
   const [input] = useSearchParams();
   const { Search } = Input;
@@ -13,18 +13,19 @@ export default function SearchPage() {
   const navigate = useNavigate();
   //搜索关键字
   const keywords = input.get("keywords");
+  const type=input.get("type")
   const [search, setSearch] = useState<string | null>("");
   //标签之间的间隔
   const [tabGap, setTabGap] = useState(0);
-  //搜索的歌曲
-
+  //表示搜索的类型
+  const [searchType, setSearchType] = useState(type);
   if (search !== keywords) {
     setSearch(keywords);
   }
   //点击搜索图标或者回车发送请求
   const getSearchData = (value: string) => {
     if (value) {
-      navigate(`/search?keywords=${value}`);
+      navigate(`/search?keywords=${value}&type=${searchType}`);
     }
   }
   useEffect(() => {
@@ -34,6 +35,11 @@ export default function SearchPage() {
   useEffect(() => {
     getSearchData("");
   }, [search]);
+  //切换标签时调用
+  const changeTab=(activeKey:string)=>{
+      setSearchType(activeKey);
+      navigate(`/search?keywords=${keywords}&type=${activeKey}`)
+  }
   return (
     <div className={styles.search}>
       <header>
@@ -44,7 +50,10 @@ export default function SearchPage() {
       </header>
       {/* 导航 */}
       <div className={styles.tabs} >
-        <Tabs size="large" tabBarGutter={tabGap} centered defaultActiveKey={String(SearchList.SingleSong)} >
+        <Tabs size="large" tabBarGutter={tabGap} centered
+          defaultActiveKey={String(searchType)}
+          onChange={changeTab}
+        >
           <Tabs.TabPane tab="单曲" key={SearchList.SingleSong}>
             <SingleSong keywords={keywords} />
           </Tabs.TabPane>
@@ -52,6 +61,7 @@ export default function SearchPage() {
             <Singer keywords={keywords} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="专辑" key={SearchList.Album}>
+            <Album keywords={keywords} />
           </Tabs.TabPane>
           <Tabs.TabPane tab="视频" key={SearchList.MV}>
           </Tabs.TabPane>

@@ -7,8 +7,10 @@ import "antd/dist/antd.min.css"
 import styles from "./index.module.scss"
 import { addLocalStorage, deleteLocalStorage } from "../../utils/authorization"
 import PubSub from 'pubsub-js';
+import constantsStore from "../../mobx/constants"
 export default function Header() {
     const [input, setInput] = React.useState("");
+    const {SearchList}=constantsStore;
     //用于判断登录注册窗口是否显示
     const [login, setLogin] = React.useState(false);
     const [avatar, setAvatar] = React.useState<string | null>();
@@ -72,7 +74,7 @@ export default function Header() {
     //搜索框回车
     const search: React.KeyboardEventHandler<HTMLInputElement> | undefined = (event: React.KeyboardEvent) => {
         if (event.key.includes("Enter") && input.length > 0) {
-            navigate(`/search?keywords=${input}`)
+            navigate(`/search?keywords=${input}&type=${SearchList.SingleSong}`)
         }
     }
     return (

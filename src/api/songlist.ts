@@ -3,6 +3,11 @@ import request from "../utils/request"
 export function fetchList(id: number): Promise<any> {
     return request.get(`/playlist/detail?id=${id}`);
 }
+//专辑详情
+export function fetchAlbumDetails(id: number): Promise<any> {
+    let time = Date.now();
+    return request({ url: `/album?id=${id}&timestamp=${time}`, method: "get" });
+}
 //歌单中每首歌基本信息，好像无法频繁调用，此接口无法使用时间戳
 export function getListSong(id: number): Promise<any> {
     return request.get(`/playlist/track/all?id=${id}`)
