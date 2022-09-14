@@ -9,6 +9,8 @@ export default function Singer(props: { keywords: string | null }) {
     const { SearchList } = constantsStore;
     const { keywords } = props;
     const myRef = useRef(null);
+    //搜索的字段
+    const [search,setSearch]=useState("");
     const navigate = useNavigate();
     //当前页码
     const [current, setCurrent] = useState(1);
@@ -20,7 +22,7 @@ export default function Singer(props: { keywords: string | null }) {
     const [singer, setSinger] = useState<Array<Music.singer>>();
     //所有图片元素
     const imgElements = document.getElementsByClassName("singer-imags")
-    useEffect(() => {
+    const getData=()=>{
         (async () => {
             const res = await getSearchContent(keywords as string, current, pageSize, SearchList.Singer)
             if (res.code === 200) {
@@ -30,7 +32,11 @@ export default function Singer(props: { keywords: string | null }) {
                 getRealURL(res.result.artists.map((artist: Music.singer) => artist.picUrl), imgElements);
             }
         })();
-    }, []);
+    }
+    if(keywords!==search){
+        getData();
+        setSearch(keywords as string);
+    }
     //切换页码时触发
     const changePage = async (page: number) => {
         const res = await getSearchContent(keywords as string, page, pageSize, SearchList.Singer)

@@ -11,6 +11,8 @@ import songsStore from "../../../mobx/songs"
 export default function Album(props: { keywords: string | null }) {
   const { keywords } = props;
   const { SearchList } = constantsStore;
+  //搜索的字段
+  const [search,setSearch]=useState("");
   const navigate = useNavigate();
   //搜索到的专辑
   const [albums, setAlbums] = useState<Array<Music.album>>([]);
@@ -23,15 +25,17 @@ export default function Album(props: { keywords: string | null }) {
   //用于表示当前鼠标正悬在此专辑上
   const [id, setId] = useState(0);
   const getData = async (page?: number) => {
+    // console.log(keywords,'sb')
     const res = await getSearchContent(keywords as string, page || current, pageSize, SearchList.Album);
     if (res.code === 200) {
       albums.length === 0 && setTotal(res.result.albumCount);
       setAlbums(res.result.albums);
     }
   }
-  useEffect(() => {
+  if(keywords!==search){
     getData();
-  }, []);
+    setSearch(keywords as string);
+  }
   useEffect(() => {
     try {
       let imgs: string[];
