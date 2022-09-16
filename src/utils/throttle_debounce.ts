@@ -1,5 +1,5 @@
 //防抖函数
-var timer: any;
+var timer: ReturnType<typeof setTimeout>;
 export function debounce(fn: Function, delay: number) {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -8,7 +8,7 @@ export function debounce(fn: Function, delay: number) {
 }
 //节流函数
 export function throttle(fn: Function, delay: number): Function {
-    let timer: any;
+    let timer: ReturnType<typeof setTimeout>|null;
     return function () {
         var args = arguments;
         if (timer) {
