@@ -20,15 +20,17 @@ import PubSub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
 import { songStore } from "../../mobx/song"
+import Constants from "../../mobx/constants"
 import CollectModal from "../CollectModal";
 import Lyric from "../Lyric";
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
+    const {playWay } = Constants;
     //控制歌曲切换
     const [song, setSong] = React.useState<Music.song>(props.song);
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     //控制是否播放音乐
-    const [isPlay, setPlay] = React.useState(true);
+    const [isPlay, setPlay] = React.useState(false);
     //控制是否显示播放条
     const [showBar, setBar] = React.useState(true);
     //控制音量条是否展示
@@ -61,7 +63,7 @@ const PlayBar = (props: { song: Music.song }) => {
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         songStore.clearTimer();
-        songStore.timer = null;
+        songStore.timer = undefined;
         setTimeout(() => {
             var promise = playBar.current.play();
             promise.then((res: any) => {
@@ -84,7 +86,7 @@ const PlayBar = (props: { song: Music.song }) => {
             }
             setVoice(Math.floor(playBar.current.volume * 100));
             songStore.clearTimer();
-            songStore.timer = null;
+            songStore.timer = undefined;
             songStore.timer = setInterval(() => {
                 setTime(playBar.current.currentTime * 1000);
             }, 1000);
@@ -104,17 +106,18 @@ const PlayBar = (props: { song: Music.song }) => {
                 })();
             }
             songsLen > 1 && PubSub.publish("changeMusic", "next");
-            songsLen === 1 && setPlay(false);
+            songsLen === 1 &&localStorage.getItem("playway")!==playWay.SingleCycle&&setPlay(false);
+            songsLen === 1 && localStorage.getItem("playway")===playWay.SingleCycle && PubSub.publish("changeMusic", "next");
         })
         return function () {
             songStore.clearTimer();
-            songStore.timer = null;
+            songStore.timer = undefined;
         }
     }, [song]);
     React.useEffect(() => {
         if (!isPlay) {
             songStore.clearTimer();
-            songStore.timer = null;
+            songStore.timer = undefined;
         }
         PubSub.subscribe("showPlayBar", function (_, data) {
             if (data === true) {
@@ -126,6 +129,11 @@ const PlayBar = (props: { song: Music.song }) => {
         window.addEventListener("click", () => {
             setSloud(false);
         })
+        //收起播放条
+        PubSub.subscribe("shrinkPlayBar", (_, data) => {
+            setBar(false);
+            setPlay(false);
+        });
     }, []);
     //播放条样式获取
     const getStyle = (type: string) => {
@@ -135,7 +143,7 @@ const PlayBar = (props: { song: Music.song }) => {
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
         songStore.clearTimer();
-        songStore.timer = null;
+        songStore.timer = undefined;
         setTime(value);
     }
     //当拉取进度条之后触发，设置当前播放时间
@@ -166,7 +174,7 @@ const PlayBar = (props: { song: Music.song }) => {
     }
     //收起播放条
     const shrink = () => {
-        setBar(false);
+        setPlay(false);
         setSloud(false);
     }
     //收起全屏
@@ -189,7 +197,6 @@ const PlayBar = (props: { song: Music.song }) => {
         let bar = myBarRef.current, img = imgRef.current;
         (bar as any).className = fullStyles.playbar;
         (img as any).className = fullStyles.coverImg;
-
     }
     return <>
         <audio ref={playBar} src={url} preload="auto">

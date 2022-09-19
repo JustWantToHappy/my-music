@@ -1,5 +1,5 @@
 declare namespace Music {
-    //mv
+    //推荐mv，轮播图
     type recommomMv = {
         id: number;
         name: string;
@@ -9,6 +9,7 @@ declare namespace Music {
     //一首歌
     type song = {
         index: number;//序号
+        key: number;
         name: string;
         id: number;
         dt: number;//歌曲时长
@@ -22,7 +23,7 @@ declare namespace Music {
     }
     //歌单
     type list = {
-        ToplistType:string;
+        ToplistType: string;
         coverImgUrl: string;
         description: string;
         id: number;
@@ -45,17 +46,17 @@ declare namespace Music {
         id: number;
         name: string;
         cover: string;
-        picUrl:string;
+        picUrl: string;
         musicSize?: number; //歌曲数量
         albumSize?: number; // 专辑数量
         videoCount?: number;//视频数量
         mvSize?: number; // mv 数量
         briefDesc?: string; // 简单描述
         followed: boolean;//我是否关注
-        blacklist:boolean;//用户是否在黑名单中
-        identifyTag:string[];//身份标签
-        identities:string[];
-        user:User.account
+        blacklist: boolean;//用户是否在黑名单中
+        identifyTag: string[];//身份标签
+        identities: string[];
+        user: User.account
     }
     //专辑
     type album = {
@@ -97,6 +98,21 @@ declare namespace Music {
         tracks: Array<{ first: string, second: string }>
         updateFrequency: string;//更行频率
         updateTime: number;//上次更新时间
-        tags:string[];//榜单标签
+        tags: string[];//榜单标签
+    }
+    //mv
+    type mv = {
+        id: number;
+        //应该是歌曲别名
+        alias: string | null;
+        artistId: number;
+        artistName: string;
+        cover: string;
+        duration: number;
+        name: string;
+        playCount: number;
+        artists: Array<{ id: number, name: string, alias: string[], transNames: string[] }>;
+        desc: string | null;
+        briefDesc: string | null;
     }
 }

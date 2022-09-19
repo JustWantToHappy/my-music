@@ -4,9 +4,8 @@ const RouteNavigate = (props: { routeConfig: Array<{ path: string, element: JSX.
     const location = useLocation();
     //pathname表示当前页面路径
     const { pathname } = location;
-    console.log(pathname,'sb',location)
     let routes = props.routeConfig;
-    let currentRoute: any;
+    let currentRoute:JSX.Element;
     for (let i = 0; i < routes.length; i++) {
         if (routes[i].path === pathname) {
             currentRoute = routes[i].element;

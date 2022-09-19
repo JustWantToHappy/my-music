@@ -27,7 +27,7 @@ const SongList = () => {
         (async () => {
             let { songs } = await getListSong(parseInt(id as string));
             let arr: Array<Music.song> = [];
-            songs.forEach((song: any, index: number) => {
+            songs.forEach((song:Omit<Music.song,'index'|"key">, index: number) => {
                 let obj: Music.song;
                 obj = { index: index + 1, key: index, ...song };
                 arr.push(obj);

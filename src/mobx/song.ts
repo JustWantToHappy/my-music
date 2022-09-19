@@ -1,7 +1,7 @@
 import { observable } from "mobx"
-let content: { timer: any, clearTimer: () => void } = {
+let content: { timer: number|undefined|ReturnType<typeof setTimeout>, clearTimer: () => void } = {
     //全局定时器
-    timer: null,
+    timer: undefined,
     clearTimer: function () {
         clearInterval(this.timer);
     }

@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import {useLocation } from "react-router-dom"
 import { useRoutes } from "react-router-dom"
 import routes from "../../routes"
 import { PlayBar } from "../../components/PlayBar"
-import pubsub from "pubsub-js"
+import PubSub from "pubsub-js"
 const Container = function (props:any) {
     const element = useRoutes(routes);
     const [song, setSong] = React.useState<Music.song>();
+    const location = useLocation();
     //播放音乐
     const play = async () => {
         if (localStorage.getItem("isPlay")) {
@@ -13,14 +15,14 @@ const Container = function (props:any) {
             setSong(obj);
         }
     }
-    pubsub.subscribe("play", function (_, data) {
+    PubSub.subscribe("play", function (_, data) {
         play();
     })
     React.useEffect(() => {
         //开启一个监听器，如果鼠标从视口底部移出，则显示音乐播放条
         document.addEventListener("mouseleave", (e) => {
-            if (e.clientY >= window.innerHeight) {
-                pubsub.publish("showPlayBar", true);
+            if (e.clientY >= window.innerHeight&&location.pathname!=='/mv') {
+                PubSub.publish("showPlayBar", true);
             }
         })
     }, []);

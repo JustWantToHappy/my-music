@@ -13,6 +13,7 @@ import AllPlayList from "../pages/AllPlayList"
 import Album from "../pages/Album"
 import Rank from "../pages/Rank"
 import SearchPage from "../pages/Search"
+import Video from "../components/Video"
 const routes = [
     {
         path: "/home",
@@ -78,6 +79,11 @@ const routes = [
     {
         path: "/search",
         element: <SearchPage />
+    },
+    //mv
+    {
+        path: "/mv",
+        element:<Video/>
     },
     {
         path: "*",
