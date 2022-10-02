@@ -2,7 +2,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    opacity: 0;
 
     >h3 {
         font-weight: 700;
@@ -30,12 +29,18 @@
 
     >div {
         background-size: 100% 100%;
-        width: 150px;
-        height: 150px;
+        min-width: 150px;
+        min-height: 150px;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         cursor: pointer;
+        background-size: cover;
+        
+        &:hover {
+            transform: scale(1.05);
+            transition: transform 100ms linear;
+        }
 
         >figcaption {
             color: #fff;
@@ -78,9 +83,11 @@
         flex-direction: column;
         height: 150px;
         width: 150px;
-        &:hover{
+
+        &:hover {
             cursor: pointer;
         }
+
         >:first-child {
             flex: 1;
             background: #C10D0C;
@@ -92,15 +99,17 @@
         >:last-child {
             flex: 3;
             background: #fff;
-            font-size:40px;
+            font-size: 40px;
             font-weight: 700;
             text-align: center;
         }
     }
-    >footer{
+
+    >footer {
         cursor: pointer;
         text-align: center;
-        &:hover{
+
+        &:hover {
             text-decoration: underline;
         }
     }

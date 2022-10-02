@@ -58,7 +58,7 @@ export default function AllPlayList() {
                     defaultTotal={all?.resourceCount} />}
             <hr />
             <div className={styles.content}>
-                <SongList cat={title} total={count} />
+                <SongList cat={title} total={count}  />
             </div>
         </div>
     )

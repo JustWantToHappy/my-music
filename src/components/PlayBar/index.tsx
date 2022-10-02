@@ -78,6 +78,7 @@ const PlayBar = (props: { song: Music.song }) => {
         }, 150)
         setTime(0);
         playBar.current.addEventListener("play", () => {
+            setPlay(true);
             //音乐一旦开始播放，设置音量初始值
             if (localStorage.getItem("volume")) {
                 playBar.current.volume = parseFloat(localStorage.getItem("volume") as string);
@@ -174,7 +175,7 @@ const PlayBar = (props: { song: Music.song }) => {
     }
     //收起播放条
     const shrink = () => {
-        setPlay(false);
+        setBar(false);
         setSloud(false);
     }
     //收起全屏
@@ -290,7 +291,7 @@ const PlayBar = (props: { song: Music.song }) => {
                             <UnorderedListOutlined />
                         </Dropdown>
                     </i>
-                    <p>
+                    <p >
                         {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
                         <SoundFilled onClick={(e) => { e.stopPropagation(); setSloud(!showSloud) }} />
                     </p>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
+import { Tooltip } from "antd"
 import { useNavigate } from "react-router-dom"
 import styles from "./recommon.module.scss"
-import { getImgsLoadEnd } from "../../utils/help"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
@@ -14,12 +14,6 @@ const RecommonList = () => {
             setHighSongLists(lists.playlists);
         })();
     }, []);
-    useEffect(() => {
-        //只有图片加载完成后才显示
-        if (highSongLists && highSongLists.length > 0) {
-            getImgsLoadEnd(highSongLists, "coverImgUrl", listRef);
-        }
-    }, [highSongLists])
     return (
         <div className={styles.recommon} ref={listRef}>
             <section className={styles.title}>
@@ -27,21 +21,22 @@ const RecommonList = () => {
                 <span onClick={() => { navigate("/home/allplaylist") }}>更多</span>
                 <hr className={styles.divider} />
             </section>
-            {highSongLists?.map(list => {
-                return <div key={list.id} onClick={() => {
-                    navigate(`/playlist/${list.id}`)//跳转到歌单详情页面
-                }}>
-                    <img src={list.coverImgUrl} alt="图片无法显示" />
-                    <span>{list.name}</span>
-                </div>
-            })}
+            <div className={styles['host-lists']}>
+                {highSongLists?.map(list => {
+                    return <div key={list.id} onClick={() => {
+                        navigate(`/playlist/${list.id}`)//跳转到歌单详情页面
+                    }} >
+                        <img src={list.coverImgUrl} alt="图片无法显示" />
+                        <span>{list.name}</span>
+                    </div>
+                })}
+            </div>
         </div>
     )
 }
 //新碟上架
 const NewDisc = () => {
     const [newDiscs, setNewDiscs] = useState<Array<Music.album>>();
-    const albumRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     useEffect(() => {
         (async () => {
@@ -49,27 +44,31 @@ const NewDisc = () => {
             setNewDiscs(data.albums);
         })();
     }, []);
-    useEffect(() => {
-        if (newDiscs && newDiscs.length > 0) {
-            getImgsLoadEnd(newDiscs, 'picUrl', albumRef);
-        }
-    }, [newDiscs]);
     const toArtistPage = (singer: Music.singer) => {
         navigate(`/artist?id=${singer.id}`, { state: singer });
     }
     return (
-        <div className={styles.newBorn} ref={albumRef}>
+        <div className={styles.album}>
             <b>最新专辑</b>
-            {newDiscs?.map(album => {
-                return <section key={album.id}>
-                    <img src={album.picUrl} alt="图片无法显示" onClick={() => { navigate(`album?id=${album.id}`) }} />
-                    <div>
-                        <small onClick={() => { toArtistPage(album.artist) }}>{album.artist.name}</small>
-                        <small onClick={() => { navigate(`album?id=${album.id}`) }}>{album.name}</small>
-                    </div>
-                </section>
+            <hr />
+            <div className={styles.newBorn} >
+                {newDiscs?.map(album => {
+                    return <section key={album.id}>
+                        <img src={album.picUrl} alt="图片无法显示" onClick={() => { navigate(`album?id=${album.id}`) }} />
+                        <small onClick={() => { toArtistPage(album.artist) }}>
+                            <Tooltip placement="top" title={album.artist.name} mouseEnterDelay={0.2}  overlayInnerStyle={{color:'black'}} color="#fff">
+                                {album.artist.name}
+                            </Tooltip>
+                        </small>
+                        <small onClick={() => { navigate(`album?id=${album.id}`) }}>
+                        <Tooltip placement="bottom" title={album.name} mouseEnterDelay={0.2} overlayInnerStyle={{color:'black'}} color="#fff">
+                                {album.name}
+                            </Tooltip>
+                        </small>
+                    </section>
 
-            })}
+                })}
+            </div>
         </div>
     )
 }

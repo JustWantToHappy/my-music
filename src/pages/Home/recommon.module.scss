@@ -1,14 +1,5 @@
 .recommon {
-    display: grid;
-    margin-left: calc(25vw/2 - 8px);
-    width: 100%;
-    height: 40vh;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    flex: 1;
-    grid-column-gap: 30px;
-    grid-row-gap: 40px;
-    opacity: 0;
+    padding: 0 calc(25vw/2 - 8px);
 }
 
 .recommon span:hover {
@@ -29,6 +20,20 @@
     cursor: pointer;
 }
 
+.host-lists {
+    margin-top: 2vh;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 3vw;
+    grid-row-gap: 4vh;
+
+    div {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
 .divider {
     grid-column: 1/3;
     background-color: #C10D0C;
@@ -36,56 +41,60 @@
 }
 
 .recommon img {
-    width: 140px;
-    height: 140px;
+    width: 100%;
+    border-radius: 3%;
+    min-width: 140px;
+    min-height: 160px;
+    object-fit: cover;
+    &:hover {
+        cursor: pointer;
+        transform: translateY(-1vh);
+        transition: transform 100ms linear;
+    }
 }
 
-.recommon img:hover {
-    cursor: pointer;
+.album {
+    margin-top: 8vh;
+    height:67vh;
+    padding: 0 calc(25vw/2 - 8px);
+    hr {
+        background-color: #C10D0C;
+        height: 1px;
+        margin-top:1vh;
+        margin-bottom: 2vh;
+    }
 }
 
 .newBorn {
-    flex: 1;
     display: grid;
-    grid-template-columns: 1fr;
-    grid-row-gap: 4px;
-    margin: 10px;
-    border: 1px solid #d4d4d4;
-    margin-top: 5vh;
-    margin-left: 20px;
-    padding: 5px;
-    opacity: 0;
+    grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: 2vw;
+    grid-row-gap: 3vh;
 }
 
 .newBorn>section {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    small:hover{
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    small{
+        display:-webkit-box;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        text-align: center;
+    }
 }
 
 .newBorn img {
-    width: 80px;
-    height: 80px;
-    grid-column: 2/3;
+    min-width: 80px;
+    min-height: 80px;
+    width: 100%;
+    height: 17vh;
+    object-fit: cover;
     cursor: pointer;
-}
-
-
-
-.newBorn b {
-    margin-left: 3%;
-    cursor: pointer;
-}
-
-.newBorn small:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.newBorn>section>div {
-    display: flex;
-    padding: 5px;
-    flex-direction: column;
-    grid-column: 3/7;
-    justify-content: space-around;
 }

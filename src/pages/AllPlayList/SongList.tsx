@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef,} from 'react'
 import { useNavigate } from "react-router-dom"
 import { Pagination } from "antd"
 import { CustomerServiceOutlined, PlayCircleOutlined } from "@ant-design/icons"
@@ -15,17 +15,26 @@ export default function SongList(props: { cat: string, total: number }) {
     //当前标签
     const [tag, setTag] = useState(cat);
     //每页显示的歌单数量
-    const [pageSize, setPageSize] = useState(35);
+    const [pageSize] = useState(35);
     //当前页
     const [current, setCurrent] = useState(1);
-    //当前标签下歌单总数
-    const [count, setCount] = useState(total);
     //存放歌单
     const [songLists, setSongLists] = useState<Array<Music.list>>([])
-    //
-    const [num, setNum] = useState(0);
     //当前容器
     const myRef = useRef<HTMLDivElement>(null);
+    //实现路由懒加载
+    const loadImage = () => {
+        //获取所有图片
+        const imgs = document.getElementsByClassName("songlist-image");
+        //获取可视高度
+        const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+        for (let i = 0; i < imgs.length; i++) {
+            let distance = viewHeight - imgs[i].getBoundingClientRect().top;
+            if (distance >= 0 && imgs[i].getBoundingClientRect().top >= 0) {
+                imgs[i].setAttribute("src", imgs[i].getAttribute("data-src") as string);
+            }
+        }
+    }
     //重新渲染页面
     if (cat !== tag) {
         setTag(cat);
@@ -37,7 +46,7 @@ export default function SongList(props: { cat: string, total: number }) {
     //点击播放按钮播放音乐
     const playMusic = (id: number) => {
         songsStore.origin = 'home';
-        playList(id,"songlist");
+        playList(id, "songlist");
     }
     //点击封面前往歌单
     const playSongList = (id: number) => {
@@ -47,7 +56,7 @@ export default function SongList(props: { cat: string, total: number }) {
         (async () => {
             //more为true表示还有分页
             try {
-                const { more, playlists, code } = await fetchSongLists('hot', cat, pageSize, (current - 1) * pageSize);
+                const { playlists, code } = await fetchSongLists('hot', cat, pageSize, (current - 1) * pageSize);
                 if (code === 200) {
                     setSongLists(playlists)
                 }
@@ -55,33 +64,25 @@ export default function SongList(props: { cat: string, total: number }) {
                 console.log(e);
             }
         })();
-    }, [tag, current]);
-    //实现路由懒加载
-    useEffect(() => {
-        //回到顶部
         window.scrollTo({
             left: 0,
             top: 0,
             behavior: 'smooth'
         })
-        //获取所有图片
-        const imgs = document.getElementsByClassName("songlist-image");
-        //获取可视高度
-        const viewHeight = window.innerHeight || document.documentElement.clientHeight;
-        const loadImage = () => {
-            let num = 0;
-            for (let i = num; i < imgs.length; i++) {
-                let distance = viewHeight - imgs[i].getBoundingClientRect().top;
-                if (distance >= 0 && imgs[i].getBoundingClientRect().top >= 0) {
-                    imgs[i].setAttribute("src", imgs[i].getAttribute("data-src") as string);
-                    num += 1;
-                }
-            }
-        }
+    }, [tag, current]);
+    useEffect(() => {
         window.addEventListener("scroll", () => {
             debounce(loadImage, 300);
         });
-    }, [tag, current]);
+    }, []);
+    useEffect(() => {
+        loadImage();
+        return () => {
+            window.removeEventListener("scroll", () => {
+                debounce(loadImage,300)
+            });
+        }
+    })
     return (
         <>
             <div className={styles.songlist} ref={myRef} >
@@ -105,7 +106,7 @@ export default function SongList(props: { cat: string, total: number }) {
             </div>
             {/* 分页 */}
             <footer className={styles.footer}>
-                <Pagination current={current} onChange={onChange} total={total} pageSize={pageSize} hideOnSinglePage showSizeChanger={false}/>
+                <Pagination current={current} onChange={onChange} total={total} pageSize={pageSize} hideOnSinglePage showSizeChanger={false} />
             </footer>
 
         </>

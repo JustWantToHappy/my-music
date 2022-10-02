@@ -62,8 +62,9 @@ export default function Header() {
         navigate("/home");
     }
     React.useEffect(() => {
-        let authLogin = localStorage.getItem("authLogin");
-        if (authLogin === 'true') {
+        // let authLogin = localStorage.getItem("authLogin");
+        let isLogin = localStorage.getItem("hasLogin");
+        if (isLogin === 'true') {
             setHasLogin(true);
             addLocalStorage([{ key: "hasLogin", value: "true" }]);
         }

@@ -9,7 +9,7 @@ const Container = function (props:any) {
     const [song, setSong] = React.useState<Music.song>();
     const location = useLocation();
     //播放音乐
-    const play = async () => {
+    const play = () => {
         if (localStorage.getItem("isPlay")) {
             let obj = JSON.parse(localStorage.getItem("song") as string);
             setSong(obj);

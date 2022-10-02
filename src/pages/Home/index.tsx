@@ -19,7 +19,7 @@ export default function Container() {
             const mvs = await getRecommondmv();
             setArr(mvs.data);
         })();
-        PubSub.subscribe("showRecommend", (_,show:boolean) => {
+        PubSub.subscribe("showRecommend", (_, show: boolean) => {
             setHasLogin(show);
         })
         localStorage.getItem("hasLogin") === 'true' && setHasLogin(true);
@@ -44,12 +44,10 @@ export default function Container() {
             {hasLogin && pathname === '/home' && <div className={styles['my-recommon']}>
                 <MyRecommend />
             </div>}
-            {/* 精选歌单和新碟上架*/}
-            {pathname === '/home' && <div className={styles.content}>
-                <RecommonList />
-                <NewDisc />
-            </div>}
-
+            {/* 精选歌单*/}
+            {pathname === '/home' && <RecommonList />}
+            {/* 新碟上架*/}
+            {pathname==='/home'&&<NewDisc/>}
         </>
     )
 }

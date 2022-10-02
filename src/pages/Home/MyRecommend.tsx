@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from "react-router-dom"
 import { fetchMyRecommendSongList } from "../../api/songlist"
 import styles from "./my-recommend.module.scss"
-import { getImgsLoadEnd } from "../../utils/help"
 import { transPlayCount, transNumber } from "../../utils"
 import playList from "../../utils/playlist"
 import { PlayCircleOutlined, CustomerServiceOutlined } from "@ant-design/icons"
@@ -16,7 +15,8 @@ export default function MyRecommend() {
             const res = await fetchMyRecommendSongList();
             if (res.code === 200) {
                 setSongList(res.recommend);
-                getImgsLoadEnd(res.recommend, "picUrl", myRef);
+            } else {
+                
             }
         })();
     }, []);

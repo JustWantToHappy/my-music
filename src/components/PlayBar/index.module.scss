@@ -3,6 +3,8 @@
     position: fixed;
     z-index: 21;
     width: 100vw;
+    min-width:100px;
+    min-height: 50px;
     height: 9vh;
     background-color: #252933;
     color: aliceblue;
