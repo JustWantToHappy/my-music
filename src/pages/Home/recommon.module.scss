@@ -23,6 +23,7 @@
 .host-lists {
     margin-top: 2vh;
     display: grid;
+    min-height:500px;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
     grid-column-gap: 3vw;
@@ -55,7 +56,7 @@
 
 .album {
     margin-top: 8vh;
-    height:67vh;
+    min-height:67vh;
     padding: 0 calc(25vw/2 - 8px);
     hr {
         background-color: #C10D0C;

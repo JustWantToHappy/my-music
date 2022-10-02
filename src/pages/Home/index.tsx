@@ -47,7 +47,7 @@ export default function Container() {
             {/* 精选歌单*/}
             {pathname === '/home' && <RecommonList />}
             {/* 新碟上架*/}
-            {pathname==='/home'&&<NewDisc/>}
+            {pathname === '/home' && <NewDisc />}
         </>
     )
 }

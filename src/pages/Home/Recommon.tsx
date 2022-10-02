@@ -3,6 +3,8 @@ import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { Tooltip } from "antd"
 import { useNavigate } from "react-router-dom"
 import styles from "./recommon.module.scss"
+import { loadImageLazy } from "../../utils/help"
+import { debounce } from "../../utils/throttle_debounce"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
@@ -13,6 +15,9 @@ const RecommonList = () => {
             const lists = await getHightSongLists();
             setHighSongLists(lists.playlists);
         })();
+        window.addEventListener("wheel", () => {
+            debounce(() => { loadImageLazy("host-list") }, 300);
+        })
     }, []);
     return (
         <div className={styles.recommon} ref={listRef}>
@@ -26,7 +31,7 @@ const RecommonList = () => {
                     return <div key={list.id} onClick={() => {
                         navigate(`/playlist/${list.id}`)//跳转到歌单详情页面
                     }} >
-                        <img src={list.coverImgUrl} alt="图片无法显示" />
+                        <img data-src={list.coverImgUrl} alt="图片无法显示" className="host-list" />
                         <span>{list.name}</span>
                     </div>
                 })}
@@ -56,12 +61,12 @@ const NewDisc = () => {
                     return <section key={album.id}>
                         <img src={album.picUrl} alt="图片无法显示" onClick={() => { navigate(`album?id=${album.id}`) }} />
                         <small onClick={() => { toArtistPage(album.artist) }}>
-                            <Tooltip placement="top" title={album.artist.name} mouseEnterDelay={0.2}  overlayInnerStyle={{color:'black'}} color="#fff">
+                            <Tooltip placement="top" title={album.artist.name} mouseEnterDelay={0.2} overlayInnerStyle={{ color: 'black' }} color="#fff">
                                 {album.artist.name}
                             </Tooltip>
                         </small>
                         <small onClick={() => { navigate(`album?id=${album.id}`) }}>
-                        <Tooltip placement="bottom" title={album.name} mouseEnterDelay={0.2} overlayInnerStyle={{color:'black'}} color="#fff">
+                            <Tooltip placement="bottom" title={album.name} mouseEnterDelay={0.2} overlayInnerStyle={{ color: 'black' }} color="#fff">
                                 {album.name}
                             </Tooltip>
                         </small>

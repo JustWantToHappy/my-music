@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef,} from 'react'
+import { useState, useEffect, useRef, } from 'react'
 import { useNavigate } from "react-router-dom"
 import { Pagination } from "antd"
 import { CustomerServiceOutlined, PlayCircleOutlined } from "@ant-design/icons"
@@ -22,7 +22,7 @@ export default function SongList(props: { cat: string, total: number }) {
     const [songLists, setSongLists] = useState<Array<Music.list>>([])
     //当前容器
     const myRef = useRef<HTMLDivElement>(null);
-    //实现路由懒加载
+    //实现懒加载
     const loadImage = () => {
         //获取所有图片
         const imgs = document.getElementsByClassName("songlist-image");
@@ -70,19 +70,20 @@ export default function SongList(props: { cat: string, total: number }) {
             behavior: 'smooth'
         })
     }, [tag, current]);
+    const pageScrolling = () => {
+        debounce(loadImage, 300);
+    }
     useEffect(() => {
-        window.addEventListener("scroll", () => {
-            debounce(loadImage, 300);
-        });
+        window.addEventListener("scroll", pageScrolling);
     }, []);
     useEffect(() => {
         loadImage();
-        return () => {
-            window.removeEventListener("scroll", () => {
-                debounce(loadImage,300)
-            });
-        }
     })
+    useEffect(() => {
+        return function () {
+            window.removeEventListener("scroll", pageScrolling);
+        }
+    }, []);
     return (
         <>
             <div className={styles.songlist} ref={myRef} >

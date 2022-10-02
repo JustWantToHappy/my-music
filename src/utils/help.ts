@@ -89,3 +89,17 @@ export function getRealURL(imgs: string[], elements: HTMLCollectionOf<Element>) 
         //程序出现其他异常
     })
 }
+
+//图片懒加载,判断类名为className的图片是否加载完成。
+export function loadImageLazy(classname:string) {
+     //获取所有图片
+     const imgs = document.getElementsByClassName(classname);
+     //获取可视高度
+     const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+     for (let i = 0; i < imgs.length; i++) {
+         let distance = viewHeight - imgs[i].getBoundingClientRect().top;
+         if (distance >= 0 && imgs[i].getBoundingClientRect().top >= 0) {
+             imgs[i].setAttribute("src", imgs[i].getAttribute("data-src") as string);
+         }
+     }
+}

@@ -4,6 +4,7 @@ import { DownOutlined, GlobalOutlined, DatabaseOutlined, CoffeeOutlined, SmileOu
 import styles from "./styles/index.module.scss"
 import { songlistCategory } from "../../api/songlist"
 import SongList from './SongList'
+import {debounce } from "../../utils/throttle_debounce"
 export default function AllPlayList() {
     const [tags, setTags] = useState<Array<Music.tag>>();
     const [title, setTitle] = useState("全部");
@@ -19,24 +20,34 @@ export default function AllPlayList() {
         (async () => {
             const res = await songlistCategory();
             //more字段为true表示还有分页,categories表示分类的类别有哪些
-            let { code, all, categories, sub, more } = res;
+            let { code, all, categories, sub } = res;
             if (code === 200) {
                 setTags(sub);
                 setAll(all);
-                console.log(all.resourceCount,'hhhh')
                 //默认是全部歌单
                 setCount(all.resourceCount);
                 setCategory(categories);
             }
         })();
     }, []);
+    useEffect(() => {
+        const hiddenCategory = () => {
+            debounce(() => {
+                setShowTags(false);
+            }, 200);
+        }
+        document.documentElement.addEventListener("click",hiddenCategory)
+        return function () {
+            document.documentElement.removeEventListener("click",hiddenCategory); 
+        }
+    },[])
     return (
         <div className={styles.playlist}>
             <header>
                 <div className={styles['all-select']}>
                     <h2>{title}</h2>
                     <span >
-                        <Button onClick={() => { setShowTags(!showTags) }}>
+                        <Button onClick={(e) => { setShowTags(!showTags);e.stopPropagation() }}>
                             <span>选择分类</span>
                             <DownOutlined />
                         </Button>
@@ -76,15 +87,15 @@ const SongTags = (props: { tags: Array<Music.tag>, category: { [key: number]: st
         setTotal(tag.resourceCount);
     }
     return (
-        <div className={styles.tags}>
+        <div className={styles.tags} onClick={ (e)=>e.stopPropagation()}>
             <header>
-                <Button onClick={() => {
+                <Button onClick={(e) => {
                     setTitle("全部");
                     setShowTags();
                     if (defaultTotal)
                         setTotal(defaultTotal);
                 }}>
-                    <span>全部风格</span>
+                    <span >全部风格</span>
                 </Button>
             </header>
             <ul className={styles.side}>

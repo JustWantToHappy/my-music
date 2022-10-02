@@ -1,6 +1,7 @@
 .songlist {
     width: 100%;
     margin-top: 5vh;
+    min-height: 600px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-column-gap: 2vw;
@@ -28,11 +29,17 @@
     width: 12vw;
     height: 12vw;
     cursor: pointer;
-
+    &:hover{
+        transform: translateY(-2vh);
+        transition: transform 200ms linear;
+    }
     >img {
         position: absolute;
         width: 100%;
-
+        object-fit:cover;
+        min-width:100px;
+        min-height:100px;
+        border-radius:5% 5% 0 0;
     }
 
     >div {
