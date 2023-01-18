@@ -40,7 +40,7 @@ export default function Rank() {
                 setMedia(brr);
             }
         })();
-    }, []);
+    }, [navigate]);
     useEffect(() => {
         try {
             if (id) {

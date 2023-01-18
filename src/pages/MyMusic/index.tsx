@@ -35,10 +35,6 @@ const Index = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     //新增歌单名称
     const [input, setInput] = useState("");
-    //模态框
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
     const handleOk = async () => {
         let res = await createNewSongList(input)
         if (res.code === 200) {

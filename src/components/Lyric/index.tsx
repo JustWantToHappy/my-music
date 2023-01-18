@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import styles from "./index.module.scss"
 import { getLyricBySongId } from "../../api/song"
 import { transUsTime } from "../../utils/help"
+// import { throttle } from "../../utils/throttle_debounce"
 interface lyricType {
     audioRef: any,
     id: number
@@ -24,23 +25,6 @@ const Lyric = (props: lyricType) => {
         notTrans,//无歌词翻译
         hasTrans//有歌词翻译
     }
-    const handleStr = async (lyricStr: string, type: number) => {
-        if (lyricStr.length > 0) {
-            let arr = lyricStr.split("\n");
-            let lyricArr: Array<{ time: string, content: string }> = [];
-            arr.forEach(str => {
-                let brr = str.split("]");
-                let obj = { time: "", content: "" };
-                obj.time = brr[0].slice(1);
-                if (brr.length > 1) {
-                    obj.content = brr[1];
-                }
-                lyricArr.push(obj);
-            })
-            type === TransLate.notTrans && await setLyric(lyricArr);
-            type === TransLate.hasTrans && await setTlyric(lyricArr);
-        }
-    }
     //判断当前播放的歌词中前面的歌词空字符串个数
     const getNullCount = (index: number): number => {
         let count = 0;
@@ -52,34 +36,8 @@ const Lyric = (props: lyricType) => {
         return count;
     }
 
-    const timeupdate = () => {
-        audioRef.current.addEventListener('timeupdate', () => {
-            let index = binarySearchLyric(audioRef.current.currentTime);
-            if (index !== playIndex && index > 0) {
-                let tCount = 0;
-                for (let i = 0; i < tlyric.length; i++) {
-                    if (lyric[index].time === tlyric[i].time) {
-                        tCount = i;
-                        break;
-                    }
-                }
-                let ref = lyricRef.current as any;
-                let nullCount = getNullCount(index);
-                // console.log(lyric.slice(0, index));
-                //有翻译
-                if (tlyric.length > 0 && ref)
-                    ref.scrollTop = ((tCount) + index - nullCount) * 50 - 100;
-                else if (ref) {
-                    //无翻译
-                    ref.scrollTop = (index - nullCount) * 50 - 100;
-                }
-            }
-            setIndex(index);
-        });
-    }
     //使用二分查找，根据准确的时间确定时间轴上的歌词,返回一个下标
     const binarySearchLyric = (time: number) => {
-        let index = 0;
         let min = 0, max = lyric.length - 1;
         if (lyric.length > 0) {
             let currentTime = Math.ceil(time * 1e6);
@@ -101,6 +59,29 @@ const Lyric = (props: lyricType) => {
         }
         return min > 0 ? min - 1 : 0;
     }
+    //当页面滚动时同步歌词
+    const scrollUpdate = () => {
+        let index = binarySearchLyric(audioRef.current.currentTime);
+        if (index !== playIndex && index > 0) {
+            let tCount = 0;
+            for (let i = 0; i < tlyric.length; i++) {
+                if (lyric[index].time === tlyric[i].time) {
+                    tCount = i;
+                    break;
+                }
+            }
+            let ref = lyricRef.current as any;
+            let nullCount = getNullCount(index);
+            //有翻译
+            if (tlyric.length > 0 && ref)
+                ref.scrollTop = ((tCount) + index - nullCount) * 50 - 100;
+            else if (ref) {
+                //无翻译,
+                ref.scrollTop = (index - nullCount) * 50 - 100;
+            }
+        }
+        setIndex(index);
+    }
     const getTlyricContent = (time: string) => {
         let content = "";
         for (let i = 0; i < tlyric.length; i++) {
@@ -111,17 +92,42 @@ const Lyric = (props: lyricType) => {
         }
         return <small style={{ display: 'block', transform: 'translateY(-10px)' }}>{content}</small>
     }
+    //手动滚动页面
+    const pageScrolling = () => {
+        audioRef.current.removeEventListener("timeupdate", scrollUpdate);
+
+    }
     useEffect(() => {
+        const handleStr = async (lyricStr: string, type: number) => {
+            if (lyricStr.length > 0) {
+                let arr = lyricStr.split("\n");
+                let lyricArr: Array<{ time: string, content: string }> = [];
+                arr.forEach(str => {
+                    let brr = str.split("]");
+                    let obj = { time: "", content: "" };
+                    obj.time = brr[0].slice(1);
+                    if (brr.length > 1) {
+                        obj.content = brr[1];
+                    }
+                    lyricArr.push(obj);
+                })
+                type === TransLate.notTrans && await setLyric(lyricArr);
+                type === TransLate.hasTrans && await setTlyric(lyricArr);
+            }
+        }
         (async () => {
             let res = await getLyricBySongId(id);
             res.lrc.lyric && handleStr(res.lrc.lyric, 0);
             res.tlyric && res.tlyric.lyric && handleStr(res.tlyric.lyric, 1);
         })();
-    }, [id]);
+    }, [id,TransLate]);
     useEffect(() => {
-        timeupdate();
+        //监听时间变化
+        audioRef.current.addEventListener('timeupdate', scrollUpdate);
+        const container = lyricRef && lyricRef.current;
+        // container && container.addEventListener("wheel", )
     }, [lyric]);
-    return <div className={styles.lyric}>
+    return <div className={styles.lyric} >
         <div ref={lyricRef}>
             {lyric.map((scentence, index) => <div key={index} style={{ textAlign: 'center' }}>
                 <small style={index === playIndex ? { color: "#409EFF" } : {}}>{scentence.content}</small>

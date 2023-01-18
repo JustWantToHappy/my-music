@@ -1,4 +1,3 @@
-import React from "react";
 import { addOrDeleteSongFromSongList } from "../api/user"
 import PubSub from "pubsub-js";
 import { message } from "antd"
@@ -22,27 +21,7 @@ export function transTime(time: number, type: number): string {
         return str;
     }
 }
-//判断容器内的图片全部加载完毕
-export const getImgsLoadEnd = (arr: Array<any>, srcName: string, myRef: React.RefObject<any>) => {
-    if (arr && arr?.length > 0) {
-        const promises = arr.map(list => {
-            return new Promise((resolve, reject) => {
-                let loadImg = new Image();
-                loadImg.src = list[srcName];
-                loadImg.onload = () => {
-                    let style = myRef.current?.style;
-                    (style as CSSStyleDeclaration).opacity = '1';
-                    resolve("此图片加载完毕")
-                }
-            })
-        })
-        Promise.all(promises).then(res => {
-            // console.log("所有图片加载完成")
-        }).catch(err => {
-            console.log("网络异常或者其他程序异常,", err);
-        })
-    }
-}
+
 //将00:00:000格式时间转为us级别
 export function transUsTime(time: string): number {
     if (time === "")

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from "react-router-dom"
 import { getSearchContent } from "../../../api/search"
 import constantsStore from "../../../mobx/constants"

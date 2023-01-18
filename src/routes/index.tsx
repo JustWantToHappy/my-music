@@ -1,23 +1,31 @@
 //路由表文件，用于管理所有路由组件
-import Home from "../pages/Home"
 import PlayList from "../pages/PlayList"
 import { Navigate } from "react-router-dom"
+import { lazy } from "react"
 import PageNotFound from "../pages/PageNotFound"
-import MyMusic from "../pages/MyMusic"
-import Artist from "../pages/Artist"
-import Login from "../pages/MyMusic/LoginPage"
-import SongList from "../pages/MyMusic/SongList"
-import EditSongList from "../pages/MyMusic/EditSongList"
-import DailySongsRecommend from "../pages/Home/DailyRecommendSongs"
-import AllPlayList from "../pages/AllPlayList"
-import Album from "../pages/Album"
-import Rank from "../pages/Rank"
-import SearchPage from "../pages/Search"
 import Video from "../components/Video"
-const routes = [
+const Home = lazy(() => import("../pages/Home"))
+const Rank=lazy(()=>import("../pages/Rank"))
+const Album=lazy(()=>import("../pages/Album"))
+const MyMusic=lazy(()=>import("../pages/MyMusic"))
+const SearchPage=lazy(()=>import("../pages/Search"))
+const Login=lazy(()=>import ("../pages/MyMusic/LoginPage"))
+const AllPlayList = lazy(() => import("../pages/AllPlayList"))
+const DailySongsRecommend=lazy(()=>import("../pages/Home/DailyRecommendSongs"))
+const Artist=lazy(()=>import("../pages/Artist"))
+const SongList=lazy(()=>import("../pages/MyMusic/SongList"))
+const EditSongList=lazy(()=>import("../pages/MyMusic/EditSongList"))
+
+interface Router {
+    name?: string;
+    path: string;
+    children?: Array<Router>;
+    element: any;
+}
+const routes: Array<Router> = [
     {
         path: "/home",
-        element: <Home />,
+        element:<Home/>,
         children: [
             {
                 //所有歌单
@@ -83,7 +91,7 @@ const routes = [
     //mv
     {
         path: "/mv",
-        element:<Video/>
+        element: <Video />
     },
     {
         path: "*",

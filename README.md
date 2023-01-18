@@ -43,6 +43,7 @@ yarn start(yarn run start)
 搜索
 ![搜索](src/assets/screenshot/Snipaste_2022-09-12_22-22-54.png)
 
-
+## 总结
+之后可能会重构一次项目，会增加的技术，自定义hook(减少代码冗余，利于模块化，利于维护),页面优化等，要增加的部分之后再说吧。。。
 
 

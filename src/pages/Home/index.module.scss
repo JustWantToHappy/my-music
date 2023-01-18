@@ -3,6 +3,12 @@
     justify-content: center;
     background-color: #242424;
     align-items: center;
+    width: 100%;
+    height: 78vh;
+
+    img {
+        transform: translateY(13vh);
+    }
 }
 
 
@@ -15,7 +21,8 @@
 
 .my-recommon {
     width: 75vw;
+    min-height: 300px;
     margin: 3vh auto;
-    border: 2px solid #eee;
-    padding:0 10px;
+    border: 1px solid #d4d4d4;
+    padding: 0 10px;
 }

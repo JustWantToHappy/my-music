@@ -3,8 +3,6 @@ import { getHightSongLists, getNewDiscs } from "../../api/recommond"
 import { Tooltip } from "antd"
 import { useNavigate } from "react-router-dom"
 import styles from "./recommon.module.scss"
-import { loadImageLazy } from "../../utils/help"
-import { debounce } from "../../utils/throttle_debounce"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();
@@ -15,9 +13,6 @@ const RecommonList = () => {
             const lists = await getHightSongLists();
             setHighSongLists(lists.playlists);
         })();
-        window.addEventListener("wheel", () => {
-            debounce(() => { loadImageLazy("host-list") }, 300);
-        })
     }, []);
     return (
         <div className={styles.recommon} ref={listRef}>
@@ -31,7 +26,7 @@ const RecommonList = () => {
                     return <div key={list.id} onClick={() => {
                         navigate(`/playlist/${list.id}`)//跳转到歌单详情页面
                     }} >
-                        <img data-src={list.coverImgUrl} alt="图片无法显示" className="host-list" />
+                        <img src={list.coverImgUrl} alt="图片无法显示"  />
                         <span>{list.name}</span>
                     </div>
                 })}
