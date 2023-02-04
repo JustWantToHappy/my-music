@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
+import { getImgRealSrc } from "../../utils/help";
 import { Tooltip } from "antd"
 import { useNavigate } from "react-router-dom"
 import styles from "./recommon.module.scss"
@@ -26,7 +27,7 @@ const RecommonList = () => {
                     return <div key={list.id} onClick={() => {
                         navigate(`/playlist/${list.id}`)//跳转到歌单详情页面
                     }} >
-                        <img src={list.coverImgUrl} alt="图片无法显示"  />
+                        <img src={list.coverImgUrl} alt="图片无法显示" />
                         <span>{list.name}</span>
                     </div>
                 })}
@@ -38,6 +39,7 @@ const RecommonList = () => {
 const NewDisc = () => {
     const [newDiscs, setNewDiscs] = useState<Array<Music.album>>();
     const navigate = useNavigate();
+    const albumRefs = useRef<HTMLImageElement[]>([]);
     useEffect(() => {
         (async () => {
             const data = await getNewDiscs();
@@ -54,7 +56,7 @@ const NewDisc = () => {
             <div className={styles.newBorn} >
                 {newDiscs?.map(album => {
                     return <section key={album.id}>
-                        <img src={album.picUrl} alt="图片无法显示" onClick={() => { navigate(`album?id=${album.id}`) }} />
+                        <img ref={current => { getImgRealSrc(current) }} data-src={album.picUrl} alt="图片加载中..." onClick={() => { navigate(`album?id=${album.id}`) }} />
                         <small onClick={() => { toArtistPage(album.artist) }}>
                             <Tooltip placement="top" title={album.artist.name} mouseEnterDelay={0.2} overlayInnerStyle={{ color: 'black' }} color="#fff">
                                 {album.artist.name}

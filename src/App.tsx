@@ -11,10 +11,10 @@ function App() {
     document.body.style.overflow = 'visible';
   }
   return (
-    <>
+    <div className="app">
       <Header />
       <Container />
-    </>
+    </div>
   );
 }
 

@@ -66,9 +66,20 @@ export function getRealURL(imgs: string[], elements: HTMLCollectionOf<Element>) 
         //图片全部加载完毕
     }).catch(err => {
         //程序出现其他异常
+        console.info(err);
     })
 }
-
+//当图片加载完成之后获取真正的src
+export function getImgRealSrc(element:HTMLImageElement|null) {
+    const image = new Image();
+    //可以先设置一个loading图 element.setSrc("./gif");
+    const realSrc = element?.getAttribute("data-src") as string;
+    console.log(realSrc, 'hhh');
+    image.src = realSrc;
+    image.onload = function () {
+        element?.setAttribute("src", realSrc);
+    }
+}
 //图片懒加载,判断类名为className的图片是否加载完成。
 export function loadImageLazy(classname:string) {
      //获取所有图片

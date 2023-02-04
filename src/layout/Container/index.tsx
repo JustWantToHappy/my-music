@@ -26,7 +26,7 @@ const Container = function (props: any) {
         })
     }, []);
     return (
-        <div style={{ transform: "translateY(13vh)" }}>
+        <div style={{marginTop:"13vh"}}>
             <Suspense fallback={<h1>loading</h1>}>
                 {element}
             </Suspense>
