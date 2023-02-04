@@ -2,7 +2,7 @@ import request from "../utils/request"
 //获取首页推荐mv
 export function getRecommondmv(pageNums: number = 8): Promise<any> {
     return request({
-        url: `/mv/first?limit=${pageNums}`, method: "get"
+        url: `/mv/first?limit=${pageNums}&param=200y284&quality=89`, method: "get"
     })
 }
 //最热歌单

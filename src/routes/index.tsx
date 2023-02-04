@@ -4,17 +4,17 @@ import { Navigate } from "react-router-dom"
 import { lazy } from "react"
 import PageNotFound from "../pages/PageNotFound"
 import Video from "../components/Video"
-const Home = lazy(() => import("../pages/Home"))
-const Rank=lazy(()=>import("../pages/Rank"))
-const Album=lazy(()=>import("../pages/Album"))
-const MyMusic=lazy(()=>import("../pages/MyMusic"))
-const SearchPage=lazy(()=>import("../pages/Search"))
-const Login=lazy(()=>import ("../pages/MyMusic/LoginPage"))
+import Home from "../pages/Home";
+const Rank = lazy(() => import("../pages/Rank"))
+const Album = lazy(() => import("../pages/Album"))
+const MyMusic = lazy(() => import("../pages/MyMusic"))
+const SearchPage = lazy(() => import("../pages/Search"))
+const Login = lazy(() => import("../pages/MyMusic/LoginPage"))
 const AllPlayList = lazy(() => import("../pages/AllPlayList"))
-const DailySongsRecommend=lazy(()=>import("../pages/Home/DailyRecommendSongs"))
-const Artist=lazy(()=>import("../pages/Artist"))
-const SongList=lazy(()=>import("../pages/MyMusic/SongList"))
-const EditSongList=lazy(()=>import("../pages/MyMusic/EditSongList"))
+const DailySongsRecommend = lazy(() => import("../pages/Home/DailyRecommendSongs"))
+const Artist = lazy(() => import("../pages/Artist"))
+const SongList = lazy(() => import("../pages/MyMusic/SongList"))
+const EditSongList = lazy(() => import("../pages/MyMusic/EditSongList"))
 
 interface Router {
     name?: string;
@@ -25,7 +25,7 @@ interface Router {
 const routes: Array<Router> = [
     {
         path: "/home",
-        element:<Home/>,
+        element: <Home />,
         children: [
             {
                 //所有歌单

@@ -4,7 +4,6 @@ import { getRecommondmv } from "../../api/recommond"
 import styles from "./index.module.scss"
 import { RecommonList, NewDisc } from "./Recommon"
 import MyRecommend from './MyRecommend';
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons"
 import { Outlet, useLocation } from "react-router-dom"
 import PubSub from 'pubsub-js';
 export default function Container() {
@@ -24,22 +23,17 @@ export default function Container() {
         })
         localStorage.getItem("hasLogin") === 'true' && setHasLogin(true);
     }, []);
-    const onChange = (currentSlide: number) => {
-
-    };
     return (
         <>
             <Outlet />
             {pathname === '/home' && <div className={styles.container}>
-                <DoubleLeftOutlined style={{ color: '#fff', fontSize: "25px"}} />
-                <Carousel arrows={true} afterChange={onChange} style={{ width: "75vw"}} autoplay>
+                <Carousel autoplay style={{ width: "75vw" }} arrows={true}>
                     {arr?.map(mv => {
                         return <div key={mv.id}>
-                            <img src={mv.cover} alt="图片无法显示" style={{ width: '100%', height: '78vh',objectFit:'cover' }} />
+                            <img src={mv.cover} alt="图片无法显示" style={{ height: "60vh", objectFit: "cover", width: "100%" }} />
                         </div>
                     })}
                 </Carousel>
-                <DoubleRightOutlined style={{ color: '#fff', fontSize: "25px" }} />
             </div>}
             {hasLogin && pathname === '/home' && <div className={styles['my-recommon']}>
                 <MyRecommend />
