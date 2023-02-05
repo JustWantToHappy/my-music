@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import { Pagination } from "antd"
 import { PlayCircleTwoTone } from "@ant-design/icons"
 import { getSearchContent } from "../../../api/search"
 import styles from "../styles/album.module.scss"
 import constantsStore from "../../../mobx/constants"
-import { getRealURL } from "../../../utils/help"
+import { getImgRealSrc } from "../../../utils/help"
 import playlist from "../../../utils/playlist"
 import songsStore from "../../../mobx/songs"
 export default function Album(props: { keywords: string | null }) {
   const { keywords } = props;
   const { SearchList } = constantsStore;
   //搜索的字段
-  const [search,setSearch]=useState("");
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
   //搜索到的专辑
   const [albums, setAlbums] = useState<Array<Music.album>>([]);
@@ -25,27 +25,16 @@ export default function Album(props: { keywords: string | null }) {
   //用于表示当前鼠标正悬在此专辑上
   const [id, setId] = useState(0);
   const getData = async (page?: number) => {
-    // console.log(keywords,'sb')
     const res = await getSearchContent(keywords as string, page || current, pageSize, SearchList.Album);
     if (res.code === 200) {
       albums.length === 0 && setTotal(res.result.albumCount);
       setAlbums(res.result.albums);
     }
   }
-  if(keywords!==search){
+  if (keywords !== search) {
     getData();
     setSearch(keywords as string);
   }
-  useEffect(() => {
-    try {
-      let imgs: string[];
-      imgs = albums.map((album: Music.album) => album.blurPicUrl);
-      const elements = document.getElementsByClassName("albumImage");
-      getRealURL(imgs, elements);
-    } catch (e) {
-      console.log(e);
-    }
-  }, [albums])
   //当切换页面时触发
   const changeCurrentPage = (page: number) => {
     setCurrent(page);
@@ -54,7 +43,7 @@ export default function Album(props: { keywords: string | null }) {
   //播放音乐
   const playMusic = (id: number) => {
     songsStore.origin = 'home'
-    playlist(id,"album");
+    playlist(id, "album");
   }
   return (
     <>
@@ -64,9 +53,10 @@ export default function Album(props: { keywords: string | null }) {
             <div className={styles.image} onMouseLeave={() => setId(0)}>
               <img
                 src={require("../../../assets/img/loading.gif")}
+                data-src={album.picUrl}
                 alt="图片无法显示" onMouseOver={() => setId(album.id)}
-                className={"albumImage"}
                 onClick={() => navigate(`/home/album?id=${album.id}`)}
+                ref={current => { getImgRealSrc(current) }}
               />
               <i> {id === album.id && <PlayCircleTwoTone onClick={() => { playMusic(album.id) }} />}</i>
               <i></i>

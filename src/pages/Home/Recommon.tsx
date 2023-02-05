@@ -39,7 +39,6 @@ const RecommonList = () => {
 const NewDisc = () => {
     const [newDiscs, setNewDiscs] = useState<Array<Music.album>>();
     const navigate = useNavigate();
-    const albumRefs = useRef<HTMLImageElement[]>([]);
     useEffect(() => {
         (async () => {
             const data = await getNewDiscs();
