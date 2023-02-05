@@ -3,5 +3,6 @@
   margin: 0;
 }
 .app {
-  overflow: hidden;
+  overflow: auto;
+  overflow-x: hidden;
 }
