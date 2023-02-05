@@ -12,7 +12,8 @@ import {
     FullscreenExitOutlined,
     UnorderedListOutlined,
     FullscreenOutlined,
-    PlusCircleOutlined
+    PlusCircleOutlined,
+    CustomerServiceOutlined
 } from "@ant-design/icons"
 import { Dropdown, Menu, message, Slider, Tooltip } from 'antd';
 import React from "react"
@@ -22,10 +23,11 @@ import { addLocalStorage } from "../../utils/authorization"
 import { songStore } from "../../mobx/song"
 import Constants from "../../mobx/constants"
 import CollectModal from "../CollectModal";
+import PlayList from "../PlayList";
 import Lyric from "../Lyric";
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
-    const {playWay } = Constants;
+    const { playWay } = Constants;
     //控制歌曲切换
     const [song, setSong] = React.useState<Music.song>(props.song);
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
@@ -107,8 +109,8 @@ const PlayBar = (props: { song: Music.song }) => {
                 })();
             }
             songsLen > 1 && PubSub.publish("changeMusic", "next");
-            songsLen === 1 &&localStorage.getItem("playway")!==playWay.SingleCycle&&setPlay(false);
-            songsLen === 1 && localStorage.getItem("playway")===playWay.SingleCycle && PubSub.publish("changeMusic", "next");
+            songsLen === 1 && localStorage.getItem("playway") !== playWay.SingleCycle && setPlay(false);
+            songsLen === 1 && localStorage.getItem("playway") === playWay.SingleCycle && PubSub.publish("changeMusic", "next");
         })
         return function () {
             songStore.clearTimer();
@@ -199,12 +201,16 @@ const PlayBar = (props: { song: Music.song }) => {
         (bar as any).className = fullStyles.playbar;
         (img as any).className = fullStyles.coverImg;
     }
+    const playList = function () {
+
+    }
     return <>
         <audio ref={playBar} src={url} preload="auto">
             {/* preload="auto"表示预加载音频 */}
         </audio>
         {collect && <CollectModal close={() => { setCollect(false) }} songId={song.id} />}
         <div className={showBar ? getStyle("start") : getStyle("move")} ref={myBarRef}>
+            {!expend && <PlayList />}
             {!expend && <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"展开"} >
                     <FullscreenOutlined onClick={spread} />
@@ -214,7 +220,6 @@ const PlayBar = (props: { song: Music.song }) => {
                 </Tooltip>
             </div>}
             {!expend && <div className={styles.playmusic} >
-                {/*  */}
                 {/* 播放上一首 */}
                 <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playLast} />
                 {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
@@ -240,26 +245,21 @@ const PlayBar = (props: { song: Music.song }) => {
                 <p><>专辑:&nbsp;</><small>{song.al && song.al.name}</small></p>
                 <Lyric audioRef={playBar} id={song.id} />
             </div>}
-            {!expend && <div className={styles["music-bar"]} >
-                {/* 歌曲名称 */}
-                <small >
-                    {/* 歌手名称 */}
-                    <span>{song.name}</span>
-                    {/* 进度条 */}
-                    <span >
-                        {song.ar?.map((per, index) => {
-                            if (index === 0)
-                                return <span key={index}>{per.name}</span>;
-                            return (<span key={index}></span>)
-                        })}
-                    </span>
-                </small>
-                <span >
+            {!expend && <ul className={styles["music-bar"]} >
+                <li >
                     {/* 其中tipFormatter=null不显示当前进度的刻度 */}
-                    <Slider style={{ flex: "1" }} min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
+                    <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
                     <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
-                </span>
-            </div>}
+                </li>
+                <li>
+                    <div>
+                        {/* 歌曲名称 */}
+                        <span>{song.name}&nbsp;&nbsp;</span>
+                        {/* 歌手名称 */}
+                        <span >{song.ar && song?.ar[0].name}</span>
+                    </div>
+                </li>
+            </ul>}
             {!expend && <div className={styles['play-method']}>
                 {/* 音量调整 */}
                 <span className={styles['play-sound']}>
@@ -270,6 +270,8 @@ const PlayBar = (props: { song: Music.song }) => {
                 <Dropdown overlay={menu} placement="top" >
                     <EllipsisOutlined />
                 </Dropdown>
+                {/* 播放队列 */}
+                <CustomerServiceOutlined onClick={playList} />
                 {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>
                     <PlusCircleOutlined onClick={() => { setCollect(!collect) }} />
                 </Tooltip>}

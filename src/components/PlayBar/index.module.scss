@@ -12,7 +12,6 @@
     align-items: center;
     font-family: 'Courier New', Courier, monospace;
 }
-
 .playbar {
     @include bar;
     bottom: 0;
@@ -75,6 +74,7 @@
 }
 
 .playmusic {
+    flex:1;
     display: flex;
     height: 100%;
     align-items: center;
@@ -114,36 +114,31 @@
 
 
 .music-bar {
-    flex: 5;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+    flex: 3;
+    &>li:first-of-type{
+        height:80%;
+        display: flex;
+        align-items: center;
+        width:100%;
+        &>:first-child{
+            flex:3;
+        }
+        &>:last-child{
+            flex:1;
+        }
 
-.music-bar>small {
-    position: absolute;
-    top: 0;
-    display: flex;
-    transform: translateX(-2vw);
-    justify-content: space-between;
-    margin-left: 30px;
-
-    span:nth-child(2) {
-        margin-left: 3vw;
+    }
+    &>li:nth-of-type(2){
+        line-height: 50%;
+        height:30%;
+        font-size:0.1rem;
     }
 }
 
-.music-bar>span {
-    display: flex;
-    align-items: center;
-}
 
-.music-bar>span>small {
-    margin-left: 2%;
-}
 
 .play-method {
-    flex: 1;
+    flex: 2;
     display: flex;
     justify-content: space-evenly;
 

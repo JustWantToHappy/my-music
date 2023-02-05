@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
-import { Table, message } from 'antd';
+import { Table } from 'antd';
 import { PlayCircleOutlined } from "@ant-design/icons"
 import dayjs from 'dayjs';
 import styles from "./index.module.scss"
