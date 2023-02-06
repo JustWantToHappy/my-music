@@ -85,7 +85,7 @@ const PlayBar = (props: { song: Music.song }) => {
             if (localStorage.getItem("volume")) {
                 playBar.current.volume = parseFloat(localStorage.getItem("volume") as string);
             } else {
-                playBar.current.volume = 0.4;
+                playBar.current.volume = 0;
             }
             setVoice(Math.floor(playBar.current.volume * 100));
             songStore.clearTimer();
@@ -167,14 +167,6 @@ const PlayBar = (props: { song: Music.song }) => {
         setVoice(value);
         addLocalStorage([{ key: "volume", value: playBar.current.volume }]);
     }
-    //播放上一首音乐
-    const playLast = () => {
-        PubSub.publish("changeMusic", "last");
-    }
-    //播放下一首音乐
-    const playNext = () => {
-        PubSub.publish("changeMusic", "next");
-    }
     //收起播放条
     const shrink = () => {
         setBar(false);
@@ -221,11 +213,11 @@ const PlayBar = (props: { song: Music.song }) => {
             </div>}
             {!expend && <div className={styles.playmusic} >
                 {/* 播放上一首 */}
-                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playLast} />
-                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
-                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { playMusic() }} />}
+                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={()=>{}} />
+                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => {  }} />}
+                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => {  }} />}
                 {/* 播放下一首 */}
-                <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNext} />
+                <StepForwardOutlined className={styles['playmusic-div3']} onClick={()=>{}} />
             </div>}
             <div className={styles.coverImg} ref={imgRef}>
                 <img src={song.al?.picUrl} alt="logo" />

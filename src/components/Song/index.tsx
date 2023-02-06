@@ -1,12 +1,13 @@
-//歌单组件
+//歌曲列表组件
 import { Table, Pagination, Popconfirm } from 'antd';
 import styles from "./index.module.css"
 import { transTime, removeSongFromSongList } from "../../utils/help"
-import { PlayCircleOutlined, DeleteOutlined } from "@ant-design/icons"
+import { PlayCircleOutlined, DeleteOutlined, PropertySafetyFilled } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 import { observer } from "mobx-react";
+import { runInAction } from 'mobx';
 import playlist from '../../mobx/playlist';
 const { Column } = Table;
 interface Iprops {
@@ -28,6 +29,13 @@ const Song: React.FC<Iprops> = observer(function (props) {
     const getCurrentIndex = function (index: number) {
         return start + index + 1;
     }
+    const playMusic = (song: Music.song) => {
+        runInAction(() => {
+            playlist.song = song;
+            playlist.add(song);
+        })
+    }
+    const playSong = playlist.song;
     return (
         <>
             <Table
@@ -40,8 +48,10 @@ const Song: React.FC<Iprops> = observer(function (props) {
                         return <span className={styles["song-order"]}>
                             {/* 暂停按钮，点击播放音乐*/}
                             <>{getCurrentIndex(index)}</>
-                            <span className="span-pause" onClick={() => { playlist.add(song) }}>
-                                <PlayCircleOutlined className={styles['song-order-svg']} />
+                            <span className="span-pause" onClick={() => { playMusic(song) }}>
+                                <PlayCircleOutlined
+                                    className={playSong && playSong.id === id ? styles["song-order-svg1"] : styles['song-order-svg']}
+                                />
                             </span>
                         </span>;
                     }

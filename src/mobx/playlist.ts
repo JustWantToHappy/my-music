@@ -1,13 +1,20 @@
-import { observable } from "mobx";
+import { observable ,makeObservable, action,computed} from "mobx";
 //四种播放方式
 import { PlayWay } from "./constants";
-//播放列表
+/**
+ * @desc 播放列表
+ * 总结一下如果使用修饰器的话，
+ * getter和setter只能够适用@computed，而其他方法要使用@action
+ * 建议不要在业务代码中直接设置store中的值(可以用setter或者一个函数)
+ * 
+ */
 class PlayList{
-    private queue: Array<Music.song> = []
-    private playway: string = "";// 当前播放列表的播放方式
-    private playsong: Music.song | null = null;//当前正在播放的音乐
-    private playstate: boolean = false;//当前音乐播放or暂停
+    @observable private queue: Array<Music.song> = []
+    @observable private playway: string = "";// 当前播放列表的播放方式
+    @observable private playsong: Music.song | null = null;//当前正在播放的音乐
+    @observable private playstate: boolean = false;//当前音乐播放or暂停
     constructor() {
+        makeObservable(this);
         try {
             const songs = JSON.parse(localStorage.getItem("songs")!) || [];
             this.queue = songs;
@@ -19,73 +26,72 @@ class PlayList{
     /**
      * @desc 添加歌曲
      */
-    add(song:Music.song) {
-        if (this.queue.length === 0) {
-            this.queue.push(song);
-            return;
-        }
+    @action add(song:Music.song) {
         if (!this.has(song.id)) {
             this.queue.push(song);
-            alert("添加成功,长度为:" + this.size);
-        } else {
-            console.log(this.queue);
-            alert("添加失败,长度为:" + this.size);
-        }
+        } 
     }
     /**
      * 
      * @param id 歌曲id
      * @desc 删除歌曲
      */
-    delete(id:number) {
+    @action delete(id:number) {
         this.queue = this.queue.filter(song => song.id !== id);
     }
     /**
      * @desc 清空播放队列
      */
-    clearAll() {
+    @action clearAll() {
         this.queue = [];
     }
     /**
      * @desc 播放列表歌曲数
      */
-    get size():number{
+    @computed get size():number{
         return this.queue.length;
     }
     /**
      * @desc 检查歌曲是否已经加入到播放队列中
      */
-    has(id:number): boolean{
+    @action has(id:number): boolean{
         return this.queue.findIndex(song => song.id === id) !== -1;
     }
     /**
      * @desc 设置音乐播放方式
      */
-    changePlayWay(way:string) {
+    @action changePlayWay(way:string) {
         this.playway = way;
     }
     /**
      * @desc 播放暂停音乐
      */
-    changePlayState() {
-        this.playstate = !this.playstate;
+    set state(state:boolean) {
+        this.playstate = state;
     }
     /**
      * @desc 获取当前音乐的播放状态
      */
-    get state() {
+    @computed get state() {
         return this.playstate;
+    }
+    /**
+     * @desc 设置正在播放的音乐
+     */
+    set song(song:Music.song) {
+        this.playsong = song;
     }
     /**
      * @desc 获取当前正在播放的歌曲
      */
-    getCurrentSong() {
-        return this.playsong;
+    @computed get song() {
+        return this.playsong!;
     }
+    
     /**
      * @desc 得到当前播放的音乐在队列中的下标
      */
-    getCurrentIndex() {
+    @action getCurrentIndex() {
         
     }
     /**
@@ -140,6 +146,6 @@ class PlayList{
         
     }
 }
-const playlist =observable(new PlayList()) ;
+const playlist =new PlayList() ;
 
 export default playlist;
