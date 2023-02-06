@@ -51,30 +51,11 @@ export async function removeSongFromSongList(songListId: string, songId: number)
         console.log(e);
     }
 }
-//当图片资源都加载完毕后，然后将图片真正的url给img元素
-export function getRealURL(imgs: string[], elements: HTMLCollectionOf<Element>) {
-    const promises = imgs.map((src, index: number) => {
-        return new Promise((resolve, reject) => {
-            let loadImg = new Image();
-            loadImg.src = src;
-            loadImg.onload = () => {
-                elements.length>0 && elements[index].setAttribute("src", src);
-            }
-        })
-    })
-    Promise.all(promises).then(res => {
-        //图片全部加载完毕
-    }).catch(err => {
-        //程序出现其他异常
-        console.info(err);
-    })
-}
 //当图片加载完成之后获取真正的src
 export function getImgRealSrc(element:HTMLImageElement|null) {
     const image = new Image();
     //可以先设置一个loading图 element.setSrc("./gif");
     const realSrc = element?.getAttribute("data-src") as string;
-    console.log(realSrc, 'hhh');
     image.src = realSrc;
     image.onload = function () {
         element?.setAttribute("src", realSrc);

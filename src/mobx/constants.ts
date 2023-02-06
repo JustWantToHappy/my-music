@@ -1,14 +1,14 @@
 //全局常量
 import { observable } from "mobx"
 //播放方式
-enum playway {
+export enum PlayWay {
     ListPlay = '1',
     OrderPlay = '2',
     SingleCycle = '3',
     RandomPlay = '4'
 }
 //搜索类型
-enum Search {
+export enum Search {
     SingleSong=1,
     Album = 10,
     Singer = 100,
@@ -20,7 +20,7 @@ enum Search {
 }
 const constantsStore = {
     publicURL: "http://localhost:5000",
-    playWay: playway,
+    playWay:PlayWay,
     SearchList:Search
 }
 export default observable(constantsStore);

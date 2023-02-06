@@ -19,7 +19,18 @@ export function addCookies(cookie: string) {
         Cookies.set(brr[0], brr[1]);
     })
 }
+//设置cookie
+export function setCookie(key: string, value: string) {
+    Cookies.set(key, value);
+}
+//得到cookie
+export function getCookie(key: string): string | undefined{
+    return Cookies.get(key);
+}
 //删除cookie
+export function removeCookie(key:string) {
+    Cookies.remove(key);
+}
 
 
 

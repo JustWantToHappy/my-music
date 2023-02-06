@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
 import Song from "../../components/Song"
-const PlayList = () => {
+const SongList = () => {
     const { id } = useParams();
     interface myList {
         playlist: {
@@ -26,17 +26,9 @@ const PlayList = () => {
         (async function () {
             //获取歌单中每首歌
             let sgs = await getListSong(parseInt(id as string));
-            //给歌单中的每首歌添加编号(1~n),以及初始化播放状态
-            for (let i = 0; i < sgs.songs.length; i++) {
-                sgs.songs[i].index = i + 1;
-                sgs.songs[i].key = i + 1;
-            }
             setSongs(sgs.songs);
         })();
-    }, [list, songs, id]);
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+    }, [id]);
     return (
         <>
             <div className={styles.container}>
@@ -72,4 +64,4 @@ const PlayList = () => {
         </>
     )
 }
-export default PlayList;
+export default SongList;

@@ -8,7 +8,6 @@ import { musicIsUse } from "../../api/songlist"
 import { addLocalStorage } from "../../utils/authorization"
 import songsStore from "../../mobx/songs"
 import PubSub from 'pubsub-js';
-import { playNextMusic } from "../../utils/playMusic"
 export default function RankSong(props: { songs: Array<Music.song> | undefined }) {
     const { Column } = Table;
     const navigate = useNavigate();
@@ -32,19 +31,6 @@ export default function RankSong(props: { songs: Array<Music.song> | undefined }
         }
     }
     useEffect(() => {
-        PubSub.subscribe("changeMusic", async (_, type: string) => {
-            if (songsStore.origin === 'rank') {
-                let jsonStr1 = localStorage.getItem("song");
-                const song = jsonStr1 && JSON.parse(jsonStr1);
-                let jsonStr2 = localStorage.getItem("songs");
-                const songs = jsonStr2 && JSON.parse(jsonStr2);
-                if (song && songs && songsStore.origin === 'rank') {
-                    const nextIndex = await playNextMusic(song, songs, type);
-                    nextIndex !== -1 && setSong(songs[nextIndex]);
-                    PubSub.publish("play", true);
-                }
-            }
-        })
     }, []);
     return (
         <div className={styles.table}>

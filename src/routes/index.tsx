@@ -1,5 +1,5 @@
 //路由表文件，用于管理所有路由组件
-import PlayList from "../pages/PlayList"
+import PlayList from "../pages/SonList"
 import { Navigate } from "react-router-dom"
 import { lazy } from "react"
 import PageNotFound from "../pages/PageNotFound"

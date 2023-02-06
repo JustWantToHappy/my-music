@@ -27,7 +27,7 @@ const RecommonList = () => {
                     return <div key={list.id} onClick={() => {
                         navigate(`/playlist/${list.id}`)//跳转到歌单详情页面
                     }} >
-                        <img src={list.coverImgUrl} alt="图片无法显示" />
+                        <img data-src={list.coverImgUrl} ref={current => getImgRealSrc(current)} alt="图片无法显示" />
                         <span>{list.name}</span>
                     </div>
                 })}
