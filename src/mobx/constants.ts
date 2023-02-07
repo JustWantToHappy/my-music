@@ -17,3 +17,9 @@ export enum Search {
     Lyric = 1006,
     Station = 1009
 }
+//用于组件间通信的指令
+export enum Signal{
+    PlayMusic = "playmusic",
+    ShowPlayBar = "showplaybar",
+    
+}

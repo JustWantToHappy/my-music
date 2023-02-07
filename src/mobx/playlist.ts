@@ -1,6 +1,6 @@
 import { observable ,makeObservable, action,computed} from "mobx";
-//四种播放方式
-import { PlayWay } from "./constants";
+import PubSub from "pubsub-js";
+import { PlayWay,Signal } from "./constants";
 /**
  * @desc 播放列表
  * 总结一下如果使用修饰器的话，
@@ -13,6 +13,7 @@ class PlayList{
     @observable private playway: string = "";// 当前播放列表的播放方式
     @observable private playsong: Music.song | null = null;//当前正在播放的音乐
     @observable private playstate: boolean = false;//当前音乐播放or暂停
+    @observable private isFree: boolean = true;//当前音乐是否为付费音乐
     constructor() {
         makeObservable(this);
         try {
@@ -60,7 +61,7 @@ class PlayList{
     /**
      * @desc 设置音乐播放方式
      */
-    @action changePlayWay(way:string) {
+    @action changePlayWay(way:PlayWay) {
         this.playway = way;
     }
     /**
@@ -68,6 +69,9 @@ class PlayList{
      */
     set state(state:boolean) {
         this.playstate = state;
+        if (this.playstate) {
+            PubSub.publish(Signal.PlayMusic);
+        }
     }
     /**
      * @desc 获取当前音乐的播放状态
