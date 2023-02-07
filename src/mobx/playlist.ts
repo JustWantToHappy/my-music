@@ -26,7 +26,6 @@ class PlayList{
     @observable private playway: PlayWayType =this.playwayQueue[0] ;// 当前播放列表的播放方式
     @observable private playsong: Music.song | null = null;//当前正在播放的音乐
     @observable private playstate: boolean = false;//当前音乐播放or暂停
-    @observable private isFree: boolean = true;//当前音乐是否为付费音乐
     @observable private show: boolean = false;//是否展示当前播放列表
     constructor() {
         makeObservable(this);
@@ -49,7 +48,7 @@ class PlayList{
     /**
      * @desc 添加歌曲
      */
-    @action add(song:Music.song) {
+    @action add(song: Music.song) {
         if (!this.has(song.id)) {
             this.queue.push(song);
             localStorage.setItem("songs", JSON.stringify(this.queue));
@@ -139,6 +138,7 @@ class PlayList{
      */
     set song(song:Music.song) {
         this.playsong = song;
+
     }
     /**
      * @desc 获取当前正在播放的歌曲
@@ -157,11 +157,34 @@ class PlayList{
         this.show = show;
     }
     /**
-     * @params {} ishandle 手动切歌还是自动切歌 
+     * @params {} ishandle 手动切歌还是自动切歌(在单曲循环下手动和自动有点区别)
      * @desc 得到要播放的歌曲
      */
-    getNextSong(ishandle?:boolean) {
+    @action playNextSong(ishandle?:boolean) {
+        switch (this.playway.type) {
+            case PlayWay.Cycle:
+                this.handleCyclePlay();
+                break;
+            case PlayWay.SingleCycle:
+                this.handleSingleCycle();
+                break;
+            case PlayWay.RandomPlay:
+                this.handleRandomPlay();
+                break;
+            default:
+                this.handleCyclePlay();
+                break;
+        }
+    }
+    handleCyclePlay() {
+        const len = this.queue.length;
         
+    }
+    handleSingleCycle() {
+        
+    }
+    handleRandomPlay() {
+
     }
 }
 const playlist =new PlayList() ;

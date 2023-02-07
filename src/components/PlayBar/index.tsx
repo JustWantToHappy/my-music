@@ -51,24 +51,23 @@ const PlayBar = observer(() => {
     }
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
     const { showBar, showSloud, time, voice, expend, collect } = playBarState;
+    const loadingStart = () => {
+        playlist.changeState(false);
+    }
+    const playMusic = () => {
+        playlist.changeState(true);
+        playBar.current.play();
+    }
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
-        if (state) {
-            var promise = playBar.current.play();
-            promise.then().catch((err: any) => {
-                console.info(err);
-                message.info({ content: "此歌曲为付费歌曲!", duration: 2 })
-            })
-        }
+        playBar.current.addEventListener("loadstart", loadingStart);
+        playBar.current.addEventListener("canplay", playMusic);
     }, [state, song]);
     React.useEffect(() => {
         dispatch({ type: PlayBarAction.ClearTimer });
-        /*   playBar.current.addEventListener("play", () => {
-  
+        /*   playBar.current.addEventListener("ended", () => {
+              dispatch({ type: PlayBarAction.ClearTimer });
           }) */
-        playBar.current.addEventListener("ended", () => {
-            dispatch({ type: PlayBarAction.ClearTimer });
-        })
         return function () {
             dispatch({ type: PlayBarAction.ClearTimer });
         }
@@ -189,12 +188,8 @@ const PlayBar = observer(() => {
                 {/* 播放方式 */}
                 <img src={playlist.way.icon} alt="logo" title={playlist.way.desc} onClick={() => { playlist.changePlayWay() }} />
                 {/* 播放队列 */}
-                <div>
-                    <img
-                        src={PlayListIcon}
-                        alt="logo"
-                        title="播放列表"
-                        onClick={() => playlist.isShow = true} />
+                <div onClick={() => playlist.isShow = !playlist.isShow}>
+                    <img src={PlayListIcon} alt="logo" title="播放列表" />
                     <span>&nbsp;{playlist.size}</span>
                 </div>
                 {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>
