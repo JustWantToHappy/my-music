@@ -141,7 +141,11 @@
     flex: 2;
     display: flex;
     justify-content: space-evenly;
-
+    &>img{
+        width:1rem;
+        height:1rem;
+        cursor: pointer;
+    }
     >:last-child {
         opacity: 0.8;
 

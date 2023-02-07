@@ -7,3 +7,4 @@ declare module "qrcode";
 declare module "js-cookie";
 //声明可以使用css模块化
 declare module "*.css";
+declare module "*.svg";

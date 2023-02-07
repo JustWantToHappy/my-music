@@ -1,6 +1,9 @@
 import { observable ,makeObservable, action,computed} from "mobx";
 import PubSub from "pubsub-js";
-import { PlayWay,Signal } from "./constants";
+import { PlayWay, Signal } from "./constants";
+import CycleIcon from "../assets/logo/cycle.svg";
+import SingleCycleIcon from "../assets/logo/single_cycle.svg";
+import RandomIcon from "../assets/logo/random_play.svg"; 
 /**
  * @desc 播放列表
  * 总结一下如果使用修饰器的话，
@@ -8,9 +11,19 @@ import { PlayWay,Signal } from "./constants";
  * 建议不要在业务代码中直接设置store中的值(可以用setter或者一个函数)
  * 
  */
+interface PlayWayType{
+    icon: any;
+    desc: string;
+    type: string;
+}
 class PlayList{
+    private playwayQueue: Array<PlayWayType> = [
+        { icon: CycleIcon, desc: "循环播放",type:PlayWay.Cycle },
+        { icon: SingleCycleIcon, desc: "单曲循环",type:PlayWay.SingleCycle },
+        {icon:RandomIcon,desc:"随机播放",type:PlayWay.RandomPlay},
+    ];
     @observable private queue: Array<Music.song> = []
-    @observable private playway: string = "";// 当前播放列表的播放方式
+    @observable private playway: PlayWayType =this.playwayQueue[0] ;// 当前播放列表的播放方式
     @observable private playsong: Music.song | null = null;//当前正在播放的音乐
     @observable private playstate: boolean = false;//当前音乐播放or暂停
     @observable private isFree: boolean = true;//当前音乐是否为付费音乐
@@ -22,7 +35,15 @@ class PlayList{
         } catch (err) {
             console.info(err);
         }
-        this.playway = localStorage.getItem("playway") || PlayWay.ListPlay;
+        this.initPlayWay();
+    }
+    /**
+     * @desc 初始化播放方式
+     */
+    @action initPlayWay() {
+        let way = localStorage.getItem("playway");
+        let index = this.playwayQueue.findIndex(playway=>playway.type===way);
+        this.playway = index === -1 ? this.playwayQueue[0] : this.playwayQueue[index];
     }
     /**
      * @desc 添加歌曲
@@ -61,8 +82,18 @@ class PlayList{
     /**
      * @desc 设置音乐播放方式
      */
-    @action changePlayWay(way:PlayWay) {
-        this.playway = way;
+    @action changePlayWay() {
+        let currentIndex = this.playwayQueue.findIndex(playway => this.playway.type=== playway.type);
+        let len = this.playwayQueue.length;
+        let next = currentIndex===-1?0:(currentIndex + len+1) % len;
+        this.playway = this.playwayQueue[next];
+        localStorage.setItem("playway", this.playway.type);
+    }
+    /**
+     * @des 播放方式
+     */
+    @computed get way(): PlayWayType{
+        return this.playway;
     }
     /**
      * @desc 播放暂停音乐
@@ -103,50 +134,6 @@ class PlayList{
      * @desc 得到要播放的歌曲
      */
     getNextSong(ishandle?:boolean) {
-        switch (this.playway) {
-            // 列表播放
-            case PlayWay.ListPlay:
-                this.handleListPlay();
-                break;
-            //顺序播放
-            case PlayWay.OrderPlay:
-                this.handleOrderPlay();
-                break;
-            //随机播放
-            case PlayWay.RandomPlay:
-                this.handleRandomPlay();
-                break;
-            //循环播放
-            case PlayWay.SingleCycle:
-                this.handleSingleCycle(ishandle||false);
-                break;
-            default:
-                this.handleListPlay();
-                break;
-        }
-    }
-    /**
-     * @desc 列表播放
-     */
-    handleListPlay() {
-        
-    }
-    /**
-     * @descc 顺序播放
-     */
-    handleOrderPlay() {
-
-    }
-    /**
-     * @desc 随机播放
-     */
-    handleRandomPlay() {
-        
-    }
-    /**
-     * @desc 单曲循环
-     */
-    handleSingleCycle(ishandle:boolean) {
         
     }
 }

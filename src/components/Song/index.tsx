@@ -30,9 +30,11 @@ const Song: React.FC<Iprops> = observer(function (props) {
         return start + index + 1;
     }
     const playMusic = (song: Music.song) => {
-        playlist.song = song;
-        playlist.add(song);
-        playlist.state = true;
+        runInAction(() => {
+            playlist.song = song;
+            playlist.add(song);
+            playlist.state = true;
+        })
     }
     const playSong = playlist.song;
     return (

@@ -15,9 +15,9 @@ import {
     PlusCircleOutlined,
     CustomerServiceOutlined
 } from "@ant-design/icons"
+import PlayListIcon from "../../assets/logo/playlist.svg";
+import { PlayWay } from "../../mobx/constants";
 import {
-    Dropdown,
-    Menu,
     message,
     Slider,
     Tooltip
@@ -26,10 +26,10 @@ import React from "react"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
 import PlayBarReducer, { PlayBarAction } from "../../reducers/playBar";
-import { songStore } from "../../mobx/song"
 import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
 import Lyric from "../Lyric";
+import { observer } from "mobx-react";
 import playlist from "../../mobx/playlist";
 export interface PlayBarType {
     showBar: boolean; //控制是否显示播放条
@@ -40,9 +40,9 @@ export interface PlayBarType {
     expend: boolean;//是否展开歌曲播放页面
     collect: boolean; //是否显示收藏音乐模态框
 }
-const PlayBar = () => {
+const PlayBar = observer(() => {
     const playBar: any = React.useRef();
-    const song = playlist.song;
+    const { song, way } = playlist;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     const initPlayBar: PlayBarType = {
         showBar: true,
@@ -54,18 +54,18 @@ const PlayBar = () => {
         collect: false,
     }
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
-    const {  showBar, showSloud, time, voice, expend, collect } = playBarState;
+    const { showBar, showSloud, time, voice, expend, collect } = playBarState;
     //用于判断组件是否需要重新渲染,播放新的歌曲
-/*     if (playBarState.song !== props.song) {
-        playBar.current.currentTime = 0;
-        playBar.current.pause();
-        dispatch({
-            type: PlayBarAction.Change,
-            args: {
-                showBar: true,
-            }
-        });
-    } */
+    /*     if (playBarState.song !== props.song) {
+            playBar.current.currentTime = 0;
+            playBar.current.pause();
+            dispatch({
+                type: PlayBarAction.Change,
+                args: {
+                    showBar: true,
+                }
+            });
+        } */
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         dispatch({ type: PlayBarAction.ClearTimer });
@@ -192,16 +192,14 @@ const PlayBar = () => {
                 {/* 音量调整 */}
                 <span className={styles['play-sound']}>
                     {showSloud && <Slider vertical className={styles['play-sound-bar']} onChange={changeVoice} value={voice} />}
-                    <SoundFilled className={styles['play-sound-btn']} onClick={(e) => { e.stopPropagation();  }} />
+                    <SoundFilled className={styles['play-sound-btn']} onClick={(e) => { e.stopPropagation(); }} />
                 </span>
                 {/* 播放方式 */}
-                <Dropdown overlay={menu} placement="top" >
-                    <EllipsisOutlined />
-                </Dropdown>
+                <img src={playlist.way.icon} alt="logo" title={playlist.way.desc} onClick={() => { playlist.changePlayWay() }} />
                 {/* 播放队列 */}
-                <CustomerServiceOutlined onClick={() => { }} />
+                <img src={PlayListIcon} alt="logo" title="播放列表" />
                 {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>
-                    <PlusCircleOutlined onClick={() => {  }} />
+                    <PlusCircleOutlined onClick={() => { }} />
                 </Tooltip>}
             </div>}
             {expend && <div className={fullStyles['music-bar']}>
@@ -217,57 +215,16 @@ const PlayBar = () => {
                         <StepForwardOutlined onClick={() => { }} />
                     </span>
                     <i>
-                        <Dropdown overlay={menu} placement="top" >
-                            <UnorderedListOutlined />
-                        </Dropdown>
+                        {/* 播放方式 */}
                     </i>
                     <p >
                         {showSloud && <Slider vertical onChange={changeVoice} value={voice} className={fullStyles.soundBar} />}
-                        <SoundFilled onClick={(e) => { e.stopPropagation();  }} />
+                        <SoundFilled onClick={(e) => { e.stopPropagation(); }} />
                     </p>
                 </div>
             </div>}
 
         </div>
     </>
-}
-const menu = () => {
-    //默认时列表播放,改变播放方式
-    let playWay = localStorage.getItem("playway") || '1';
-    const getPlayWay = (event: any) => {
-        addLocalStorage([{ key: "playway", value: event.key }]);
-    }
-    return <Menu
-        // 使用selectable和defaultSelectedKeys属性让下拉菜单给定一个默认选项高亮
-        selectable
-        defaultSelectedKeys={[playWay]}
-        items={[
-            {
-                key: '1',
-                label: (
-                    <span>列表播放</span>
-                ),
-            },
-            {
-                key: '2',
-                label: (
-                    <span>顺序播放</span>
-                ),
-            },
-            {
-                key: '3',
-                label: (
-                    <span>单曲循环</span>
-                ),
-            },
-            {
-                key: "4",
-                label: (
-                    <span>随机播放</span>
-                )
-            }
-        ]}
-        onSelect={getPlayWay}
-    />
-};
+});
 export { PlayBar };

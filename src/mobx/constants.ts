@@ -1,10 +1,9 @@
 //全局常量
 //播放方式
 export enum PlayWay {
-    ListPlay = '1',
-    OrderPlay = '2',
-    SingleCycle = '3',
-    RandomPlay = '4'
+    Cycle = '1',
+    SingleCycle = '2',
+    RandomPlay = '3'
 }
 //搜索类型
 export enum Search {
