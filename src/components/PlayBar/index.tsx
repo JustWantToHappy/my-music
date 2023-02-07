@@ -56,7 +56,11 @@ const PlayBar = observer(() => {
     }
     const playMusic = () => {
         playlist.changeState(true);
-        playBar.current.play();
+        const promise = playBar.current.play();
+        promise.catch((err: any) => {
+            console.info(err);
+            message.info({ content: "此歌曲暂无版权", duration: 2 });
+        })
     }
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
@@ -93,7 +97,14 @@ const PlayBar = observer(() => {
     const playPuase = async () => {
         playlist.changeState();
         state ? playBar.current.pause() : playBar.current.play();
-
+    }
+    //播放上一首音乐
+    const playPrevSong = () => {
+        playlist.playPrevSong()
+    }
+    //播放下一首音乐
+    const playNextSong = () => {
+        playlist.playNextSong(true);
     }
     //改变音量
     const changeVoice = (value: any) => {
@@ -140,11 +151,11 @@ const PlayBar = observer(() => {
             </div>}
             {!expend && <div className={styles.playmusic} >
                 {/* 播放上一首 */}
-                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={() => { }} />
+                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playPrevSong} />
                 {!state && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
                 {state && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
                 {/* 播放下一首 */}
-                <StepForwardOutlined className={styles['playmusic-div3']} onClick={() => { }} />
+                <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNextSong} />
             </div>}
             <div className={styles.coverImg} ref={imgRef}>
                 <img src={song.al?.picUrl} alt="logo" />

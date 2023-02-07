@@ -18,6 +18,7 @@ declare namespace Music {
         al?: album;
         album?: ablum;
         publishTime: number;//歌曲发布时间
+        fee: number;//{0:免费或无版权，1:vip歌曲,4:购买专辑,8:非会员可免费播放低音质，会员可播放高音质及下载}
     }
     //歌单
     type list = {

@@ -48,11 +48,16 @@ class PlayList{
     /**
      * @desc 添加歌曲
      */
-    @action add(song: Music.song) {
+    @action add(song: Music.song):boolean {
         if (!this.has(song.id)) {
+            // 添加歌曲之前判断当前歌曲是否可以播放(需要版权或者vip等)
+            if (song.fee===1||song.fee===4) {
+                return false;
+            }
             this.queue.push(song);
             localStorage.setItem("songs", JSON.stringify(this.queue));
         } 
+        return true;
     }
     /**
      * 
@@ -62,7 +67,7 @@ class PlayList{
     @action delete(id: number) {
         //如果删除的歌曲恰好是正在播放的歌曲，需要处理一些意外
         if (id === this.playsong?.id) {
-            let index = this.queue.findIndex(song => song.id === id);
+            let index = this.playSongIndex();
             let len = this.queue.length;
             //正好是队尾
             if (index>=1&&index + 1 === len) {
@@ -96,7 +101,7 @@ class PlayList{
      * @desc 检查歌曲是否已经加入到播放队列中
      */
     @action has(id:number): boolean{
-        return this.queue.findIndex(song => song.id === id) !== -1;
+        return this.queue.find(song => song.id === id) !== undefined;
     }
     /**
      * @desc 设置音乐播放方式
@@ -138,7 +143,6 @@ class PlayList{
      */
     set song(song:Music.song) {
         this.playsong = song;
-
     }
     /**
      * @desc 获取当前正在播放的歌曲
@@ -157,17 +161,33 @@ class PlayList{
         this.show = show;
     }
     /**
+     * @desc 手动向上播放音乐
+     */
+    @action playPrevSong() {
+        if (this.queue.length <= 1) {
+            return;
+        }
+        let index = this.playSongIndex();
+        if (index !== -1) {
+            let next = (index - 1 + this.queue.length) % this.queue.length;
+            this.playsong = this.queue[next];
+        }
+    }
+    /**
      * @params {} ishandle 手动切歌还是自动切歌(在单曲循环下手动和自动有点区别)
-     * @desc 得到要播放的歌曲
+     * @desc 自动向下播放的歌曲以及手动向下播放
      */
     @action playNextSong(ishandle?:boolean) {
         switch (this.playway.type) {
+            // 循环播放
             case PlayWay.Cycle:
                 this.handleCyclePlay();
                 break;
+            //单曲循环
             case PlayWay.SingleCycle:
-                this.handleSingleCycle();
+                this.handleSingleCycle(ishandle);
                 break;
+            //随机播放
             case PlayWay.RandomPlay:
                 this.handleRandomPlay();
                 break;
@@ -176,15 +196,47 @@ class PlayList{
                 break;
         }
     }
-    handleCyclePlay() {
-        const len = this.queue.length;
-        
+    /**
+     * @desc 返回当前歌曲在队列中的下标
+     */
+    playSongIndex():number{
+        const { playsong } = this;
+        if (playsong) {
+            return this.queue.findIndex(song => song.id === playsong.id);
+        } else {
+            return -1;
+        }
     }
-    handleSingleCycle() {
-        
+    handleCyclePlay() {
+        let len = this.queue.length;
+        let currentIndex = this.playSongIndex();
+        if (currentIndex >= 0) {
+            let next = (currentIndex + 1 + len) % len;
+            this.playsong = this.queue[next];
+        }
+    }
+    handleSingleCycle(ishandle?:boolean) {
+        if (!ishandle) {
+            return;
+        }
+        let index = this.playSongIndex();
+        if (index !== -1) {
+            let next = (this.queue.length + 1 + index) % this.queue.length;
+            this.playsong = this.queue[next];
+        }
     }
     handleRandomPlay() {
-
+        if (this.queue.length <= 1) {
+            return;
+        }
+        let priorIndex = this.playSongIndex();
+        while (true) {
+            let randomIndex = ~~(Math.random() * this.queue.length);
+            if (priorIndex !== randomIndex) {
+                this.playsong = this.queue[randomIndex];
+                break;
+            }
+        }
     }
 }
 const playlist =new PlayList() ;

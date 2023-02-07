@@ -1,5 +1,5 @@
 //歌曲列表组件
-import { Table, Pagination, Popconfirm } from 'antd';
+import { Table, Pagination, Popconfirm, message } from 'antd';
 import styles from "./index.module.css"
 import { transTime, removeSongFromSongList } from "../../utils/help"
 import { PlayCircleOutlined, DeleteOutlined, PropertySafetyFilled } from "@ant-design/icons"
@@ -32,7 +32,8 @@ const Song: React.FC<Iprops> = observer(function (props) {
     const playMusic = (song: Music.song) => {
         runInAction(() => {
             playlist.song = song;
-            playlist.add(song);
+            let success = playlist.add(song);
+            !success && message.info({ content: "此歌曲需要vip", duration: 2 });
         })
     }
     const playSong = playlist.song;
