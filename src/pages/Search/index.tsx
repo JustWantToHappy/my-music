@@ -2,15 +2,14 @@ import React, { useEffect, useState} from 'react'
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { Input, Tabs } from "antd"
 import styles from "./styles/index.module.scss"
-import constantsStore from "../../mobx/constants"
+import {Search} from "../../mobx/constants"
 import SingleSong from './components/SingleSong'
 import Singer from './components/Singer'
 import Album from './components/Album'
 import Video from './components/Video'
 export default function SearchPage() {
   const [input] = useSearchParams();
-  const { Search } = Input;
-  const { SearchList } = constantsStore;
+  const { Search:SearchInput } = Input;
   const navigate = useNavigate();
   //搜索关键字
   const keywords = input.get("keywords");
@@ -44,7 +43,7 @@ export default function SearchPage() {
   return (
     <div className={styles.search}>
       <header>
-        <Search onSearch={getSearchData}
+        <SearchInput onSearch={getSearchData}
           style={{ width: "45%" }}
           size="large"
         />
@@ -55,23 +54,23 @@ export default function SearchPage() {
           defaultActiveKey={String(searchType)}
           onChange={changeTab}
         >
-          <Tabs.TabPane tab="单曲" key={SearchList.SingleSong}>
+          <Tabs.TabPane tab="单曲" key={Search.SingleSong}>
             <SingleSong keywords={keywords} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="歌手" key={SearchList.Singer}>
+          <Tabs.TabPane tab="歌手" key={Search.Singer}>
             <Singer keywords={keywords} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="专辑" key={SearchList.Album}>
+          <Tabs.TabPane tab="专辑" key={Search.Album}>
             <Album keywords={keywords} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="视频" key={SearchList.MV}>
+          <Tabs.TabPane tab="视频" key={Search.MV}>
             <Video keywords={keywords} />
           </Tabs.TabPane>
-          <Tabs.TabPane tab="歌词" key={SearchList.Lyric}>
+          <Tabs.TabPane tab="歌词" key={Search.Lyric}>
           </Tabs.TabPane>
-          <Tabs.TabPane tab="歌单" key={SearchList.SongList}>
+          <Tabs.TabPane tab="歌单" key={Search.SongList}>
           </Tabs.TabPane>
-          <Tabs.TabPane tab="用户" key={SearchList.User}>
+          <Tabs.TabPane tab="用户" key={Search.User}>
           </Tabs.TabPane>
         </Tabs>
       </div>

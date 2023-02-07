@@ -1,12 +1,11 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from "react-router-dom"
 import { getSearchContent } from "../../../api/search"
-import constantsStore from "../../../mobx/constants"
+import { Search } from "../../../mobx/constants";
 import { getImgRealSrc } from "../../../utils/help"
 import { Pagination } from "antd"
 import styles from "../styles/singer.module.scss"
 export default function Singer(props: { keywords: string | null }) {
-    const { SearchList } = constantsStore;
     const { keywords } = props;
     const myRef = useRef(null);
     //搜索的字段
@@ -22,7 +21,7 @@ export default function Singer(props: { keywords: string | null }) {
     const [singer, setSinger] = useState<Array<Music.singer>>();
     const getData = () => {
         (async () => {
-            const res = await getSearchContent(keywords as string, current, pageSize, SearchList.Singer)
+            const res = await getSearchContent(keywords as string, current, pageSize, Search.Singer)
             if (res.code === 200) {
                 setSinger(res.result.artists);
                 setTotal(res.result.artistCount);
@@ -35,7 +34,7 @@ export default function Singer(props: { keywords: string | null }) {
     }
     //切换页码时触发
     const changePage = async (page: number) => {
-        const res = await getSearchContent(keywords as string, page, pageSize, SearchList.Singer)
+        const res = await getSearchContent(keywords as string, page, pageSize, Search.Singer)
         if (res.code === 200) {
             setSinger(res.result.artists);
         }

@@ -4,13 +4,11 @@ import { Pagination } from "antd"
 import { PlayCircleTwoTone } from "@ant-design/icons"
 import { getSearchContent } from "../../../api/search"
 import styles from "../styles/album.module.scss"
-import constantsStore from "../../../mobx/constants"
+import {Search} from "../../../mobx/constants"
 import { getImgRealSrc } from "../../../utils/help"
-import playlist from "../../../utils/playlist"
 import songsStore from "../../../mobx/songs"
 export default function Album(props: { keywords: string | null }) {
   const { keywords } = props;
-  const { SearchList } = constantsStore;
   //搜索的字段
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
@@ -25,7 +23,7 @@ export default function Album(props: { keywords: string | null }) {
   //用于表示当前鼠标正悬在此专辑上
   const [id, setId] = useState(0);
   const getData = async (page?: number) => {
-    const res = await getSearchContent(keywords as string, page || current, pageSize, SearchList.Album);
+    const res = await getSearchContent(keywords as string, page || current, pageSize, Search.Album);
     if (res.code === 200) {
       albums.length === 0 && setTotal(res.result.albumCount);
       setAlbums(res.result.albums);
@@ -43,7 +41,6 @@ export default function Album(props: { keywords: string | null }) {
   //播放音乐
   const playMusic = (id: number) => {
     songsStore.origin = 'home'
-    playlist(id, "album");
   }
   return (
     <>

@@ -8,7 +8,6 @@ import { fetchSongLists } from "../../api/recommond"
 import { transPlayCount } from "../../utils"
 import { debounce } from "../../utils/throttle_debounce"
 import songsStore from "../../mobx/songs"
-import playList from '../../utils/playlist';
 export default function SongList(props: { cat: string, total: number }) {
     const { cat, total } = props;
     const navigate = useNavigate();
@@ -46,7 +45,6 @@ export default function SongList(props: { cat: string, total: number }) {
     //点击播放按钮播放音乐
     const playMusic = (id: number) => {
         songsStore.origin = 'home';
-        playList(id, "songlist");
     }
     //点击封面前往歌单
     const playSongList = (id: number) => {
@@ -64,22 +62,18 @@ export default function SongList(props: { cat: string, total: number }) {
                 console.log(e);
             }
         })();
+        loadImage();
         window.scrollTo({
             left: 0,
             top: 0,
             behavior: 'smooth'
         })
-    }, [tag, current]);
+    }, [tag, current, cat, pageSize]);
     const pageScrolling = () => {
         debounce(loadImage, 300);
     }
     useEffect(() => {
         window.addEventListener("scroll", pageScrolling);
-    }, []);
-    useEffect(() => {
-        loadImage();
-    })
-    useEffect(() => {
         return function () {
             window.removeEventListener("scroll", pageScrolling);
         }

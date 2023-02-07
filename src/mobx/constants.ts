@@ -1,5 +1,4 @@
 //全局常量
-import { observable } from "mobx"
 //播放方式
 export enum PlayWay {
     ListPlay = '1',
@@ -18,9 +17,3 @@ export enum Search {
     Lyric = 1006,
     Station = 1009
 }
-const constantsStore = {
-    publicURL: "http://localhost:5000",
-    playWay:PlayWay,
-    SearchList:Search
-}
-export default observable(constantsStore);

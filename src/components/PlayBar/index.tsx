@@ -20,52 +20,55 @@ import React from "react"
 import PubSub from "pubsub-js"
 import { transTime } from "../../utils/help"
 import { addLocalStorage } from "../../utils/authorization"
+import PlayBarReducer from "../../reducers/playBar";
 import { songStore } from "../../mobx/song"
-import Constants from "../../mobx/constants"
 import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
 import Lyric from "../Lyric";
+export interface PlayBarType {
+    song: Music.song; //控制歌曲切换
+    isPlay: boolean;//控制是否播放音乐
+    showBar: boolean; //控制是否显示播放条
+    showSloud: boolean;//控制音量条是否展示
+    time: number;//进度条当前时间
+    voice: number; //音量条大小
+    expend: boolean;//是否展开歌曲播放页面
+    collect: boolean; //是否显示收藏音乐模态框
+    isFree: boolean; //用于判断是否需要vip
+}
 const PlayBar = (props: { song: Music.song }) => {
     const playBar: any = React.useRef();
-    const { playWay } = Constants;
-    //控制歌曲切换
-    const [song, setSong] = React.useState<Music.song>(props.song);
+    const [song] = React.useState<Music.song>(props.song);
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
-    //控制是否播放音乐
     const [isPlay, setPlay] = React.useState(false);
-    //控制是否显示播放条
     const [showBar, setBar] = React.useState(true);
-    //控制音量条是否展示
     const [showSloud, setSloud] = React.useState(false);
-    //进度条当前时间
     const [time, setTime] = React.useState(0)
-    //音量条大小
     const [voice, setVoice] = React.useState(1);
-    //是否展开歌曲播放页面
     const [expend, setExpend] = React.useState(false);
-    //是否显示收藏音乐模态框
     const [collect, setCollect] = React.useState(false);
-    //用于判断是否需要vip
     const [isFree, setFree] = React.useState(true);
+    const initPlayBar: PlayBarType = {
+        song: props.song,
+        isPlay: false,
+        showBar: true,
+        showSloud: false,
+        time: 0,
+        voice: 1,
+        expend: false,
+        collect: false,
+        isFree: false,
+    }
+    const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
     //用于判断组件是否需要重新渲染,播放新的歌曲
     if (song !== props.song) {
         playBar.current.currentTime = 0;
         playBar.current.pause();
-        setSong(props.song);
-        setFree(true);
-        setBar(true);
-        setPlay(true);
+        dispatch({type:"playNewMusic",args:props.song});
     }
-    React.useEffect(() => {
-        if (isFree === false) {
-            message.info({ content: "此歌曲需要vip", style: { marginTop: '40vh' } }, 1);
-            setFree(true);
-        }
-    }, [isFree])
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         songStore.clearTimer();
-        songStore.timer = undefined;
         setTimeout(() => {
             var promise = playBar.current.play();
             promise.then((res: any) => {
@@ -81,40 +84,12 @@ const PlayBar = (props: { song: Music.song }) => {
         setTime(0);
         playBar.current.addEventListener("play", () => {
             setPlay(true);
-            //音乐一旦开始播放，设置音量初始值
-            if (localStorage.getItem("volume")) {
-                playBar.current.volume = parseFloat(localStorage.getItem("volume") as string);
-            } else {
-                playBar.current.volume = 0;
-            }
-            setVoice(Math.floor(playBar.current.volume * 100));
-            songStore.clearTimer();
-            songStore.timer = undefined;
-            songStore.timer = setInterval(() => {
-                setTime(playBar.current.currentTime * 1000);
-            }, 1000);
-            //通知播放条停止播放
-            PubSub.subscribe("stopPlay", () => {
-                setPlay(false);
-            })
         })
         playBar.current.addEventListener("ended", () => {
             clearInterval(songStore.timer);
-            let songsStr = localStorage.getItem("songs");
-            let songsLen = 0;
-            if (songsStr) {
-                const songs: Array<Music.song> = JSON.parse(songsStr);
-                songs && (() => {
-                    songsLen = songs.length;
-                })();
-            }
-            songsLen > 1 && PubSub.publish("changeMusic", "next");
-            songsLen === 1 && localStorage.getItem("playway") !== playWay.SingleCycle && setPlay(false);
-            songsLen === 1 && localStorage.getItem("playway") === playWay.SingleCycle && PubSub.publish("changeMusic", "next");
         })
         return function () {
             songStore.clearTimer();
-            songStore.timer = undefined;
         }
     }, [song]);
     React.useEffect(() => {
@@ -213,11 +188,11 @@ const PlayBar = (props: { song: Music.song }) => {
             </div>}
             {!expend && <div className={styles.playmusic} >
                 {/* 播放上一首 */}
-                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={()=>{}} />
-                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => {  }} />}
-                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => {  }} />}
+                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={() => { }} />
+                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { }} />}
+                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { }} />}
                 {/* 播放下一首 */}
-                <StepForwardOutlined className={styles['playmusic-div3']} onClick={()=>{}} />
+                <StepForwardOutlined className={styles['playmusic-div3']} onClick={() => { }} />
             </div>}
             <div className={styles.coverImg} ref={imgRef}>
                 <img src={song.al?.picUrl} alt="logo" />
@@ -275,10 +250,10 @@ const PlayBar = (props: { song: Music.song }) => {
                 <div>
                     <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
                     <span>
-                        <StepBackwardOutlined onClick={playLast} />
-                        {!isPlay && <PlayCircleOutlined onClick={() => { playMusic() }} />}
-                        {isPlay && <PauseCircleOutlined onClick={() => { playMusic() }} />}
-                        <StepForwardOutlined onClick={playNext} />
+                        <StepBackwardOutlined onClick={() => { }} />
+                        {!isPlay && <PlayCircleOutlined onClick={() => { }} />}
+                        {isPlay && <PauseCircleOutlined onClick={() => { }} />}
+                        <StepForwardOutlined onClick={() => { }} />
                     </span>
                     <i>
                         <Dropdown overlay={menu} placement="top" >

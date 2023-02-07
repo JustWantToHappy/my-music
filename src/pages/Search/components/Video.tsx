@@ -1,6 +1,6 @@
 import { useState, } from 'react'
 import { useNavigate } from "react-router-dom"
-import ConstantsStore from "../../../mobx/constants"
+import { Search } from "../../../mobx/constants";
 import { Pagination, Tooltip } from "antd"
 import { VideoCameraOutlined } from "@ant-design/icons"
 import { getSearchContent } from "../../../api/search";
@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 import styles from "../styles/video.module.scss"
 export default function Video(props: { keywords: string | null }) {
   const { keywords } = props;
-  const { SearchList } = ConstantsStore;
   const navigate = useNavigate();
   //搜索字段
   const [search, setSearch] = useState("");
@@ -23,7 +22,7 @@ export default function Video(props: { keywords: string | null }) {
   //获取数据
   const getData = (page: number) => {
     (async () => {
-      const res = await getSearchContent(keywords as string, page, size, SearchList.MV)
+      const res = await getSearchContent(keywords as string, page, size, Search.MV)
       console.log(res,'test')
       if (res.code === 200) {
         setTotal(res.result.mvCount);
