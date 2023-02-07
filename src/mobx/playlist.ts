@@ -27,6 +27,7 @@ class PlayList{
     @observable private playsong: Music.song | null = null;//当前正在播放的音乐
     @observable private playstate: boolean = false;//当前音乐播放or暂停
     @observable private isFree: boolean = true;//当前音乐是否为付费音乐
+    @observable private show: boolean = false;//是否展示当前播放列表
     constructor() {
         makeObservable(this);
         try {
@@ -51,6 +52,7 @@ class PlayList{
     @action add(song:Music.song) {
         if (!this.has(song.id)) {
             this.queue.push(song);
+            localStorage.setItem("songs", JSON.stringify(this.queue));
         } 
     }
     /**
@@ -60,12 +62,17 @@ class PlayList{
      */
     @action delete(id:number) {
         this.queue = this.queue.filter(song => song.id !== id);
+        localStorage.setItem("songs", JSON.stringify(this.queue));
     }
     /**
      * @desc 清空播放队列
      */
     @action clearAll() {
         this.queue = [];
+        localStorage.removeItem("songs");
+    }
+    @computed get songs() {
+        return this.queue;
     }
     /**
      * @desc 播放列表歌曲数
@@ -123,12 +130,6 @@ class PlayList{
         return this.playsong!;
     }
     
-    /**
-     * @desc 得到当前播放的音乐在队列中的下标
-     */
-    @action getCurrentIndex() {
-        
-    }
     /**
      * @params {} ishandle 手动切歌还是自动切歌 
      * @desc 得到要播放的歌曲

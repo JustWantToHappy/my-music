@@ -197,7 +197,10 @@ const PlayBar = observer(() => {
                 {/* 播放方式 */}
                 <img src={playlist.way.icon} alt="logo" title={playlist.way.desc} onClick={() => { playlist.changePlayWay() }} />
                 {/* 播放队列 */}
-                <img src={PlayListIcon} alt="logo" title="播放列表" />
+                <div>
+                    <img src={PlayListIcon} alt="logo" title="播放列表" />
+                    <span>&nbsp;{playlist.size}</span>
+                </div>
                 {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>
                     <PlusCircleOutlined onClick={() => { }} />
                 </Tooltip>}
