@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Tag } from "antd"
 import styles from "./index.module.scss"
 import { fetchAlbumContent } from "../../api/album"
-import Song from '../../components/Song'
+import Song from '../../components/Songs'
 import dayjs from "dayjs"
 export default function Album() {
     const [search] = useSearchParams();

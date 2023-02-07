@@ -1,7 +1,7 @@
 import styles from "./index.module.scss"
 import { useSearchParams } from "react-router-dom"
 import { useState, useEffect } from "react"
-import Song from "../../components/Song"
+import Song from "../../components/Songs"
 import { fetchUserDetail } from "../../api/user"
 import { fetchSingerDetails, fetchAllSongBySingerId, fetchFiftySongs, fetchSingerDes } from "../../api/artist"
 import { Tabs } from 'antd';

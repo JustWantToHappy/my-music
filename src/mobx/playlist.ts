@@ -60,7 +60,20 @@ class PlayList{
      * @param id 歌曲id
      * @desc 删除歌曲
      */
-    @action delete(id:number) {
+    @action delete(id: number) {
+        //如果删除的歌曲恰好是正在播放的歌曲，需要处理一些意外
+        if (id === this.playsong?.id) {
+            let index = this.queue.findIndex(song => song.id === id);
+            let len = this.queue.length;
+            //正好是队尾
+            if (index>=1&&index + 1 === len) {
+                this.queue.pop();
+                this.playsong = this.queue[index - 1];
+                return;
+            } else if(index+1<len){
+                this.playsong = this.queue[index + 1];
+            }
+        }
         this.queue = this.queue.filter(song => song.id !== id);
         localStorage.setItem("songs", JSON.stringify(this.queue));
     }
@@ -105,8 +118,12 @@ class PlayList{
     /**
      * @desc 播放暂停音乐
      */
-    set state(state:boolean) {
-        this.playstate = state;
+    @action changeState(state?: boolean) {
+        if (typeof state === "boolean") {
+            this.playstate = state;
+        } else {
+            this.playstate = !this.playstate;
+        }
         if (this.playstate) {
             PubSub.publish(Signal.PlayMusic);
         }
@@ -130,6 +147,15 @@ class PlayList{
         return this.playsong!;
     }
     
+    /**
+     * @desc 是否展示当前播放列表
+     */
+    @computed get isShow() {
+        return this.show;
+    }
+    set isShow(show:boolean) {
+        this.show = show;
+    }
     /**
      * @params {} ishandle 手动切歌还是自动切歌 
      * @desc 得到要播放的歌曲

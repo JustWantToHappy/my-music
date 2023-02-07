@@ -81,7 +81,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    text-align: justify;
+    text-align: center;
 }
 .song{
     height: 2rem;
@@ -98,15 +98,16 @@
         overflow: hidden;
         height:100%;
         @include omit();
+        &>a{
+            color:#fff;
+        }
     }
     &>span:first-of-type{
         font-size:1.2rem;
         flex:1;
-        text-align: center;
     }
     &>span:nth-of-type(3){
         flex:3;
-        text-align: center;
         &>i{
             opacity: 0.7;
         }
@@ -115,6 +116,11 @@
         }
         &>i:first-of-type{
             padding-right:1rem;
+        }
+    }
+    &>span:nth-of-type(4){
+       &>a:hover{
+            border-bottom:1px solid #fff;
         }
     }
     &>span:last-of-type{

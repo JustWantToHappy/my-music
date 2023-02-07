@@ -6,17 +6,13 @@ import {
     StepForwardOutlined,
     PlayCircleOutlined,
     PauseCircleOutlined,
-    EllipsisOutlined,
     SoundFilled,
     DownOutlined,
     FullscreenExitOutlined,
-    UnorderedListOutlined,
     FullscreenOutlined,
     PlusCircleOutlined,
-    CustomerServiceOutlined
 } from "@ant-design/icons"
 import PlayListIcon from "../../assets/logo/playlist.svg";
-import { PlayWay } from "../../mobx/constants";
 import {
     message,
     Slider,
@@ -42,7 +38,7 @@ export interface PlayBarType {
 }
 const PlayBar = observer(() => {
     const playBar: any = React.useRef();
-    const { song, way } = playlist;
+    const { song, isShow, state } = playlist;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     const initPlayBar: PlayBarType = {
         showBar: true,
@@ -55,26 +51,21 @@ const PlayBar = observer(() => {
     }
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
     const { showBar, showSloud, time, voice, expend, collect } = playBarState;
-    //用于判断组件是否需要重新渲染,播放新的歌曲
-    /*     if (playBarState.song !== props.song) {
-            playBar.current.currentTime = 0;
-            playBar.current.pause();
-            dispatch({
-                type: PlayBarAction.Change,
-                args: {
-                    showBar: true,
-                }
-            });
-        } */
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
+        if (state) {
+            var promise = playBar.current.play();
+            promise.then().catch((err: any) => {
+                console.info(err);
+                message.info({ content: "此歌曲为付费歌曲!", duration: 2 })
+            })
+        }
+    }, [state, song]);
+    React.useEffect(() => {
         dispatch({ type: PlayBarAction.ClearTimer });
-        /*  setTimeout(() => {
-             var promise = playBar.current.play();
-         }, 150) */
-        playBar.current.addEventListener("play", () => {
-            // setPlay(true);
-        })
+        /*   playBar.current.addEventListener("play", () => {
+  
+          }) */
         playBar.current.addEventListener("ended", () => {
             dispatch({ type: PlayBarAction.ClearTimer });
         })
@@ -100,9 +91,10 @@ const PlayBar = observer(() => {
           }, 1000); */
     }
     // 点击播放或者暂停
-    const playMusic = async () => {
-        /*  setPlay(!isPlay);
-         isPlay ? playBar.current.pause() : playBar.current.play(); */
+    const playPuase = async () => {
+        playlist.changeState();
+        state ? playBar.current.pause() : playBar.current.play();
+
     }
     //改变音量
     const changeVoice = (value: any) => {
@@ -138,7 +130,7 @@ const PlayBar = observer(() => {
         </audio>
         {collect && <CollectModal close={() => { }} songId={song.id} />}
         <div className={showBar ? getStyle("start") : getStyle("move")} ref={myBarRef}>
-            {!expend && <PlayList />}
+            {isShow && <PlayList />}
             {!expend && <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"展开"} >
                     <FullscreenOutlined onClick={spread} />
@@ -150,8 +142,8 @@ const PlayBar = observer(() => {
             {!expend && <div className={styles.playmusic} >
                 {/* 播放上一首 */}
                 <StepBackwardOutlined className={styles['playmusic-div1']} onClick={() => { }} />
-                {!playlist.state && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => { }} />}
-                {playlist.state && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => { }} />}
+                {!state && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
+                {state && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
                 {/* 播放下一首 */}
                 <StepForwardOutlined className={styles['playmusic-div3']} onClick={() => { }} />
             </div>}
@@ -198,7 +190,11 @@ const PlayBar = observer(() => {
                 <img src={playlist.way.icon} alt="logo" title={playlist.way.desc} onClick={() => { playlist.changePlayWay() }} />
                 {/* 播放队列 */}
                 <div>
-                    <img src={PlayListIcon} alt="logo" title="播放列表" />
+                    <img
+                        src={PlayListIcon}
+                        alt="logo"
+                        title="播放列表"
+                        onClick={() => playlist.isShow = true} />
                     <span>&nbsp;{playlist.size}</span>
                 </div>
                 {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>

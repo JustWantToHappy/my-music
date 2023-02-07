@@ -2,7 +2,7 @@ import { useSearchParams, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
 import { getListSong } from "../../api/songlist"
 import { deleteSongList } from "../../api/user"
-import Song from "../../components/Song";
+import Song from "../../components/Songs";
 import styles from "./styles/songlist.module.scss"
 import { Button, Popconfirm } from "antd"
 import { FormOutlined, DeleteOutlined } from "@ant-design/icons"

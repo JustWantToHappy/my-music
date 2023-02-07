@@ -3,7 +3,7 @@ import styles from "./index.module.scss"
 import { useEffect, useState } from "react"
 import { fetchMyRecommendSongs } from "../../../api/song"
 import { transNumber } from "../../../utils"
-import Song from '../../../components/Song'
+import Song from '../../../components/Songs'
 export default function DialyRecommendSongs() {
   const imgURL = "https://s2.music.126.net/style/web2/img/recmd_daily.jpg?4e81712128eba924d46a387f65a88901";
   const [songs, setSongs] = useState<Array<Music.song>>([]);

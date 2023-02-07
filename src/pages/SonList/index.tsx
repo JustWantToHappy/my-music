@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { fetchList, getListSong } from "../../api/songlist"
 import styles from "./index.module.css"
-import Song from "../../components/Song"
+import Song from "../../components/Songs"
 const SongList = () => {
     const { id } = useParams();
     interface myList {

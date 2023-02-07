@@ -33,7 +33,7 @@ const Song: React.FC<Iprops> = observer(function (props) {
         runInAction(() => {
             playlist.song = song;
             playlist.add(song);
-            playlist.state = true;
+            playlist.changeState(true);
         })
     }
     const playSong = playlist.song;
