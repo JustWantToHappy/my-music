@@ -4,6 +4,7 @@ import routes from "../../routes";
 import PlayBar from "../../components/PlayBar";
 import { Signal } from "../../mobx/constants";
 import playlist from '../../mobx/playlist';
+import playcontroller from '../../mobx/playcontroller';
 import { observer } from "mobx-react";
 import PubSub from "pubsub-js";
 const Container = observer(function () {
@@ -12,7 +13,7 @@ const Container = observer(function () {
     const location = useLocation();
     //播放音乐
     PubSub.subscribe(Signal.PlayMusic, function () {
-        if (playlist.state && song !== playlist.song) {
+        if (playcontroller.state && song !== playlist.song) {
             setSong(playlist.song);
         }
     })

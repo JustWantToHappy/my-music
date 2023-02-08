@@ -25,6 +25,7 @@ import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
 import { observer } from "mobx-react";
 import playlist from "../../mobx/playlist";
+import playcontroller from "../../mobx/playcontroller";
 export interface PlayBarType {
     showBar: boolean; //控制是否显示播放条
     showSloud: boolean;//控制音量条是否展示
@@ -33,7 +34,8 @@ export interface PlayBarType {
 }
 const PlayBar = observer(() => {
     const playBar: any = React.useRef();
-    const { song, isShow, state } = playlist;
+    const { song, isShow } = playlist;
+    const { state } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     const initPlayBar: PlayBarType = {
         showBar: true,
@@ -41,15 +43,14 @@ const PlayBar = observer(() => {
         voice: 1,
         collect: false,
     }
-    const [time, setTime] = React.useState(0);
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
     const { showBar, showSloud, voice, collect } = playBarState;
 
     const loadingStart = () => {
-        playlist.changeState(false);
+        playcontroller.changeState(false);
     }
     const playMusic = () => {
-        playlist.changeState(true);
+        playcontroller.changeState(true);
         const promise = playBar.current.play();
         promise.catch((err: any) => {
             console.info(err);
@@ -71,6 +72,9 @@ const PlayBar = observer(() => {
             window.removeEventListener("click", handleClik);
         }
     }, []);
+    React.useEffect(() => {
+        // 
+    }, [url]);
     //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move']];
@@ -78,7 +82,6 @@ const PlayBar = observer(() => {
     }
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
-        dispatch({ type: PlayBarAction.Change, args: { time: value } });
     }
     //当拉取进度条之后触发，设置当前播放时间
     const changeCurrentTime = (value: number) => {
@@ -91,7 +94,7 @@ const PlayBar = observer(() => {
     }
     // 点击播放或者暂停
     const playPuase = async () => {
-        playlist.changeState();
+        playcontroller.changeState();
         state ? playBar.current.pause() : playBar.current.play();
     }
     //播放上一首音乐
@@ -146,8 +149,8 @@ const PlayBar = observer(() => {
             <ul className={styles["music-bar"]} >
                 <li >
                     {/* 其中tipFormatter=null不显示当前进度的刻度 */}
-                    <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
-                    <small>{transTime(time, 2)}/{transTime(song.dt, 2)}{playlist.time}</small>
+                    <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={0} />
+                    <small>{transTime(0, 2)}/{transTime(song.dt, 2)}</small>
                 </li>
                 <li>
                     <div>
