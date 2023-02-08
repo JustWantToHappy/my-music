@@ -13,7 +13,6 @@ const Container = observer(function () {
     //播放音乐
     PubSub.subscribe(Signal.PlayMusic, function () {
         if (playlist.state&&song!==playlist.song) {
-            console.log("zzz");
             setSong(playlist.song);
         }
     })

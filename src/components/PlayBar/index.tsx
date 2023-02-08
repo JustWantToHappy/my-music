@@ -7,8 +7,7 @@ import {
     PauseCircleOutlined,
     SoundFilled,
     DownOutlined,
-    FullscreenOutlined,
-    PlusCircleOutlined,
+    PlusSquareOutlined,
 } from "@ant-design/icons"
 import PlayListIcon from "../../assets/logo/playlist.svg";
 import {
@@ -64,9 +63,6 @@ const PlayBar = observer(() => {
     }, [state, song]);
     React.useEffect(() => {
         dispatch({ type: PlayBarAction.ClearTimer });
-        /*   playBar.current.addEventListener("ended", () => {
-              dispatch({ type: PlayBarAction.ClearTimer });
-          }) */
         return function () {
             dispatch({ type: PlayBarAction.ClearTimer });
         }
@@ -101,6 +97,10 @@ const PlayBar = observer(() => {
     const playNextSong = () => {
         playlist.playNextSong(true);
     }
+    //展示隐藏音量条
+    const clickSloud = () => {
+        dispatch({ type: PlayBarAction.Change, args: { showSloud: !showSloud } });
+    }
     //改变音量
     const changeVoice = (value: any) => {
         playBar.current.volume = value * 0.01;
@@ -109,7 +109,7 @@ const PlayBar = observer(() => {
     }
     //收起播放条
     const shrink = () => {
-        dispatch({ type: PlayBarAction.Change, args: { expand: false, showSloud: false } })
+        // dispatch({ type: PlayBarAction.Change, args: {  } })
     }
     //展开播放条
     const myBarRef = React.useRef<HTMLDivElement>(null);
@@ -125,6 +125,9 @@ const PlayBar = observer(() => {
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"收起"} >
                     <DownOutlined onClick={shrink} />
+                </Tooltip>
+                <Tooltip placement="right" title='收藏'>
+                    <PlusSquareOutlined />
                 </Tooltip>
             </div>
             <div className={styles.playmusic} >
@@ -156,8 +159,10 @@ const PlayBar = observer(() => {
             <div className={styles['play-method']}>
                 {/* 音量调整 */}
                 <span className={styles['play-sound']}>
-                    {showSloud && <Slider vertical className={styles['play-sound-bar']} onChange={changeVoice} value={voice} />}
-                    <SoundFilled className={styles['play-sound-btn']} onClick={(e) => { e.stopPropagation(); }} />
+                    <SoundFilled className={styles['play-sound-btn']} onClick={clickSloud} />
+                    {showSloud && <div className={styles['play-sound-container']}>
+                        <Slider vertical className={styles['play-sound-bar']} onChange={changeVoice} value={voice} />
+                    </div>}
                 </span>
                 {/* 播放方式 */}
                 <img src={playlist.way.icon} alt="logo" title={playlist.way.desc} onClick={() => { playlist.changePlayWay() }} />
@@ -166,9 +171,6 @@ const PlayBar = observer(() => {
                     <img src={PlayListIcon} alt="logo" title="播放列表" />
                     <span>&nbsp;{playlist.size}</span>
                 </div>
-                {localStorage.getItem("hasLogin") === 'true' && <Tooltip placement="left" title='收藏'>
-                    <PlusCircleOutlined onClick={() => { }} />
-                </Tooltip>}
             </div>
         </div>
     </>

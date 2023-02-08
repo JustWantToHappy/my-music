@@ -13,7 +13,7 @@ export default function PlayBarReducer(playBarState:PlayBarType,action:{type:str
     const {type,args} = action;
     switch (type) {
         case PlayBarAction.Change:
-            playBarState = Object.assign(playBarState, args);
+            playBarState = Object.assign({},playBarState, args);
             break;
         case PlayBarAction.ClearTimer:
             playBarState.timer = null;

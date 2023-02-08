@@ -173,13 +173,19 @@
 }
 
 /* 音量调整条 */
-.play-sound-bar {
-    height: 18vh;
+.play-sound-container{
     position: absolute;
+    width: 36px;
+    height: 20vh;
     z-index:22;
-    top: -19vh;
-    background: #242424;
+    background-color: #242424;
     opacity: 0.7;
-    width: 40px;
+    top:-20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.play-sound-bar {
+    height:80%;
     padding: 0 18px;
 }
