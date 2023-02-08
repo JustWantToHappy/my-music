@@ -60,7 +60,7 @@ const PlayBar = observer(() => {
         console.log("test");
     }
     const endMusic = () => {
-        
+
         playlist.playNextSong();
     }
     // 当播放新的歌曲的时调用
@@ -82,8 +82,14 @@ const PlayBar = observer(() => {
         dispatch({ type: PlayBarAction.Change, args: { showSloud: false } });
         playlist.isShow = false;
     }
+    const handleHover = function (e: any) {
+        if (e.toElement == null) {
+            dispatch({ type: PlayBarAction.Change, args: { showBar: true } });
+        }
+    }
     React.useEffect(() => {
         window.addEventListener("click", handleClik);
+        window.addEventListener("mouseout", handleHover);
         return function () {
             window.removeEventListener("click", handleClik);
         }
@@ -156,7 +162,7 @@ const PlayBar = observer(() => {
     }
     //收起播放条
     const shrink = () => {
-        // dispatch({ type: PlayBarAction.Change, args: {  } })
+        dispatch({ type: PlayBarAction.Change, args: { showBar: false } });
     }
 
     return <>

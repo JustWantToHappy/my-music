@@ -1,10 +1,14 @@
 import { observable, makeObservable, action, computed } from "mobx";
 import { Signal } from "./constants";
+
 class PlayController{
-    @observable private playstate: boolean = false;//当前音乐是否可以播放
-    @observable private currentTime: number = 0;//当前播放音乐时间
+    //以下属性皆为正在播放的音乐的属性
+    @observable private playstate: boolean = false;//是否可以播放
+    @observable private currentTime: number = 0;//播放音乐时间
+    @observable private volume: number = 0;//音量
     @observable private timer: ReturnType<typeof setInterval> | number | null = null;//定时器
-    @observable private url: string | null = null;//当前播放音乐的url地址
+    @observable private url: string | null = null;//url地址
+    
     constructor() {
         makeObservable(this);
         this.init();
