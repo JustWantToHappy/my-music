@@ -25,9 +25,6 @@ export default function PlayBarReducer(playBarState:PlayBarType,action:{type:str
                 playBarState.time++;
             },1000);
             break;
-        case PlayBarAction.shrinkPlayBar:
-            playBarState.expend = false;
-            break;
         default:
             break;
         }
