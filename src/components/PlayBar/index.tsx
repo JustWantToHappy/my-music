@@ -8,6 +8,8 @@ import {
     SoundFilled,
     DownOutlined,
     PlusSquareOutlined,
+    // <LockOutlined />
+    // <UnlockOutlined />
 } from "@ant-design/icons"
 import PlayListIcon from "../../assets/logo/playlist.svg";
 import {
@@ -63,6 +65,13 @@ const PlayBar = observer(() => {
     }, [state, song]);
     React.useEffect(() => {
         dispatch({ type: PlayBarAction.ClearTimer });
+        window.addEventListener("click", (e) => {
+            const rect = myBarRef.current?.getBoundingClientRect();
+            if (rect&&rect.y > e.clientY) {
+                dispatch({ type: PlayBarAction.Change, args: { showSloud: false } });
+                playlist.isShow = false;
+            }
+        });
         return function () {
             dispatch({ type: PlayBarAction.ClearTimer });
         }
