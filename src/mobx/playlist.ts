@@ -1,13 +1,13 @@
 import { observable ,makeObservable, action,computed} from "mobx";
-import PubSub from "pubsub-js";
-import { PlayWay, Signal } from "./constants";
+import { PlayWay } from "./constants";
 import CycleIcon from "../assets/logo/cycle.svg";
 import SingleCycleIcon from "../assets/logo/single_cycle.svg";
 import RandomIcon from "../assets/logo/random_play.svg"; 
+import playcontroller from "./playcontroller";
 /**
  * @desc 播放列表
  * 总结一下如果使用修饰器的话，
- * getter和setter只能够适用@computed，而其他方法要使用@action
+ * getter和setter只能够适用@computed，而其他方法要使用@action(修改一个值不要使用settter，使用action)
  * 建议不要在业务代码中直接设置store中的值(可以用setter或者一个函数)
  * 
  */
@@ -29,21 +29,29 @@ class PlayList{
 
     constructor() {
         makeObservable(this);
+        this.init();
         try {
             const songs = JSON.parse(localStorage.getItem("songs")!) || [];
             this.queue = songs;
         } catch (err) {
             console.info(err);
         }
-        this.initPlayWay();
     }
     /**
-     * @desc 初始化播放方式
+     * @desc 初始化播放方式,历史播放音乐等
      */
-    @action initPlayWay() {
+    @action init() {
+        let song = null;
         let way = localStorage.getItem("playway");
         let index = this.playwayQueue.findIndex(playway=>playway.type===way);
         this.playway = index === -1 ? this.playwayQueue[0] : this.playwayQueue[index];
+        try {
+            song = JSON.parse(localStorage.getItem("song")!);
+        } catch (err) {
+            console.info(err);
+        } finally {
+            this.playsong = song;
+        }
     }
     /**
      * @desc 添加歌曲
@@ -87,6 +95,7 @@ class PlayList{
     @action clearAll() {
         this.queue = [];
         localStorage.removeItem("songs");
+        localStorage.removeItem("song");
     }
     @computed get songs() {
         return this.queue;
@@ -123,6 +132,7 @@ class PlayList{
      * @desc 设置正在播放的音乐
      */
     set song(song:Music.song) {
+        localStorage.setItem("song", JSON.stringify(song));
         this.playsong = song;
     }
     /**
@@ -151,7 +161,7 @@ class PlayList{
         let index = this.playSongIndex();
         if (index !== -1) {
             let next = (index - 1 + this.queue.length) % this.queue.length;
-            this.playsong = this.queue[next];
+            this.song = this.queue[next];
         }
     }
     /**
@@ -193,17 +203,19 @@ class PlayList{
         let currentIndex = this.playSongIndex();
         if (currentIndex >= 0) {
             let next = (currentIndex + 1 + len) % len;
-            this.playsong = this.queue[next];
+            this.song = this.queue[next];
         }
     }
-    handleSingleCycle(ishandle?:boolean) {
+    handleSingleCycle(ishandle:boolean=false) {
         if (!ishandle) {
+            playcontroller.setTime(0);
             return;
         }
+        alert("sb")
         let index = this.playSongIndex();
         if (index !== -1) {
             let next = (this.queue.length + 1 + index) % this.queue.length;
-            this.playsong = this.queue[next];
+            this.song = this.queue[next];
         }
     }
     handleRandomPlay() {
@@ -214,7 +226,7 @@ class PlayList{
         while (true) {
             let randomIndex = ~~(Math.random() * this.queue.length);
             if (priorIndex !== randomIndex) {
-                this.playsong = this.queue[randomIndex];
+                this.song = this.queue[randomIndex];
                 break;
             }
         }

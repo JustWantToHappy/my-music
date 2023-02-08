@@ -27,6 +27,7 @@ import { observer } from "mobx-react";
 import playlist from "../../mobx/playlist";
 import playcontroller from "../../mobx/playcontroller";
 export interface PlayBarType {
+    isPlay: boolean;//播放按钮的状态
     showBar: boolean; //控制是否显示播放条
     showSloud: boolean;//控制音量条是否展示
     voice: number; //音量条大小
@@ -35,32 +36,47 @@ export interface PlayBarType {
 const PlayBar = observer(() => {
     const playBar: any = React.useRef();
     const { song, isShow } = playlist;
-    const { state } = playcontroller;
+    const { state, time } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     const initPlayBar: PlayBarType = {
+        isPlay: false,
         showBar: true,
         showSloud: false,
         voice: 1,
         collect: false,
     }
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
-    const { showBar, showSloud, voice, collect } = playBarState;
+    const { showBar, showSloud, voice, collect, isPlay } = playBarState;
 
     const loadingStart = () => {
         playcontroller.changeState(false);
     }
-    const playMusic = () => {
+    const musicIsUse = () => {
         playcontroller.changeState(true);
-        const promise = playBar.current.play();
-        promise.catch((err: any) => {
-            console.info(err);
-            message.info({ content: "此歌曲暂无版权", duration: 2 });
-        })
+        playMusic();
+    }
+    const changePlayTime = function () {
+        playcontroller.setTime(playBar.current.currentTime * 1000);
+        console.log("test");
+    }
+    const endMusic = () => {
+        
+        playlist.playNextSong();
     }
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         playBar.current.addEventListener("loadstart", loadingStart);
-        playBar.current.addEventListener("canplaythrough", playMusic);
+        playBar.current.addEventListener("canplaythrough", musicIsUse);
+        playBar.current.removeEventListener("timeupdate", changePlayTime);
+        playBar.current.addEventListener("timeupdate", changePlayTime);
+        playBar.current.addEventListener("ended", endMusic);
+
+        console.log("222");
+        return function () {
+            // console.log("111pla");
+            playBar.current.removeEventListener("timeupdate", changePlayTime);
+
+        }
     }, [state, song]);
     const handleClik = function (e: MouseEvent) {
         dispatch({ type: PlayBarAction.Change, args: { showSloud: false } });
@@ -72,30 +88,53 @@ const PlayBar = observer(() => {
             window.removeEventListener("click", handleClik);
         }
     }, []);
+    const playMusic = function () {
+        if (isPlay && playBar.current) {
+            const promise = playBar.current.play();
+            promise.then(() => {
+                playcontroller.changeState(true);
+            }).catch((err: any) => {
+                console.info(err);
+                playcontroller.changeState(false);
+                playBar.current.pause();
+                message.info({ content: "此歌曲暂无版权!", duration: 2 });
+                dispatch({ type: PlayBarAction.Change, args: { isPlay: false } });
+            })
+        } else if (playBar.current) {
+            playBar.current.pause();
+        }
+    }
     React.useEffect(() => {
-        // 
-    }, [url]);
+        playMusic();
+    }, [isPlay]);
     //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move']];
         return arrStyle.join(" ");
     }
-    // 获取当前进度条事件
-    const getCurrentTime = (value: number) => {
+    //拖拽进度条时触发
+    const changeTime = function (value: number) {
+        playBar.current.removeEventListener("timeupdate", changePlayTime);
+        console.log("1")
+        playcontroller.setTime(value);
     }
     //当拉取进度条之后触发，设置当前播放时间
     const changeCurrentTime = (value: number) => {
+        console.log("2")
+        playcontroller.setTime(value);
+        console.log(value, 'ene');
         playBar.current.currentTime = value / 1000;
-
-        /*   playBar.current.currentTime = value / 1000;
-          songStore.timer = setInterval(() => {
-              setTime(playBar.current.currentTime * 1000);
+        if (isPlay) {
+            console.log("sbb")
+            playBar.current.play();
+        }
+        /*   setTimeout(() => {
+              playBar.current.addEventListener("timeupdate", changePlayTime);
           }, 1000); */
     }
     // 点击播放或者暂停
     const playPuase = async () => {
-        playcontroller.changeState();
-        state ? playBar.current.pause() : playBar.current.play();
+        dispatch({ type: PlayBarAction.Change, args: { isPlay: !isPlay } });
     }
     //播放上一首音乐
     const playPrevSong = () => {
@@ -138,8 +177,8 @@ const PlayBar = observer(() => {
             <div className={styles.playmusic} >
                 {/* 播放上一首 */}
                 <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playPrevSong} />
-                {!state && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
-                {state && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
+                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
+                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
                 {/* 播放下一首 */}
                 <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNextSong} />
             </div>
@@ -149,8 +188,8 @@ const PlayBar = observer(() => {
             <ul className={styles["music-bar"]} >
                 <li >
                     {/* 其中tipFormatter=null不显示当前进度的刻度 */}
-                    <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={0} />
-                    <small>{transTime(0, 2)}/{transTime(song.dt, 2)}</small>
+                    <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={changeTime} onAfterChange={changeCurrentTime} value={time} />
+                    <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
                 </li>
                 <li>
                     <div>
