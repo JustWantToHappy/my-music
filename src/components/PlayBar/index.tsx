@@ -19,7 +19,6 @@ import {
 } from 'antd';
 import React from "react"
 import { transTime } from "../../utils/help"
-import { addLocalStorage } from "../../utils/authorization"
 import PlayBarReducer, { PlayBarAction } from "../../reducers/playBar";
 import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
@@ -30,23 +29,21 @@ export interface PlayBarType {
     isPlay: boolean;//播放按钮的状态
     showBar: boolean; //控制是否显示播放条
     showSloud: boolean;//控制音量条是否展示
-    voice: number; //音量条大小
     collect: boolean; //是否显示收藏音乐模态框
 }
 const PlayBar = observer(() => {
-    const playBar: any = React.useRef();
-    const { song, isShow } = playlist;
-    const { state, time } = playcontroller;
-    const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     const initPlayBar: PlayBarType = {
         isPlay: false,
         showBar: true,
         showSloud: false,
-        voice: 1,
         collect: false,
     }
+    const playBar: any = React.useRef();
+    const { song, isShow } = playlist;
+    const { state, time, voice, showSloud } = playcontroller;
+    const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
-    const { showBar, showSloud, voice, collect, isPlay } = playBarState;
+    const { showBar, collect, isPlay } = playBarState;
 
     const loadingStart = () => {
         playcontroller.changeState(false);
@@ -60,7 +57,6 @@ const PlayBar = observer(() => {
         console.log("test");
     }
     const endMusic = () => {
-
         playlist.playNextSong();
     }
     // 当播放新的歌曲的时调用
@@ -79,8 +75,8 @@ const PlayBar = observer(() => {
         }
     }, [state, song]);
     const handleClik = function (e: MouseEvent) {
-        dispatch({ type: PlayBarAction.Change, args: { showSloud: false } });
         playlist.isShow = false;
+        playcontroller.showVoice(false);
     }
     const handleHover = function (e: any) {
         if (e.toElement == null) {
@@ -88,6 +84,7 @@ const PlayBar = observer(() => {
         }
     }
     React.useEffect(() => {
+        playcontroller.init(playBar)
         window.addEventListener("click", handleClik);
         window.addEventListener("mouseout", handleHover);
         return function () {
@@ -150,16 +147,7 @@ const PlayBar = observer(() => {
     const playNextSong = () => {
         playlist.playNextSong(true);
     }
-    //展示隐藏音量条
-    const clickSloud = () => {
-        dispatch({ type: PlayBarAction.Change, args: { showSloud: !showSloud } });
-    }
-    //改变音量
-    const changeVoice = (value: any) => {
-        playBar.current.volume = value * 0.01;
-        dispatch({ type: PlayBarAction.Change, args: { voice: value } });
-        addLocalStorage([{ key: "volume", value: playBar.current.volume }]);
-    }
+
     //收起播放条
     const shrink = () => {
         dispatch({ type: PlayBarAction.Change, args: { showBar: false } });
@@ -209,9 +197,9 @@ const PlayBar = observer(() => {
             <div className={styles['play-method']}>
                 {/* 音量调整 */}
                 <span className={styles['play-sound']}>
-                    <SoundFilled className={styles['play-sound-btn']} onClick={clickSloud} />
+                    <SoundFilled className={styles['play-sound-btn']} onClick={() => playcontroller.showVoice()} />
                     {showSloud && <div className={styles['play-sound-container']}>
-                        <Slider vertical className={styles['play-sound-bar']} onChange={changeVoice} value={voice} />
+                        <Slider vertical className={styles['play-sound-bar']} onChange={(num) => { playcontroller.changeVolume(num) }} value={voice} />
                     </div>}
                 </span>
                 {/* 播放方式 */}
