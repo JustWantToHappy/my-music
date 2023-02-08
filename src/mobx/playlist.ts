@@ -27,6 +27,9 @@ class PlayList{
     @observable private playsong: Music.song | null = null;//当前正在播放的音乐
     @observable private playstate: boolean = false;//当前音乐播放or暂停
     @observable private show: boolean = false;//是否展示当前播放列表
+    @observable  time: number = 0;//当前播放音乐时间
+    @observable private timer: ReturnType<typeof setInterval> | number | null = null;//定时器
+
     constructor() {
         makeObservable(this);
         try {

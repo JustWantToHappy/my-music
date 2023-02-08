@@ -7,7 +7,6 @@ import styles from "./styles/songlist.module.scss"
 import { fetchSongLists } from "../../api/recommond"
 import { transPlayCount } from "../../utils"
 import { debounce } from "../../utils/throttle_debounce"
-import songsStore from "../../mobx/songs"
 export default function SongList(props: { cat: string, total: number }) {
     const { cat, total } = props;
     const navigate = useNavigate();
@@ -44,7 +43,6 @@ export default function SongList(props: { cat: string, total: number }) {
     };
     //点击播放按钮播放音乐
     const playMusic = (id: number) => {
-        songsStore.origin = 'home';
     }
     //点击封面前往歌单
     const playSongList = (id: number) => {

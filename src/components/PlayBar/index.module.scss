@@ -176,16 +176,15 @@
 .play-sound-container{
     position: absolute;
     width: 36px;
-    height: 20vh;
+    height: 18vh;
     z-index:22;
     background-color: #242424;
     opacity: 0.7;
-    top:-20vh;
+    top:-18vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .play-sound-bar {
-    height:80%;
-    padding: 0 18px;
+    height:70%;
 }

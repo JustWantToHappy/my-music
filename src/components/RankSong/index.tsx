@@ -6,7 +6,6 @@ import dayjs from 'dayjs';
 import styles from "./index.module.scss"
 import { musicIsUse } from "../../api/songlist"
 import { addLocalStorage } from "../../utils/authorization"
-import songsStore from "../../mobx/songs"
 import PubSub from 'pubsub-js';
 export default function RankSong(props: { songs: Array<Music.song> | undefined }) {
     const { Column } = Table;
@@ -19,7 +18,6 @@ export default function RankSong(props: { songs: Array<Music.song> | undefined }
     }
     //点击播放音乐
     const playMusic = async (currentSong: Music.song) => {
-        songsStore.origin = "rank"
         setSong(currentSong);
         let { message } = await musicIsUse(currentSong.id);
         if (message === 'ok') {

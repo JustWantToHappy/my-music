@@ -4,7 +4,6 @@ import { fetchMyRecommendSongList } from "../../api/songlist"
 import styles from "./my-recommend.module.scss"
 import { transPlayCount, transNumber } from "../../utils"
 import { PlayCircleOutlined, CustomerServiceOutlined } from "@ant-design/icons"
-import songsStore from "../../mobx/songs"
 export default function MyRecommend() {
     const [songList, setSongList] = useState<Array<User.recommendList>>([]);
     const myRef = useRef<HTMLDivElement>(null);
@@ -21,7 +20,6 @@ export default function MyRecommend() {
     }, []);
     //播放每日推荐歌单的歌曲
     const playRecommendSongList = (event: React.MouseEvent, id: number) => {
-        songsStore.origin = "home";
         // event.stopPropagation();阻止事件向上冒泡
     }
     //播放每日推荐的歌曲

@@ -28,8 +28,6 @@ import playlist from "../../mobx/playlist";
 export interface PlayBarType {
     showBar: boolean; //控制是否显示播放条
     showSloud: boolean;//控制音量条是否展示
-    time: number;//进度条当前时间
-    timer: null | number | ReturnType<typeof setTimeout>;//定时器
     voice: number; //音量条大小
     collect: boolean; //是否显示收藏音乐模态框
 }
@@ -40,13 +38,13 @@ const PlayBar = observer(() => {
     const initPlayBar: PlayBarType = {
         showBar: true,
         showSloud: false,
-        time: 0,
-        timer: null,
         voice: 1,
         collect: false,
     }
+    const [time, setTime] = React.useState(0);
     const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
-    const { showBar, showSloud, time, voice, collect } = playBarState;
+    const { showBar, showSloud, voice, collect } = playBarState;
+
     const loadingStart = () => {
         playlist.changeState(false);
     }
@@ -61,19 +59,16 @@ const PlayBar = observer(() => {
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
         playBar.current.addEventListener("loadstart", loadingStart);
-        playBar.current.addEventListener("canplay", playMusic);
+        playBar.current.addEventListener("canplaythrough", playMusic);
     }, [state, song]);
+    const handleClik = function (e: MouseEvent) {
+        dispatch({ type: PlayBarAction.Change, args: { showSloud: false } });
+        playlist.isShow = false;
+    }
     React.useEffect(() => {
-        dispatch({ type: PlayBarAction.ClearTimer });
-        window.addEventListener("click", (e) => {
-            const rect = myBarRef.current?.getBoundingClientRect();
-            if (rect&&rect.y > e.clientY) {
-                dispatch({ type: PlayBarAction.Change, args: { showSloud: false } });
-                playlist.isShow = false;
-            }
-        });
+        window.addEventListener("click", handleClik);
         return function () {
-            dispatch({ type: PlayBarAction.ClearTimer });
+            window.removeEventListener("click", handleClik);
         }
     }, []);
     //播放条样式获取
@@ -83,11 +78,12 @@ const PlayBar = observer(() => {
     }
     // 获取当前进度条事件
     const getCurrentTime = (value: number) => {
-        dispatch({ type: PlayBarAction.ClearTimer });
         dispatch({ type: PlayBarAction.Change, args: { time: value } });
     }
     //当拉取进度条之后触发，设置当前播放时间
     const changeCurrentTime = (value: number) => {
+        playBar.current.currentTime = value / 1000;
+
         /*   playBar.current.currentTime = value / 1000;
           songStore.timer = setInterval(() => {
               setTime(playBar.current.currentTime * 1000);
@@ -120,16 +116,13 @@ const PlayBar = observer(() => {
     const shrink = () => {
         // dispatch({ type: PlayBarAction.Change, args: {  } })
     }
-    //展开播放条
-    const myBarRef = React.useRef<HTMLDivElement>(null);
-    const imgRef = React.useRef<HTMLDivElement>(null);
 
     return <>
         <audio ref={playBar} src={url} preload="auto">
             {/* preload="auto"表示预加载音频 */}
         </audio>
         {collect && <CollectModal close={() => { }} songId={song.id} />}
-        <div className={showBar ? getStyle("start") : getStyle("move")} ref={myBarRef}>
+        <div className={showBar ? getStyle("start") : getStyle("move")} onClick={e => e.stopPropagation()}>
             {isShow && <PlayList />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"收起"} >
@@ -147,14 +140,14 @@ const PlayBar = observer(() => {
                 {/* 播放下一首 */}
                 <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNextSong} />
             </div>
-            <div className={styles.coverImg} ref={imgRef}>
+            <div className={styles.coverImg} >
                 <img src={song.al?.picUrl} alt="logo" />
             </div>
             <ul className={styles["music-bar"]} >
                 <li >
                     {/* 其中tipFormatter=null不显示当前进度的刻度 */}
                     <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={getCurrentTime} onAfterChange={changeCurrentTime} value={time} />
-                    <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
+                    <small>{transTime(time, 2)}/{transTime(song.dt, 2)}{playlist.time}</small>
                 </li>
                 <li>
                     <div>
@@ -184,4 +177,4 @@ const PlayBar = observer(() => {
         </div>
     </>
 });
-export { PlayBar };
+export default PlayBar;

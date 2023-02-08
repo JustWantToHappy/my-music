@@ -6,7 +6,6 @@ import { getSearchContent } from "../../../api/search"
 import styles from "../styles/album.module.scss"
 import {Search} from "../../../mobx/constants"
 import { getImgRealSrc } from "../../../utils/help"
-import songsStore from "../../../mobx/songs"
 export default function Album(props: { keywords: string | null }) {
   const { keywords } = props;
   //搜索的字段
@@ -40,7 +39,7 @@ export default function Album(props: { keywords: string | null }) {
   }
   //播放音乐
   const playMusic = (id: number) => {
-    songsStore.origin = 'home'
+    
   }
   return (
     <>

@@ -1,18 +1,18 @@
-import React, { Suspense } from 'react'
-import { useLocation, useRoutes } from "react-router-dom"
-import routes from "../../routes"
-import { PlayBar } from "../../components/PlayBar"
+import React, { Suspense } from 'react';
+import { useLocation, useRoutes } from "react-router-dom";
+import routes from "../../routes";
+import PlayBar from "../../components/PlayBar";
 import { Signal } from "../../mobx/constants";
 import playlist from '../../mobx/playlist';
 import { observer } from "mobx-react";
-import PubSub from "pubsub-js"
+import PubSub from "pubsub-js";
 const Container = observer(function () {
     const element = useRoutes(routes);
     const [song, setSong] = React.useState<Music.song>();
     const location = useLocation();
     //播放音乐
     PubSub.subscribe(Signal.PlayMusic, function () {
-        if (playlist.state&&song!==playlist.song) {
+        if (playlist.state && song !== playlist.song) {
             setSong(playlist.song);
         }
     })
@@ -29,7 +29,7 @@ const Container = observer(function () {
             <Suspense fallback={<h1>loading</h1>}>
                 {element}
             </Suspense>
-            {playlist.song&&<PlayBar/>}
+            {playlist.song && <PlayBar />}
         </div>
     )
 });
