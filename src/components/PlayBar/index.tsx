@@ -24,15 +24,11 @@ import PlayList from "../PlayList";
 import { observer } from "mobx-react";
 import playlist from "../../mobx/playlist";
 import playcontroller from "../../mobx/playcontroller";
-export interface PlayBarType {
-    isPlay: boolean;//播放按钮的状态
-}
 const PlayBar = observer(() => {
     const playBar: any = React.useRef();
     const { song, isShow, size, way } = playlist;
     const { state, time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
-
     const loadingStart = () => {
         playcontroller.changeState(false);
     }
@@ -43,22 +39,28 @@ const PlayBar = observer(() => {
     const changePlayTime = function () {
         playcontroller.setTime(playBar.current.currentTime * 1000);
     }
+    //如果是自动播放完歌曲
     const endMusic = () => {
+        playBar.current.removeEventListener("ended", endMusic);
+        playcontroller.changeState(false);
         if (size === 1 || way.desc.includes("单曲")) {
             playcontroller.setTime(0);
-            playMusic();
+            playBar.current.currentTime = 0;
         } else {
-            playlist.playNextSong();
+            playlist.playNextSong()
         }
     }
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
+        playBar.current.removeEventListener("loadstart", loadingStart);
         playBar.current.addEventListener("loadstart", loadingStart);
+        playBar.current.removeEventListener("canplaythrough", musicIsUse);
         playBar.current.addEventListener("canplaythrough", musicIsUse);
         playBar.current.removeEventListener("timeupdate", changePlayTime);
         playBar.current.addEventListener("timeupdate", changePlayTime);
+        playBar.current.removeEventListener("ended", endMusic);
         playBar.current.addEventListener("ended", endMusic);
-    }, [state, song]);
+    }, [song]);
     const handleClik = function (e: MouseEvent) {
         playlist.isShow = false;
         playcontroller.showVoice(false);
@@ -79,16 +81,12 @@ const PlayBar = observer(() => {
     const playMusic = function () {
         if (isPlay && playBar.current) {
             const promise = playBar.current.play();
-            promise.then(() => {
-                playcontroller.changeState(true);
-            }).catch((err: any) => {
+            promise.catch((err: any) => {
                 console.info(err);
-                message.info({ content: "此歌曲无法播放!", duration: 2 });
+                message.info({ content: "出现小问题啦!", duration: 2 });
                 playcontroller.pause();
                 playcontroller.changeState(false);
             })
-        } else if (playBar.current) {
-            playBar.current.pause();
         }
     }
     React.useEffect(() => {
@@ -102,15 +100,13 @@ const PlayBar = observer(() => {
     //拖拽进度条时触发
     const changeTime = function (value: number) {
         playBar.current.removeEventListener("timeupdate", changePlayTime);
+        playBar.current.volume = 0;
+        playBar.current.currentTime = value / 1000;
         playcontroller.setTime(value);
     }
-    //当拉取进度条之后触发，设置当前播放时间
+    //当拉取进度条之后触发
     const changeCurrentTime = (value: number) => {
-        playcontroller.setTime(value);
-        playBar.current.currentTime = value / 1000;
-        if (isPlay) {
-            playBar.current.play();
-        }
+        playBar.current.volume = playcontroller.voice / 100;
     }
 
     return <>

@@ -156,6 +156,8 @@ class PlayList{
      */
     @action playPrevSong() {
         if (this.queue.length <= 1) {
+            playcontroller.setTime(0);
+            playcontroller.audio.current.currentTime = 0;
             return;
         }
         let index = this.playSongIndex();
@@ -168,7 +170,10 @@ class PlayList{
      * @params {} ishandle 手动切歌还是自动切歌(在单曲循环下手动和自动有点区别)
      * @desc 自动向下播放的歌曲以及手动向下播放
      */
-    @action playNextSong(ishandle?:boolean) {
+    @action playNextSong(ishandle?: boolean) {
+        if (this.size <= 1) {
+            this.song = Object.assign({}, this.song);
+        }
         switch (this.playway.type) {
             // 循环播放
             case PlayWay.Cycle:
@@ -203,6 +208,7 @@ class PlayList{
         let currentIndex = this.playSongIndex();
         if (currentIndex >= 0) {
             let next = (currentIndex + 1 + len) % len;
+            console.log(currentIndex,next,'zzz',playcontroller.state)
             this.song = this.queue[next];
         }
     }
@@ -217,17 +223,19 @@ class PlayList{
         }
     }
     handleRandomPlay() {
+        let priorIndex = this.playSongIndex();
+        let arr:number[] = [];
         if (this.queue.length <= 1) {
+            this.song = Object.assign({}, this.song);
             return;
         }
-        let priorIndex = this.playSongIndex();
-        while (true) {
-            let randomIndex = ~~(Math.random() * this.queue.length);
-            if (priorIndex !== randomIndex) {
-                this.song = this.queue[randomIndex];
-                break;
+        for (let i = 0; i < this.size; i++){
+            if (priorIndex !== i) {
+                arr.push(i);
             }
         }
+        let randomIndex = ~~(Math.random() * arr.length);
+        this.song = this.queue[arr[randomIndex]];
     }
 }
 const playlist =new PlayList() ;

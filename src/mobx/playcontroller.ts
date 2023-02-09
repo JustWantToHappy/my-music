@@ -157,6 +157,9 @@ class PlayController{
             return item1[0] - item2[0];
         });
     }
+    @computed get audio() {
+        return this.audioRef;
+    }
 }
 const playcontroller = new PlayController();
 export default playcontroller;
