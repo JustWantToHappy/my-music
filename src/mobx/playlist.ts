@@ -3,7 +3,6 @@ import { PlayWay } from "./constants";
 import CycleIcon from "../assets/logo/cycle.svg";
 import SingleCycleIcon from "../assets/logo/single_cycle.svg";
 import RandomIcon from "../assets/logo/random_play.svg"; 
-import playcontroller from "./playcontroller";
 /**
  * @desc 播放列表
  * 总结一下如果使用修饰器的话，
@@ -156,8 +155,7 @@ class PlayList{
      */
     @action playPrevSong() {
         if (this.queue.length <= 1) {
-            playcontroller.setTime(0);
-            playcontroller.audio.current.currentTime = 0;
+            this.song = Object.assign({}, this.song);
             return;
         }
         let index = this.playSongIndex();
@@ -173,6 +171,7 @@ class PlayList{
     @action playNextSong(ishandle?: boolean) {
         if (this.size <= 1) {
             this.song = Object.assign({}, this.song);
+            return;
         }
         switch (this.playway.type) {
             // 循环播放
@@ -208,12 +207,12 @@ class PlayList{
         let currentIndex = this.playSongIndex();
         if (currentIndex >= 0) {
             let next = (currentIndex + 1 + len) % len;
-            console.log(currentIndex,next,'zzz',playcontroller.state)
             this.song = this.queue[next];
         }
     }
     handleSingleCycle(ishandle:boolean=false) {
         if (!ishandle) {
+            this.song = Object.assign({}, this.song);
             return;
         }
         let index = this.playSongIndex();
@@ -225,10 +224,6 @@ class PlayList{
     handleRandomPlay() {
         let priorIndex = this.playSongIndex();
         let arr:number[] = [];
-        if (this.queue.length <= 1) {
-            this.song = Object.assign({}, this.song);
-            return;
-        }
         for (let i = 0; i < this.size; i++){
             if (priorIndex !== i) {
                 arr.push(i);

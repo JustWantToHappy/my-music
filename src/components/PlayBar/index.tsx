@@ -26,12 +26,15 @@ import playlist from "../../mobx/playlist";
 import playcontroller from "../../mobx/playcontroller";
 const PlayBar = observer(() => {
     const playBar: any = React.useRef();
-    const { song, isShow, size, way } = playlist;
-    const { state, time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
+    const { song, isShow } = playlist;
+    const { time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
-    const loadingStart = () => {
-        playcontroller.changeState(false);
-    }
+    const pURL = React.useRef<string>();
+
+    React.useEffect(() => {
+        pURL.current = url;
+    });
+
     const musicIsUse = () => {
         playcontroller.changeState(true);
         playMusic();
@@ -41,24 +44,18 @@ const PlayBar = observer(() => {
     }
     //如果是自动播放完歌曲
     const endMusic = () => {
-        playBar.current.removeEventListener("ended", endMusic);
+        playlist.playNextSong()
         playcontroller.changeState(false);
-        if (size === 1 || way.desc.includes("单曲")) {
-            playcontroller.setTime(0);
-            playBar.current.currentTime = 0;
-        } else {
-            playlist.playNextSong()
-        }
+        playBar.current.removeEventListener("ended", endMusic);
     }
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
-        playBar.current.removeEventListener("loadstart", loadingStart);
-        playBar.current.addEventListener("loadstart", loadingStart);
-        playBar.current.removeEventListener("canplaythrough", musicIsUse);
+        console.log(url);
+        if (url === pURL.current) {
+            playBar.current.currentTime = 0;
+        }
         playBar.current.addEventListener("canplaythrough", musicIsUse);
-        playBar.current.removeEventListener("timeupdate", changePlayTime);
         playBar.current.addEventListener("timeupdate", changePlayTime);
-        playBar.current.removeEventListener("ended", endMusic);
         playBar.current.addEventListener("ended", endMusic);
     }, [song]);
     const handleClik = function (e: MouseEvent) {
