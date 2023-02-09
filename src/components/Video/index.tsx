@@ -2,16 +2,12 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from "react-router-dom"
 import { getMVURL } from "../../api/video"
 import styles from "./index.module.scss"
-import PubSub from 'pubsub-js'
 export default function Video() {
   const [search] = useSearchParams();
   const id = search.get("id");
   //播放地址
   const [url, setURL] = useState("");
-  //让音乐播放条停止播放，并且隐藏
-  useEffect(() => {
-    PubSub.publish("shrinkPlayBar");
-  }, []);
+
   //获取url地址
   useEffect(() => {
     (async () => {

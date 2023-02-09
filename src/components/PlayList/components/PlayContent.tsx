@@ -20,6 +20,7 @@ export default function PlayContent() {
     const playMusic = (song: Music.song) => {
         playlist.song = song;
         playcontroller.changeState(true);
+        playcontroller.play();
     }
     React.useEffect(() => {
         if (Ref.current && Ref.current?.scrollHeight <= Ref.current?.clientHeight) {

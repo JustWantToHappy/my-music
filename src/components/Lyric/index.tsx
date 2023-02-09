@@ -95,7 +95,6 @@ const Lyric = (props: lyricType) => {
     //手动滚动页面
     const pageScrolling = () => {
         audioRef.current.removeEventListener("timeupdate", scrollUpdate);
-
     }
     useEffect(() => {
         const handleStr = async (lyricStr: string, type: number) => {

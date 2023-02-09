@@ -2,13 +2,14 @@
 import { Table, Pagination, Popconfirm, message } from 'antd';
 import styles from "./index.module.css"
 import { transTime, removeSongFromSongList } from "../../utils/help"
-import { PlayCircleOutlined, DeleteOutlined, PropertySafetyFilled } from "@ant-design/icons"
+import { PlayCircleOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
 import React from "react"
 import { useSearchParams } from "react-router-dom"
 import { observer } from "mobx-react";
 import { runInAction } from 'mobx';
 import playlist from '../../mobx/playlist';
+import playcontroller from '../../mobx/playcontroller';
 const { Column } = Table;
 interface Iprops {
     songs: Array<Music.song> | undefined,
@@ -33,6 +34,10 @@ const Song: React.FC<Iprops> = observer(function (props) {
         runInAction(() => {
             playlist.song = song;
             let success = playlist.add(song);
+            if (success) {
+                playcontroller.play();
+                playcontroller.expend();
+            }
             !success && message.info({ content: "此歌曲需要vip", duration: 2 });
         })
     }

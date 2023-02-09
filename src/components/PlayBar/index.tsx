@@ -19,7 +19,6 @@ import {
 } from 'antd';
 import React from "react"
 import { transTime } from "../../utils/help"
-import PlayBarReducer, { PlayBarAction } from "../../reducers/playBar";
 import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
 import { observer } from "mobx-react";
@@ -27,23 +26,12 @@ import playlist from "../../mobx/playlist";
 import playcontroller from "../../mobx/playcontroller";
 export interface PlayBarType {
     isPlay: boolean;//播放按钮的状态
-    showBar: boolean; //控制是否显示播放条
-    showSloud: boolean;//控制音量条是否展示
-    collect: boolean; //是否显示收藏音乐模态框
 }
 const PlayBar = observer(() => {
-    const initPlayBar: PlayBarType = {
-        isPlay: false,
-        showBar: true,
-        showSloud: false,
-        collect: false,
-    }
     const playBar: any = React.useRef();
-    const { song, isShow } = playlist;
-    const { state, time, voice, showSloud } = playcontroller;
+    const { song, isShow, size, way } = playlist;
+    const { state, time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
-    const [playBarState, dispatch] = React.useReducer(PlayBarReducer, initPlayBar);
-    const { showBar, collect, isPlay } = playBarState;
 
     const loadingStart = () => {
         playcontroller.changeState(false);
@@ -54,10 +42,14 @@ const PlayBar = observer(() => {
     }
     const changePlayTime = function () {
         playcontroller.setTime(playBar.current.currentTime * 1000);
-        console.log("test");
     }
     const endMusic = () => {
-        playlist.playNextSong();
+        if (size === 1 || way.desc.includes("单曲")) {
+            playcontroller.setTime(0);
+            playMusic();
+        } else {
+            playlist.playNextSong();
+        }
     }
     // 当播放新的歌曲的时调用
     React.useEffect(() => {
@@ -66,21 +58,14 @@ const PlayBar = observer(() => {
         playBar.current.removeEventListener("timeupdate", changePlayTime);
         playBar.current.addEventListener("timeupdate", changePlayTime);
         playBar.current.addEventListener("ended", endMusic);
-
-        console.log("222");
-        return function () {
-            // console.log("111pla");
-            playBar.current.removeEventListener("timeupdate", changePlayTime);
-
-        }
     }, [state, song]);
     const handleClik = function (e: MouseEvent) {
         playlist.isShow = false;
         playcontroller.showVoice(false);
     }
     const handleHover = function (e: any) {
-        if (e.toElement == null) {
-            dispatch({ type: PlayBarAction.Change, args: { showBar: true } });
+        if (e.toElement == null && e.clientY > 100) {
+            playcontroller.expend();
         }
     }
     React.useEffect(() => {
@@ -98,10 +83,9 @@ const PlayBar = observer(() => {
                 playcontroller.changeState(true);
             }).catch((err: any) => {
                 console.info(err);
+                message.info({ content: "此歌曲无法播放!", duration: 2 });
+                playcontroller.pause();
                 playcontroller.changeState(false);
-                playBar.current.pause();
-                message.info({ content: "此歌曲暂无版权!", duration: 2 });
-                dispatch({ type: PlayBarAction.Change, args: { isPlay: false } });
             })
         } else if (playBar.current) {
             playBar.current.pause();
@@ -118,51 +102,27 @@ const PlayBar = observer(() => {
     //拖拽进度条时触发
     const changeTime = function (value: number) {
         playBar.current.removeEventListener("timeupdate", changePlayTime);
-        console.log("1")
         playcontroller.setTime(value);
     }
     //当拉取进度条之后触发，设置当前播放时间
     const changeCurrentTime = (value: number) => {
-        console.log("2")
         playcontroller.setTime(value);
-        console.log(value, 'ene');
         playBar.current.currentTime = value / 1000;
         if (isPlay) {
-            console.log("sbb")
             playBar.current.play();
         }
-        /*   setTimeout(() => {
-              playBar.current.addEventListener("timeupdate", changePlayTime);
-          }, 1000); */
-    }
-    // 点击播放或者暂停
-    const playPuase = async () => {
-        dispatch({ type: PlayBarAction.Change, args: { isPlay: !isPlay } });
-    }
-    //播放上一首音乐
-    const playPrevSong = () => {
-        playlist.playPrevSong()
-    }
-    //播放下一首音乐
-    const playNextSong = () => {
-        playlist.playNextSong(true);
-    }
-
-    //收起播放条
-    const shrink = () => {
-        dispatch({ type: PlayBarAction.Change, args: { showBar: false } });
     }
 
     return <>
+        {/* preload="auto"表示预加载音频 */}
         <audio ref={playBar} src={url} preload="auto">
-            {/* preload="auto"表示预加载音频 */}
         </audio>
-        {collect && <CollectModal close={() => { }} songId={song.id} />}
+        {collect && <CollectModal close={() => playcontroller.showCollect()} songId={song.id} />}
         <div className={showBar ? getStyle("start") : getStyle("move")} onClick={e => e.stopPropagation()}>
             {isShow && <PlayList />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"收起"} >
-                    <DownOutlined onClick={shrink} />
+                    <DownOutlined onClick={() => playcontroller.shrink()} />
                 </Tooltip>
                 <Tooltip placement="right" title='收藏'>
                     <PlusSquareOutlined />
@@ -170,11 +130,11 @@ const PlayBar = observer(() => {
             </div>
             <div className={styles.playmusic} >
                 {/* 播放上一首 */}
-                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playPrevSong} />
-                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
-                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={playPuase} />}
+                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={() => playlist.playPrevSong()} />
+                {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => playcontroller.playPause()} />}
+                {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => playcontroller.playPause()} />}
                 {/* 播放下一首 */}
-                <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNextSong} />
+                <StepForwardOutlined className={styles['playmusic-div3']} onClick={() => playlist.playNextSong(true)} />
             </div>
             <div className={styles.coverImg} >
                 <img src={song.al?.picUrl} alt="logo" />

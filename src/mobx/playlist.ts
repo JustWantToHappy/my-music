@@ -208,10 +208,8 @@ class PlayList{
     }
     handleSingleCycle(ishandle:boolean=false) {
         if (!ishandle) {
-            playcontroller.setTime(0);
             return;
         }
-        alert("sb")
         let index = this.playSongIndex();
         if (index !== -1) {
             let next = (this.queue.length + 1 + index) % this.queue.length;
