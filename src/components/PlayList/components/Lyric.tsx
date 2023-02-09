@@ -4,22 +4,21 @@ import styles from "../index.module.scss";
 import playlist from '../../../mobx/playlist';
 import playcontroller from '../../../mobx/playcontroller';
 import { getLyricBySongId } from "../../../api/song"
-interface lyricType {
-    audioRef: any,
-    id: number
-}
 
 export default function Lyric() {
     const { song } = playlist;
-    const { olyric, tlyric } = playcontroller;
+    const [lyric, setLyric] = React.useState<Array<[number, { lyc: string, tlyc?: string }]>>();
+
     const lyricRef = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
         (async () => {
             let res = await getLyricBySongId(song.id);
-            // console.log(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
+            setLyric(playcontroller.getLyric());
         })();
     }, [song.id]);
+
+
     return (
         <div className={styles.lyric}>
             <header>
@@ -27,7 +26,13 @@ export default function Lyric() {
                 <span><CloseCircleOutlined onClick={() => playlist.isShow = false} /></span>
             </header>
             <div className={styles["lyric-content"]} ref={lyricRef}>
-
+                {lyric?.map(([time, { lyc, tlyc }]) => {
+                    return (<p key={time}>
+                        <small>{lyc}</small>
+                        <br />
+                        <small>{tlyc}</small>
+                    </p>)
+                })}
             </div>
         </div>
     )

@@ -16,7 +16,7 @@ class PlayController{
     @observable showBar: boolean = false;//展开收起播放条
     @observable olyric:Map<number,string> = new Map();//原歌词
     @observable tlyric: Map<number,string> = new Map();//翻译歌词
-
+    
     constructor() {
         makeObservable(this);
     }
@@ -28,9 +28,6 @@ class PlayController{
             this.audioRef = audio;
             this.volume = Number(localStorage.getItem("volume")!);
             this.audioRef.current.volume = this.volume;
-            let lyric = JSON.parse(localStorage.getItem("lyric")!);
-            this.olyric = lyric.olyric;
-            this.tlyric = lyric.tlyric;
         } catch (err:any) {
             console.info(err.message);
         }
@@ -143,8 +140,22 @@ class PlayController{
         })
         this.olyric = timeOlyric;
         this.tlyric = timeTlyric;
-        const lyric = { olyric: timeOlyric, tlyric: timeTlyric };
-        localStorage.setItem("lyric", JSON.stringify(lyric));
+    }
+    @action getLyric() {
+        let lyricMap= new Map<number,{lyc:string,tlyc?:string}>();
+        for (let key of this.olyric.keys()) {
+            lyricMap.set(key, {lyc:this.olyric.get(key)!});
+        }
+        for (let key of this.tlyric.keys()) {
+            let value = lyricMap.get(key);
+            if (value) {
+                value.tlyc = this.tlyric.get(key);
+                lyricMap.set(key,value);
+            } 
+        }
+        return Array.from(lyricMap).sort((item1, item2) => {
+            return item1[0] - item2[0];
+        });
     }
 }
 const playcontroller = new PlayController();
