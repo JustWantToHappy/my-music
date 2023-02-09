@@ -7,6 +7,9 @@ import styles from "./styles/songlist.module.scss"
 import { fetchSongLists } from "../../api/recommond"
 import { transPlayCount } from "../../utils"
 import { debounce } from "../../utils/throttle_debounce"
+import { getListSong } from '../../api/songlist';
+import playlist from '../../mobx/playlist';
+import playcontroller from '../../mobx/playcontroller';
 export default function SongList(props: { cat: string, total: number }) {
     const { cat, total } = props;
     const navigate = useNavigate();
@@ -43,6 +46,11 @@ export default function SongList(props: { cat: string, total: number }) {
     };
     //点击播放按钮播放音乐
     const playMusic = (id: number) => {
+        (async () => {
+            const res = await getListSong(id);
+            playlist.setPlayList(res.songs);
+            playcontroller.play();
+        })();
     }
     //点击封面前往歌单
     const playSongList = (id: number) => {

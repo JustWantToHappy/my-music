@@ -96,6 +96,16 @@ class PlayList{
         localStorage.removeItem("songs");
         localStorage.removeItem("song");
     }
+    /**
+     * @desc 重置队列
+     */
+    @action setPlayList(songs: Array<Music.song>) {
+        if (songs) {
+            this.queue = songs;
+            this.playsong = songs[0];
+            localStorage.setItem("songs", JSON.stringify(songs));
+        }
+    }
     @computed get songs() {
         return this.queue;
     }

@@ -29,35 +29,40 @@ const PlayBar = observer(() => {
     const { song, isShow } = playlist;
     const { time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
-    const pURL = React.useRef<string>();
 
-    React.useEffect(() => {
-        pURL.current = url;
-    });
-
-    const musicIsUse = () => {
-        playcontroller.changeState(true);
-        playMusic();
+    const playMusic = function () {
+        if (isPlay && playBar.current) {
+            const promise = playBar.current.play();
+            promise.then(() => {
+                playcontroller.play();
+            }).catch((err: any) => {
+                console.info(err);
+                message.info({ content: "该歌曲需要购买vip!", duration: 2 });
+                playcontroller.pause();
+            })
+        }
     }
+
     const changePlayTime = function () {
         playcontroller.setTime(playBar.current.currentTime * 1000);
     }
+
     //如果是自动播放完歌曲
     const endMusic = () => {
-        playlist.playNextSong()
-        playcontroller.changeState(false);
-        playBar.current.removeEventListener("ended", endMusic);
-    }
-    // 当播放新的歌曲的时调用
+        playlist.playNextSong();
+    };
+    // 当播放新的歌曲的时候调用
     React.useEffect(() => {
         console.log(url);
-        if (url === pURL.current) {
-            playBar.current.currentTime = 0;
-        }
-        playBar.current.addEventListener("canplaythrough", musicIsUse);
-        playBar.current.addEventListener("timeupdate", changePlayTime);
-        playBar.current.addEventListener("ended", endMusic);
+        playBar.current.currentTime = 0;
+        playMusic();
     }, [song]);
+    //当点击播放按钮时调用
+    React.useEffect(() => {
+        if (isPlay) {
+            playMusic();
+        }
+    }, [isPlay]);
     const handleClik = function (e: MouseEvent) {
         playlist.isShow = false;
         playcontroller.showVoice(false);
@@ -71,24 +76,18 @@ const PlayBar = observer(() => {
         playcontroller.init(playBar)
         window.addEventListener("click", handleClik);
         window.addEventListener("mouseout", handleHover);
+        playBar.current.addEventListener("canplaythrough", playMusic);
+        playBar.current.addEventListener("timeupdate", changePlayTime);
+        playBar.current.addEventListener("ended", endMusic);
         return function () {
             window.removeEventListener("click", handleClik);
+            window.removeEventListener("mouseout", handleHover);
+            playBar.current.removeEventListener("canplaythrough", playMusic);
+            playBar.current.removeEventListener("timeupdate", changePlayTime);
+            playBar.current.removeEventListener("ended", endMusic);
         }
     }, []);
-    const playMusic = function () {
-        if (isPlay && playBar.current) {
-            const promise = playBar.current.play();
-            promise.catch((err: any) => {
-                console.info(err);
-                message.info({ content: "出现小问题啦!", duration: 2 });
-                playcontroller.pause();
-                playcontroller.changeState(false);
-            })
-        }
-    }
-    React.useEffect(() => {
-        playMusic();
-    }, [isPlay]);
+
     //播放条样式获取
     const getStyle = (type: string) => {
         let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move']];
@@ -105,7 +104,14 @@ const PlayBar = observer(() => {
     const changeCurrentTime = (value: number) => {
         playBar.current.volume = playcontroller.voice / 100;
     }
-
+    //播放上一首音乐
+    const playPrevSong = function () {
+        playlist.playPrevSong();
+    }
+    //播放下一首音乐
+    const playNextSong = function () {
+        playlist.playNextSong(true);
+    }
     return <>
         {/* preload="auto"表示预加载音频 */}
         <audio ref={playBar} src={url} preload="auto">
@@ -123,11 +129,11 @@ const PlayBar = observer(() => {
             </div>
             <div className={styles.playmusic} >
                 {/* 播放上一首 */}
-                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={() => playlist.playPrevSong()} />
+                <StepBackwardOutlined className={styles['playmusic-div1']} onClick={playPrevSong} />
                 {!isPlay && <PlayCircleOutlined className={styles['playmusic-div2']} onClick={() => playcontroller.playPause()} />}
                 {isPlay && <PauseCircleOutlined className={styles['playmusic-div2']} onClick={() => playcontroller.playPause()} />}
                 {/* 播放下一首 */}
-                <StepForwardOutlined className={styles['playmusic-div3']} onClick={() => playlist.playNextSong(true)} />
+                <StepForwardOutlined className={styles['playmusic-div3']} onClick={playNextSong} />
             </div>
             <div className={styles.coverImg} >
                 <img src={song.al?.picUrl} alt="logo" />

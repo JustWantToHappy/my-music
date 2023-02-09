@@ -1,11 +1,10 @@
 import { observable, makeObservable, action, computed } from "mobx";
-import { Signal } from "./constants";
-import {transUsTime } from "../utils/help";
+import { transUsTime } from "../utils/help";
+import playlist from "./playlist";
 
 class PlayController{
     //以下属性皆为正在播放的音乐的属性
     @observable private isplay: boolean = false;//播放按钮的状态
-    @observable private playstate: boolean = false;//是否可以播放
     @observable private currentTime: number = 0;//播放音乐时间
     @observable private volume: number = 0.01;//音量
     @observable private isLock: boolean = false;//是否锁住播放条
@@ -40,25 +39,6 @@ class PlayController{
     }
     @computed get time() {
         return this.currentTime;
-    }
-     /**
-     * @desc 当前音乐是否可以播放
-     */
-      @action changeState(state?: boolean) {
-        if (typeof state === "boolean") {
-            this.playstate = state;
-        } else {
-            this.playstate = !this.playstate;
-        }
-        if (this.playstate) {
-            PubSub.publish(Signal.PlayMusic);
-        }
-    }
-    /**
-     * @desc 获取当前音乐的播放状态
-     */
-    @computed get state() {
-        return this.playstate;
     }
     /**
      * @desc 播放暂停按钮切换
@@ -107,6 +87,7 @@ class PlayController{
      */
     @action shrink() {
         this.showBar = false;
+        playlist.isShow = false;
     }
     /**
      * @desc 展开播放条

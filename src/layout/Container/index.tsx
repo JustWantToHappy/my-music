@@ -13,7 +13,7 @@ const Container = observer(function () {
     const location = useLocation();
     //播放音乐
     PubSub.subscribe(Signal.PlayMusic, function () {
-        if (playcontroller.state && song !== playlist.song) {
+        if (playcontroller.isPlay && song !== playlist.song) {
             setSong(playlist.song);
         }
     })
