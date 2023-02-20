@@ -11,7 +11,7 @@ class PlayController{
     @observable private timer: ReturnType<typeof setInterval> | number | null = null;//定时器
     @observable private audioRef: any;//audio元素
     @observable showVolume: boolean = false;//显示隐藏音量条
-    @observable collect: boolean = false;//是否收藏
+    @observable collect: boolean = false;//是否显示收藏框
     @observable showBar: boolean = false;//展开收起播放条
     @observable olyric:Map<number,string> = new Map();//原歌词
     @observable tlyric: Map<number,string> = new Map();//翻译歌词
