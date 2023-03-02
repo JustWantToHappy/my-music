@@ -7,17 +7,17 @@ export function debounce(fn: Function, delay: number) {
     }, delay);
 }
 //节流函数
-export function throttle(fn: Function, delay: number): Function {
+export function throttle(fn: Function, delay: number): React.UIEventHandler {
     let timer: ReturnType<typeof setTimeout>|null;
     return function () {
-        var args = arguments;
+        const args = arguments;
+        const that = this as any;
         if (timer) {
             return;
         }
-        timer = setTimeout(function () {
-            fn.apply(window, args);
+        timer = setTimeout(()=>{
+            fn.apply(that, args);
             timer=null;//在delay后执行完fn之后清空timer，此时throttle触发可以进入定时器
         }, delay)
     }
-
 }
