@@ -1,4 +1,3 @@
-import React from "react";
 //工具函数
 //将File文件转为dataURL字符串
 export const fileToDataURL = (file: File): Promise<string> => {
@@ -43,18 +42,18 @@ export const transNumber = (count: number): string => {
     return str;
 }
 /**
- * 用于处理用户滚动后停止延迟的一个钩子
+ * 用于处理用户滚动后停止延迟(防抖)
  */
 export  function delayedExcution(fn:Function,delay:number) {
-    let timer: ReturnType<typeof setTimeout>;
+    let timer: ReturnType<typeof setTimeout>|null;
     return function () {
         const args = arguments;
         if (timer) {
             clearTimeout(timer);
+            timer = null;
         }
-        console.info("test")
         timer = setTimeout(() => {
-            fn.apply(this,args);
+            fn.apply(this, args);
         }, delay);
     }
 }

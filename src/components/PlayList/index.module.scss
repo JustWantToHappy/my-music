@@ -162,6 +162,7 @@ $scroll-width:6px;//滚动条宽度
     text-align: center;
     height:100%;
     overflow: auto;
+    scroll-behavior: smooth;
     color:rgba(255, 255, 255, 0.7);
     &>p{
         overflow: hidden;
@@ -169,6 +170,7 @@ $scroll-width:6px;//滚动条宽度
 }
 
 //滚动条样式
+
 .lyric-content::-webkit-scrollbar {
     width: $scroll-width;
 }

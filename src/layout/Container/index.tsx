@@ -24,6 +24,7 @@ const Container = observer(function () {
                 PubSub.publish(Signal.ShowPlayBar, true);
             }
         })
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }, [location.pathname]);
     return (
         <div style={{ marginTop: "13vh" }}>

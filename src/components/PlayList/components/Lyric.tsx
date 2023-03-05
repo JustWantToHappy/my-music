@@ -1,5 +1,5 @@
 import React from 'react'
-import { CloseCircleOutlined, MinusOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined } from "@ant-design/icons";
 import styles from "../index.module.scss";
 import playlist from '../../../mobx/playlist';
 import playcontroller from '../../../mobx/playcontroller';
@@ -7,11 +7,14 @@ import { getLyricBySongId } from "../../../api/song"
 import { throttle } from "../../../utils/throttle_debounce";
 import { delayedExcution } from "../../../utils"
 import { observer } from "mobx-react";
+
 export default observer(function Lyric() {
     const height = 50;
     const top = 40;
     const { song } = playlist;
+    const { isPlay } = playcontroller;
     const [lyric, setLyric] = React.useState<Array<[number, { lyc: string, tlyc?: string }]>>();
+    //是否自动滚动
     const [allowAutoScroll, setAllowAutoScroll] = React.useState(true);
     //用于标记正在播放的歌词数组下标
     const [playIndex, setIndex] = React.useState<number>(0);
@@ -21,6 +24,7 @@ export default observer(function Lyric() {
             let res = await getLyricBySongId(song.id);
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             setLyric(playcontroller.getLyric());
+
         })();
     }, [song.id]);
     //使用二分查找，根据现在的时间确定时间轴上的歌词,返回一个下标，时间单位是us
@@ -28,36 +32,40 @@ export default observer(function Lyric() {
         if (!lyric) {
             return 0;
         }
-        let left = 0, right = lyric.length - 1;
-        let diff = Number.MAX_VALUE;
-        while (left < right) {
-            let mid = left + Math.floor((right - left) / 2);
-            let lyricTime = lyric[mid][0];
-            if (lyricTime < time * 1000) {
-                mid = left + 1;
-            } else if (lyricTime > time * 1000) {
-                mid = right - 1;
+        const targetTime = time * 1000; // 将时间单位转换为微秒
+        let left = 0,
+            right = lyric.length - 1;
+        let ans = 0;
+        while (left <= right) {
+            let mid = Math.floor((left + right) / 2);
+            if (lyric[mid][0] <= targetTime) {
+                ans = mid;
+                left = mid + 1;
             } else {
-                return mid;
+                right = mid - 1;
             }
         }
-        return left;
+        return ans;
     }
 
     const handleScroll = function (event: React.UIEvent<HTMLDivElement>) {
         setAllowAutoScroll(false);
-        delayedExcution(() => { setAllowAutoScroll(true) }, 4000)();
+        if (!allowAutoScroll) {
+            delayedExcution(() => {
+                setAllowAutoScroll(true);
+            }, 4000)();
+        }
     };
     React.useEffect(() => {
         const timer = setInterval(() => {
-            if (allowAutoScroll && lyricRef.current) {
+            if (allowAutoScroll && isPlay && lyricRef.current) {
                 // 歌词自动滚动...
                 let index = binarySearchLyric(playcontroller.time);
-                console.info(index);
                 setIndex(index);
-                lyricRef.current.scrollTop = index * 50;
+                console.info(index, index * height, lyricRef.current.scrollTop);
+                lyricRef.current.scrollTop = index * height;
             }
-        }, 1000);
+        }, 300);
 
         return function () {
             clearInterval(timer);
@@ -80,7 +88,12 @@ export default observer(function Lyric() {
                         key={time}
                         style={
                             playIndex === index ?
-                                { height: `${height}px`, fontSize: "1rem", color: "#fff", fontWeight: "bolder" } :
+                                {
+                                    height: `${height}px`,
+                                    fontSize: "1rem",
+                                    color: "#fff",
+                                    fontWeight: "bolder"
+                                } :
                                 { height: `${height}px` }
                         }>
                         <small>{lyc}</small>
