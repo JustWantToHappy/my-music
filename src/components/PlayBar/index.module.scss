@@ -4,8 +4,6 @@
     z-index: 21;
     width: 100%;
     min-width:100px;
-    min-height: 50px;
-    height: 9vh;
     background-color: #252933;
     color: aliceblue;
     display: flex;
@@ -29,6 +27,24 @@
     }
 }
 
+
+/* 播放条移入底部 */
+.playbar-move {
+    @include bar();
+    animation: slide-down 1s ease-in-out;
+}
+
+@keyframes slide-down {
+    0% {
+        bottom:0;
+    }
+    
+    100% {
+        bottom:-100%;
+    }
+}
+
+
 .hidden-indicate {
     display: flex;
     cursor: pointer;
@@ -36,25 +52,6 @@
     justify-content: space-around;
     align-items: center;
 }
-
-/* 播放条移入底部 */
-.playbar-move {
-    @include bar();
-    bottom: -9vh;
-    animation: slide-down 1s ease-in-out;
-}
-
-@keyframes slide-down {
-    0% {
-        transform: translateY(-100%);
-    }
-
-    100% {
-        transform: translateY(100%);
-    }
-}
-
-
 
 .coverImg {
     flex: 1;

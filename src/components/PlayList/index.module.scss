@@ -166,6 +166,8 @@ $scroll-width:6px;//滚动条宽度
     color:rgba(255, 255, 255, 0.7);
     &>p{
         overflow: hidden;
+        margin-bottom: 0px;
+        box-sizing: border-box;
     }
 }
 

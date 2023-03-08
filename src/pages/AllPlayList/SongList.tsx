@@ -69,11 +69,7 @@ export default function SongList(props: { cat: string, total: number }) {
             }
         })();
         loadImage();
-        window.scrollTo({
-            left: 0,
-            top: 0,
-            behavior: 'smooth'
-        })
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [tag, current, cat, pageSize]);
     const pageScrolling = () => {
         debounce(loadImage, 300);

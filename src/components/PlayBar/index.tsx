@@ -88,21 +88,18 @@ const PlayBar = observer(() => {
         }
     }, []);
 
-    //播放条样式获取
-    const getStyle = (type: string) => {
-        let arrStyle = type === 'start' ? [styles.playbar] : [styles['playbar-move']];
-        return arrStyle.join(" ");
-    }
     //拖拽进度条时触发
     const changeTime = function (value: number) {
         playBar.current.removeEventListener("timeupdate", changePlayTime);
         playBar.current.volume = 0;
         playBar.current.currentTime = value / 1000;
         playcontroller.setTime(value);
+        playcontroller.changeDraging(true);
     }
     //当拉取进度条之后触发
-    const changeCurrentTime = (value: number) => {
+    const changeCurrentTime = () => {
         playBar.current.volume = playcontroller.voice / 100;
+        playcontroller.changeDraging(false);
     }
     //播放上一首音乐
     const playPrevSong = function () {
@@ -117,7 +114,10 @@ const PlayBar = observer(() => {
         <audio ref={playBar} src={url} preload="auto">
         </audio>
         {collect && <CollectModal close={() => playcontroller.showCollect()} songId={song.id} />}
-        <div className={showBar ? getStyle("start") : getStyle("move")} onClick={e => e.stopPropagation()}>
+        <div
+            className={showBar ? styles.playbar : styles['playbar-move']}
+            onClick={e => e.stopPropagation()}
+        >
             {isShow && <PlayList />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"收起"} >

@@ -8,11 +8,11 @@ class PlayController{
     @observable private currentTime: number = 0;//播放音乐时间
     @observable private volume: number = 0.01;//音量
     @observable private isLock: boolean = false;//是否锁住播放条
-    @observable private timer: ReturnType<typeof setInterval> | number | null = null;//定时器
     @observable private audioRef: any;//audio元素
+    @observable private isDrag:boolean=false;//是否拖动播放条
     @observable showVolume: boolean = false;//显示隐藏音量条
     @observable collect: boolean = false;//是否显示收藏框
-    @observable showBar: boolean = false;//展开收起播放条
+    @observable showBar: boolean = false;//展开收起播放条x
     @observable olyric:Map<number,string> = new Map();//原歌词
     @observable tlyric: Map<number,string> = new Map();//翻译歌词
     
@@ -82,6 +82,16 @@ class PlayController{
     @action showCollect() {
         this.collect = !this.collect;
     }
+    /**
+     * @desc 是否拖动进度条
+     */
+    @computed get draging() {
+        return this.isDrag;
+    }
+    @action changeDraging(isDrag=false) {
+        this.isDrag = isDrag;
+    }
+
     /**
      * @desc 收起播放条
      */

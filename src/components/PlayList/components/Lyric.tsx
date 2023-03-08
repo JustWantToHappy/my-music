@@ -1,5 +1,5 @@
 import React from 'react'
-import { CloseCircleOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, SafetyCertificateTwoTone } from "@ant-design/icons";
 import styles from "../index.module.scss";
 import playlist from '../../../mobx/playlist';
 import playcontroller from '../../../mobx/playcontroller';
@@ -14,6 +14,8 @@ export default observer(function Lyric() {
     const { song } = playlist;
     const { isPlay } = playcontroller;
     const [lyric, setLyric] = React.useState<Array<[number, { lyc: string, tlyc?: string }]>>();
+    //区分用户滚动和自动滚动,避免同一回调的触发
+    const [scrollByUser, setScrollByUser] = React.useState(false);
     //是否自动滚动
     const [allowAutoScroll, setAllowAutoScroll] = React.useState(true);
     //用于标记正在播放的歌词数组下标
@@ -24,7 +26,6 @@ export default observer(function Lyric() {
             let res = await getLyricBySongId(song.id);
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             setLyric(playcontroller.getLyric());
-
         })();
     }, [song.id]);
     //使用二分查找，根据现在的时间确定时间轴上的歌词,返回一个下标，时间单位是us
@@ -48,25 +49,30 @@ export default observer(function Lyric() {
         return ans;
     }
 
-    const handleScroll = function (event: React.UIEvent<HTMLDivElement>) {
-        setAllowAutoScroll(false);
-        if (!allowAutoScroll) {
+    const handleUserScroll = function (event: React.UIEvent<HTMLDivElement>) {
+        setScrollByUser(true);
+        if (scrollByUser && allowAutoScroll) {
+            setAllowAutoScroll(state => {
+                return !state ? state : !state;
+            });
             delayedExcution(() => {
                 setAllowAutoScroll(true);
+                setScrollByUser(false);
             }, 4000)();
         }
     };
     React.useEffect(() => {
-        const timer = setInterval(() => {
+        const handleAutoScroll = function () {
             if (allowAutoScroll && isPlay && lyricRef.current) {
                 // 歌词自动滚动...
                 let index = binarySearchLyric(playcontroller.time);
                 setIndex(index);
-                console.info(index, index * height, lyricRef.current.scrollTop);
-                lyricRef.current.scrollTop = index * height;
+                lyricRef.current.scrollTop = index * height + top - lyricRef.current.clientHeight / 2;
             }
-        }, 300);
-
+        }
+        const timer = setInterval(() => {
+            window.requestAnimationFrame(handleAutoScroll);
+        }, 100);
         return function () {
             clearInterval(timer);
         }
@@ -81,7 +87,7 @@ export default observer(function Lyric() {
                 className={styles["lyric-content"]}
                 ref={lyricRef}
                 style={{ paddingTop: `${top}px` }}
-                onScroll={throttle(handleScroll, 500)}
+                onScroll={throttle(handleUserScroll, 500)}
             >
                 {lyric?.map(([time, { lyc, tlyc }], index) => {
                     return (<p
@@ -92,7 +98,7 @@ export default observer(function Lyric() {
                                     height: `${height}px`,
                                     fontSize: "1rem",
                                     color: "#fff",
-                                    fontWeight: "bolder"
+                                    fontWeight: "bolder",
                                 } :
                                 { height: `${height}px` }
                         }>
