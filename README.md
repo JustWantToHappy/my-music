@@ -4,8 +4,8 @@
 整体架构参考网易云音乐
 登录使用邮箱登录 
 后端数据采用 [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 提供的服务。
-项目开始时间:2022-08-03~2022-09-01
-项目完善时间:2023-02-05~2023-02-10
+项目开始时间:2022-08-03至2022-09-01
+项目完善时间:2023-02-05至2023-02-10
 ***
 ## 启动
 yarn start(yarn run start)
@@ -28,9 +28,8 @@ yarn start(yarn run start)
 ## 项目部分截图
 **首页**
 ![首页](src/assets//screenshot//Snipaste_2022-09-12_22-16-01.png)
----
 **登录**
-![登录](src/assets//screenshot//Snipaste_2023-03-08_12-05-42.png)
+![登录](src/assets//screenshot//Snipaste_2022-09-12_22-23-34.png)
 **歌词**
 ![歌词](src/assets//screenshot//Snipaste_2023-03-08_12-07-49.png)
 **歌单分类**
