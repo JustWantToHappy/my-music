@@ -12,7 +12,7 @@ class PlayController{
     @observable private isDrag:boolean=false;//是否拖动播放条
     @observable showVolume: boolean = false;//显示隐藏音量条
     @observable collect: boolean = false;//是否显示收藏框
-    @observable showBar: boolean = false;//展开收起播放条x
+    @observable showBar: boolean = false;//展开收起播放条
     @observable olyric:Map<number,string> = new Map();//原歌词
     @observable tlyric: Map<number,string> = new Map();//翻译歌词
     

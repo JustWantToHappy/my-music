@@ -53,7 +53,6 @@ const PlayBar = observer(() => {
     };
     // 当播放新的歌曲的时候调用
     React.useEffect(() => {
-        console.log(url);
         playBar.current.currentTime = 0;
         playMusic();
     }, [song]);
@@ -63,6 +62,7 @@ const PlayBar = observer(() => {
             playMusic();
         }
     }, [isPlay]);
+
     const handleClik = function (e: MouseEvent) {
         playlist.isShow = false;
         playcontroller.showVoice(false);
@@ -109,6 +109,8 @@ const PlayBar = observer(() => {
     const playNextSong = function () {
         playlist.playNextSong(true);
     }
+
+    console.info(playcontroller.showBar, 'hhh');
     return <>
         {/* preload="auto"表示预加载音频 */}
         <audio ref={playBar} src={url} preload="auto">
@@ -121,7 +123,8 @@ const PlayBar = observer(() => {
             {isShow && <PlayList />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title={"收起"} >
-                    <DownOutlined onClick={() => playcontroller.shrink()} />
+                    <DownOutlined onClick={() => { }} />
+                    {/*<DownOutlined onClick={() => playcontroller.shrink()} />*/}
                 </Tooltip>
                 <Tooltip placement="right" title='收藏'>
                     <PlusSquareOutlined />
