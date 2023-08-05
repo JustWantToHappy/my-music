@@ -9,7 +9,6 @@
 
     >div {
         width: 12vw;
-
         >span {
             cursor: pointer;
 
@@ -29,6 +28,7 @@
     width: 12vw;
     height: 12vw;
     cursor: pointer;
+    overflow: hidden;
 
     &:hover {
         transform: translateY(-2vh);

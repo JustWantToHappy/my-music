@@ -12,6 +12,10 @@
     transition: all 1s ease-in-out;
 }
 
+ul {
+    list-style: none;
+}
+
 .hidden-indicate {
     display: flex;
     cursor: pointer;

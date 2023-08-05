@@ -6,7 +6,7 @@
 
 .dialy {
     width: 75vw;
-    transform: translateY(13vh);
+    transform: translateY(var(--mc-nav-height));
     margin: 0 auto;
     border-right: 1px solid #d4d4d4;
     border-left: 1px solid #d4d4d4;
@@ -15,7 +15,8 @@
 
     >:first-child {
         position: relative;
-        margin:5vh 0 5vh 5vh;
+        margin: 5vh 0 5vh 5vh;
+
         >div {
             position: absolute;
             left: 5%;
@@ -43,27 +44,32 @@
                 @include div-center();
             }
         }
-        >i{
+
+        >i {
             display: inline-block;
-            width:30%;
+            width: 30%;
             text-align: center;
         }
     }
-    
+
 }
-.head{
-    padding-left:5vh;
+
+.head {
+    padding-left: 5vh;
     display: flex;
     align-items: center;
-    >small{
-        margin-left:2vw;
+
+    >small {
+        margin-left: 2vw;
     }
 }
-.divider{
-    height:2px;
+
+.divider {
+    height: 2px;
     background-color: #C10D0C;
-    width:100%;
+    width: 100%;
 }
-.list{
-    margin-bottom:10vh;
+
+.list {
+    margin-bottom: 10vh;
 }

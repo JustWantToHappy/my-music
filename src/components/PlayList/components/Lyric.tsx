@@ -77,6 +77,7 @@ export default observer(function Lyric() {
             clearInterval(timer);
         }
     }, [allowAutoScroll]);
+    
     return (
         <div className={styles.lyric}>
             <header>

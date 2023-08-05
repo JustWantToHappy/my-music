@@ -27,11 +27,11 @@ export default function Container() {
         <>
             <Outlet />
             {pathname === '/home' && <div className={styles.container}>
-                <Carousel autoplay style={{ width: "75vw" }} arrows={true}>
+                <Carousel
+                    style={{ height: '100%', width: '100vw'}}
+                    autoplay>
                     {arr?.map(mv => {
-                        return <div key={mv.id}>
-                            <img src={mv.cover} alt="图片无法显示" style={{ height: "60vh", objectFit: "cover", width: "100%" }} />
-                        </div>
+                        return <img src={mv.cover} className={styles.carousel} alt={mv.name} />
                     })}
                 </Carousel>
             </div>}

@@ -61,25 +61,27 @@ const PlayBar = observer(() => {
         playlist.isShow = false;
         playcontroller.showVoice(false);
     }
-    const handleHover = function (e: any) {
-        if (e.toElement == null && e.clientY > 100) {
+
+    const handleMouseLeaveDocument = function (e: Event) {
+        if (!playcontroller.showBar) {
             playcontroller.expend();
         }
     }
+
     React.useEffect(() => {
         const audio = playBar.current;
         playcontroller.init(playBar)
         window.addEventListener("click", handleClik);
-        window.addEventListener("mouseout", handleHover);
         audio?.addEventListener("canplaythrough", playMusic);
         audio?.addEventListener("timeupdate", changePlayTime);
         audio?.addEventListener("ended", endMusic);
+        document.addEventListener('mouseleave', handleMouseLeaveDocument)
         return function () {
             window.removeEventListener("click", handleClik);
-            window.removeEventListener("mouseout", handleHover);
             audio?.removeEventListener("canplaythrough", playMusic);
             audio?.removeEventListener("timeupdate", changePlayTime);
             audio?.removeEventListener("ended", endMusic);
+            document.removeEventListener('mouseleave', handleMouseLeaveDocument)
         }
     }, [playMusic]);
 
@@ -142,7 +144,7 @@ const PlayBar = observer(() => {
                         {/* 歌曲名称 */}
                         <span>{song.name}&nbsp;&nbsp;</span>
                         {/* 歌手名称 */}
-                        <span >{song.ar && song?.ar[0].name}</span>
+                        <span >{song?.ar?.[0].name}</span>
                     </div>
                 </li>
             </ul>

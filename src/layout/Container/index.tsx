@@ -27,7 +27,7 @@ const Container = observer(function () {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [location.pathname]);
     return (
-        <div style={{ marginTop: "13vh" }}>
+        <div style={{ marginTop: "var(--mc-nav-height)" }}>
             <Suspense fallback={<h1>loading</h1>}>
                 {element}
             </Suspense>

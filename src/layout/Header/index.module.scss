@@ -1,6 +1,5 @@
 .head {
-    height: 13vh;
-    min-height: 45px;
+    height: var(--mc-nav-height);
     min-width: 166px;
     width: 100%;
     position: fixed;

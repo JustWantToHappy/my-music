@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, } from 'react'
-import { useNavigate } from "react-router-dom"
 import { Pagination } from "antd"
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { useNavigate } from "react-router-dom"
 import { CustomerServiceOutlined, PlayCircleOutlined } from "@ant-design/icons"
 import type { PaginationProps } from 'antd';
 import styles from "./styles/songlist.module.scss"
@@ -71,22 +71,29 @@ export default function SongList(props: { cat: string, total: number }) {
         loadImage();
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [tag, current, cat, pageSize]);
-    const pageScrolling = () => {
+
+    const pageScrolling = useCallback(() => {
         debounce(loadImage, 300);
-    }
+    }, [])
+
     useEffect(() => {
         window.addEventListener("scroll", pageScrolling);
         return function () {
             window.removeEventListener("scroll", pageScrolling);
         }
-    }, []);
+    }, [pageScrolling]);
+
     return (
         <>
             <div className={styles.songlist} ref={myRef} >
                 {songLists && songLists.map(songlist => {
                     return <div key={songlist.id} >
                         <div className={styles.content} >
-                            {<img data-src={songlist.coverImgUrl} alt="加载中..." className='songlist-image' onClick={() => playSongList(songlist.id)} />}
+                            <img
+                                data-src={songlist.coverImgUrl}
+                                alt="加载中..."
+                                className='songlist-image'
+                                onClick={() => playSongList(songlist.id)} />
                             <div>
                                 <span >
                                     <CustomerServiceOutlined />
