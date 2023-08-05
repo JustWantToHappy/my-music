@@ -1,49 +1,16 @@
-/* 整个播放条容器的样式 */
-@mixin bar() {
+.playbar {
     position: fixed;
     z-index: 21;
     width: 100%;
-    min-width:100px;
+    min-width: 100px;
     background-color: #252933;
     color: aliceblue;
     display: flex;
     align-items: center;
-    font-family: 'Courier New', Courier, monospace;
-}
-.playbar {
-    @include bar;
     bottom: 0;
     left: 0;
-    animation: slide-up 0.5s ease-in-out;
+    transition: all 1s ease-in-out;
 }
-
-@keyframes slide-up {
-    0% {
-        transform: translateY(100%);
-    }
-
-    100% {
-        transform: translateY(0px);
-    }
-}
-
-
-/* 播放条移入底部 */
-.playbar-move {
-    @include bar();
-    animation: slide-down 1s ease-in-out;
-}
-
-@keyframes slide-down {
-    0% {
-        bottom:0;
-    }
-    
-    100% {
-        bottom:-100%;
-    }
-}
-
 
 .hidden-indicate {
     display: flex;
@@ -71,7 +38,7 @@
 }
 
 .playmusic {
-    flex:1;
+    flex: 1;
     display: flex;
     height: 100%;
     align-items: center;
@@ -112,23 +79,27 @@
 
 .music-bar {
     flex: 3;
-    &>li:first-of-type{
-        height:80%;
+
+    &>li:first-of-type {
+        height: 80%;
         display: flex;
         align-items: center;
-        width:100%;
-        &>:first-child{
-            flex:3;
+        width: 100%;
+
+        &>:first-child {
+            flex: 3;
         }
-        &>:last-child{
-            flex:1;
+
+        &>:last-child {
+            flex: 1;
         }
 
     }
-    &>li:nth-of-type(2){
+
+    &>li:nth-of-type(2) {
         line-height: 50%;
-        height:30%;
-        font-size:0.1rem;
+        height: 30%;
+        font-size: 0.1rem;
     }
 }
 
@@ -139,11 +110,13 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    img{
-        width:1rem;
-        height:1rem;
+
+    img {
+        width: 1rem;
+        height: 1rem;
         cursor: pointer;
     }
+
     >:last-child {
         opacity: 0.8;
 
@@ -170,18 +143,19 @@
 }
 
 /* 音量调整条 */
-.play-sound-container{
+.play-sound-container {
     position: absolute;
     width: 36px;
     height: 18vh;
-    z-index:22;
-    background-color: #242424;
+    z-index: 22;
+    background-color: var(--mc-bg-color);
     opacity: 0.7;
-    top:-18vh;
+    top: -18vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .play-sound-bar {
-    height:70%;
+    height: 70%;
 }

@@ -36,7 +36,7 @@
         justify-content: flex-end;
         cursor: pointer;
         background-size: cover;
-        
+
         &:hover {
             transform: scale(1.05);
             transition: transform 100ms linear;
@@ -45,7 +45,7 @@
         >figcaption {
             color: #fff;
             height: 30px;
-            background: #242424;
+            background: var(--mc-bg-color);
             display: flex;
             align-items: center;
             justify-content: space-around;

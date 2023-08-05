@@ -1,4 +1,6 @@
 //音乐播放条组件
+import React from "react"
+import { Slider, Tooltip } from 'antd';
 import styles from "./index.module.scss"
 import {
     StepBackwardOutlined,
@@ -8,16 +10,8 @@ import {
     SoundFilled,
     DownOutlined,
     PlusSquareOutlined,
-    // <LockOutlined />
-    // <UnlockOutlined />
 } from "@ant-design/icons"
 import PlayListIcon from "../../assets/logo/playlist.svg";
-import {
-    message,
-    Slider,
-    Tooltip
-} from 'antd';
-import React from "react"
 import { transTime } from "../../utils/help"
 import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
@@ -25,43 +19,43 @@ import { observer } from "mobx-react";
 import playlist from "../../mobx/playlist";
 import playcontroller from "../../mobx/playcontroller";
 const PlayBar = observer(() => {
-    const playBar: any = React.useRef();
+    const playBar = React.useRef<HTMLAudioElement>(null);
     const { song, isShow } = playlist;
     const { time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
 
-    const playMusic = function () {
-        if (isPlay && playBar.current) {
+    const playMusic = React.useCallback(function () {
+        if (playBar.current) {
             const promise = playBar.current.play();
             promise.then(() => {
                 playcontroller.play();
             }).catch((err: any) => {
-                console.info(err);
-                message.info({ content: "该歌曲需要购买vip!", duration: 2 });
                 playcontroller.pause();
             })
         }
-    }
+    }, [])
 
     const changePlayTime = function () {
-        playcontroller.setTime(playBar.current.currentTime * 1000);
+        playcontroller.setTime(playBar.current!.currentTime * 1000);
     }
 
     //如果是自动播放完歌曲
     const endMusic = () => {
         playlist.playNextSong();
     };
+
     // 当播放新的歌曲的时候调用
     React.useEffect(() => {
-        playBar.current.currentTime = 0;
+        playBar.current!.currentTime = 0;
         playMusic();
-    }, [song]);
+    }, [song, playMusic]);
+
     //当点击播放按钮时调用
     React.useEffect(() => {
         if (isPlay) {
             playMusic();
         }
-    }, [isPlay]);
+    }, [isPlay, playMusic]);
 
     const handleClik = function (e: MouseEvent) {
         playlist.isShow = false;
@@ -73,32 +67,33 @@ const PlayBar = observer(() => {
         }
     }
     React.useEffect(() => {
+        const audio = playBar.current;
         playcontroller.init(playBar)
         window.addEventListener("click", handleClik);
         window.addEventListener("mouseout", handleHover);
-        playBar.current.addEventListener("canplaythrough", playMusic);
-        playBar.current.addEventListener("timeupdate", changePlayTime);
-        playBar.current.addEventListener("ended", endMusic);
+        audio?.addEventListener("canplaythrough", playMusic);
+        audio?.addEventListener("timeupdate", changePlayTime);
+        audio?.addEventListener("ended", endMusic);
         return function () {
             window.removeEventListener("click", handleClik);
             window.removeEventListener("mouseout", handleHover);
-            playBar.current.removeEventListener("canplaythrough", playMusic);
-            playBar.current.removeEventListener("timeupdate", changePlayTime);
-            playBar.current.removeEventListener("ended", endMusic);
+            audio?.removeEventListener("canplaythrough", playMusic);
+            audio?.removeEventListener("timeupdate", changePlayTime);
+            audio?.removeEventListener("ended", endMusic);
         }
-    }, []);
+    }, [playMusic]);
 
     //拖拽进度条时触发
     const changeTime = function (value: number) {
-        playBar.current.removeEventListener("timeupdate", changePlayTime);
-        playBar.current.volume = 0;
-        playBar.current.currentTime = value / 1000;
+        playBar.current!.removeEventListener("timeupdate", changePlayTime);
+        playBar.current!.volume = 0;
+        playBar.current!.currentTime = value / 1000;
         playcontroller.setTime(value);
         playcontroller.changeDraging(true);
     }
     //当拉取进度条之后触发
     const changeCurrentTime = () => {
-        playBar.current.volume = playcontroller.voice / 100;
+        playBar.current!.volume = playcontroller.voice / 100;
         playcontroller.changeDraging(false);
     }
     //播放上一首音乐
@@ -110,21 +105,17 @@ const PlayBar = observer(() => {
         playlist.playNextSong(true);
     }
 
-    console.info(playcontroller.showBar, 'hhh');
     return <>
-        {/* preload="auto"表示预加载音频 */}
-        <audio ref={playBar} src={url} preload="auto">
-        </audio>
+        <audio ref={playBar} src={url} preload="auto" />
         {collect && <CollectModal close={() => playcontroller.showCollect()} songId={song.id} />}
         <div
-            className={showBar ? styles.playbar : styles['playbar-move']}
-            onClick={e => e.stopPropagation()}
-        >
+            className={styles.playbar}
+            style={!showBar ? { bottom: '-100%' } : {}}
+            onClick={e => e.stopPropagation()}>
             {isShow && <PlayList />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
-                <Tooltip placement="right" title={"收起"} >
-                    <DownOutlined onClick={() => { }} />
-                    {/*<DownOutlined onClick={() => playcontroller.shrink()} />*/}
+                <Tooltip placement="right" title='收起' >
+                    <DownOutlined onClick={() => playcontroller.shrink()} />
                 </Tooltip>
                 <Tooltip placement="right" title='收藏'>
                     <PlusSquareOutlined />
@@ -143,7 +134,6 @@ const PlayBar = observer(() => {
             </div>
             <ul className={styles["music-bar"]} >
                 <li >
-                    {/* 其中tipFormatter=null不显示当前进度的刻度 */}
                     <Slider min={0} max={song.dt} tipFormatter={null} step={song.dt / 1000} onChange={changeTime} onAfterChange={changeCurrentTime} value={time} />
                     <small>{transTime(time, 2)}/{transTime(song.dt, 2)}</small>
                 </li>

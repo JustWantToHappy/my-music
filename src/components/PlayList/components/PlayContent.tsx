@@ -23,7 +23,7 @@ export default function PlayContent() {
     }
     React.useEffect(() => {
         if (Ref.current && Ref.current?.scrollHeight <= Ref.current?.clientHeight) {
-            Ref.current.setAttribute("style", "border-right:6px solid #242424");
+            Ref.current.setAttribute("style", "border-right:6px solid var(--mc-bg-color)");
         } else {
             Ref.current?.setAttribute("style", "border-right:0px");
         }

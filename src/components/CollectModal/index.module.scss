@@ -24,16 +24,19 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding:0 2vw;
+        padding: 0 2vw;
         height: 7vh;
-        background-color: #242424;
-        >h4{
+        background-color: var(--mc-bg-color);
+
+        >h4 {
             color: #fff;
         }
-        >:last-child{
+
+        >:last-child {
             color: #fff;
             opacity: 0.8;
-            &:hover{
+
+            &:hover {
                 opacity: 1;
                 cursor: pointer;
             }
@@ -42,30 +45,35 @@
     }
 
 }
-.collect-songlist{
-    height:10vh;
+
+.collect-songlist {
+    height: 10vh;
     display: grid;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr;
-    >img{
-        height:8vh;
+
+    >img {
+        height: 8vh;
         grid-column: 1/2;
-        margin:0 auto;
+        margin: 0 auto;
         transform: translateY(1vh);
     }
-    >div{
+
+    >div {
         display: flex;
         grid-column: 2/3;
         flex-direction: column;
         justify-content: space-around;
-        
+
     }
-    &:hover{
+
+    &:hover {
         background-color: #E6E8EB;
         cursor: pointer;
     }
 }
-.collect-divider{
-    height:1px;
+
+.collect-divider {
+    height: 1px;
     background: #d4d4d4;
 }

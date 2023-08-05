@@ -1,6 +1,6 @@
-import { observable, makeObservable, action, computed } from "mobx";
-import { transUsTime } from "../utils/help";
 import playlist from "./playlist";
+import { transUsTime } from "../utils/help";
+import { observable, makeObservable, action, computed } from "mobx";
 
 class PlayController{
     //以下属性皆为正在播放的音乐的属性

@@ -7,7 +7,7 @@
     list-style: none;
     z-index: 20;
     box-sizing: border-box;
-    background: #242424 !important;
+    background: var(--mc-bg-color) !important;
     border-bottom: 1px solid #000;
     color: white !important;
     display: flex;
@@ -15,9 +15,10 @@
     justify-content: space-around;
     font-size: 15px;
 
-    li{
+    li {
         cursor: text;
     }
+
     img {
         width: 40px;
         height: 40px;
@@ -48,10 +49,11 @@
 
 .login-btn {
     opacity: 0.7;
-    color:white;
+    color: white;
+
     &:hover {
         opacity: 1;
-        color:white;
+        color: white;
     }
 }
 

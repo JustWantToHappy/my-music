@@ -23,6 +23,7 @@
         cursor: pointer;
         position: relative;
         @include omit();
+
         &:hover {
             text-decoration: black underline;
             text-underline-offset: 2px;
@@ -33,6 +34,7 @@
     .image+span+span {
         cursor: pointer;
         @include omit();
+
         &:hover {
             text-decoration: #666 0.5px underline;
         }
@@ -50,17 +52,17 @@
         z-index: 0;
         right: -5%;
         top: calc((100% - 12px)/2);
-        background-color: #242424;
+        background-color: var(--mc-bg-color);
         border: 1.2px solid gray;
         border-radius: 8px 0 0 8px;
-        border-right: 1px solid #242424;
+        border-right: 1px solid var(--mc-bg-color);
     }
 
     &::after {
         content: "";
         width: 80%;
         height: 90%;
-        background-color: #242424;
+        background-color: var(--mc-bg-color);
         position: absolute;
         top: 5%;
         right: -15%;

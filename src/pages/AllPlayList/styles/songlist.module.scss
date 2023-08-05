@@ -9,7 +9,7 @@
 
     >div {
         width: 12vw;
-        
+
         >span {
             cursor: pointer;
 
@@ -29,17 +29,19 @@
     width: 12vw;
     height: 12vw;
     cursor: pointer;
-    &:hover{
+
+    &:hover {
         transform: translateY(-2vh);
         transition: transform 200ms linear;
     }
+
     >img {
         position: absolute;
         width: 100%;
-        object-fit:cover;
-        min-width:100px;
-        min-height:100px;
-        border-radius:5% 5% 0 0;
+        object-fit: cover;
+        min-width: 100px;
+        min-height: 100px;
+        border-radius: 5% 5% 0 0;
     }
 
     >div {
@@ -48,7 +50,7 @@
         left: 0;
         right: 0;
         height: 24%;
-        background-color: #242424;
+        background-color: var(--mc-bg-color);
         color: #fff;
         display: flex;
         align-items: center;
