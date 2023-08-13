@@ -9,15 +9,13 @@ export function debounce(fn: Function, delay: number) {
 //节流函数
 export function throttle(fn: Function, delay: number): React.UIEventHandler {
     let timer: ReturnType<typeof setTimeout>|null;
-    return function () {
-        const args = arguments;
-        const that = this as any;
+    return function (...args) {
         if (timer) {
             return;
         }
         timer = setTimeout(()=>{
-            fn.apply(that, args);
-            timer=null;//在delay后执行完fn之后清空timer，此时throttle触发可以进入定时器
+            fn.apply(this, args);
+            timer = null;
         }, delay)
     }
 }

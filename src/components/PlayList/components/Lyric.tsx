@@ -14,7 +14,6 @@ export default observer(function Lyric() {
     const { isPlay, time } = playcontroller;
     const timerRef = React.useRef<number>();
     const mouseWheelRef = React.useRef(false);
-    const prevPlayIndex = React.useRef(0)
     const [autoScroll, setAutoScroll] = React.useState(true);
     const [playIndex, setPlayIndex] = React.useState<number>(0);
     const lyricRef = React.useRef<HTMLDivElement>(null);
@@ -22,13 +21,9 @@ export default observer(function Lyric() {
 
     //使用二分查找，根据现在的时间确定时间轴上的歌词,返回一个下标
     const binarySearchLyric = React.useCallback((time: number) => {
-        if (!lyric) {
-            return 0;
-        }
+        if (!lyric) return 0;
         const targetTime = time * 1000; // 将时间单位转换为微秒
-        let left = 0,
-            right = lyric.length - 1;
-        let ans = 0;
+        let left = 0, right = lyric.length - 1, ans = 0;
         while (left <= right) {
             let mid = Math.floor((left + right) / 2);
             if (lyric[mid][0] <= targetTime) {
@@ -59,14 +54,14 @@ export default observer(function Lyric() {
     React.useMemo(() => {
         const lyricEle = lyricRef.current;
         if (lyricEle) {
-            const scrollTop = playIndex * itemHeight + paddingTopHeight - lyricEle.clientHeight / 2;
+            const scrollTop = Math.max(playIndex * itemHeight + paddingTopHeight - lyricEle.clientHeight / 2, 0);
             lyricEle.scrollTop = scrollTop;
         }
     }, [playIndex]);
 
     React.useEffect(() => {
         (async () => {
-            let res = await getLyricBySongId(song.id);
+            const res = await getLyricBySongId(song.id);
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             setLyric(playcontroller.getLyric());
         })();
@@ -74,10 +69,8 @@ export default observer(function Lyric() {
 
     React.useEffect(() => {
         if (autoScroll && isPlay && lyricRef.current) {
-            window.requestAnimationFrame(() => {
-                let index = binarySearchLyric(time);
-                setPlayIndex(index);
-            })
+            const index = binarySearchLyric(time);
+            setPlayIndex(index);
         }
     }, [autoScroll, isPlay, binarySearchLyric, time]);
 
