@@ -23,25 +23,23 @@ export default function Container() {
         })
         localStorage.getItem("hasLogin") === 'true' && setHasLogin(true);
     }, []);
-    return (
-        <>
-            <Outlet />
-            {pathname === '/home' && <div className={styles.container}>
-                <Carousel
-                    style={{ height: '100%', width: '100vw'}}
-                    autoplay>
-                    {arr?.map(mv => {
-                        return <img src={mv.cover} className={styles.carousel} alt={mv.name} />
-                    })}
-                </Carousel>
-            </div>}
-            {hasLogin && pathname === '/home' && <div className={styles['my-recommon']}>
-                <MyRecommend />
-            </div>}
-            {/* 精选歌单*/}
-            {pathname === '/home' && <RecommonList />}
-            {/* 新碟上架*/}
-            {pathname === '/home' && <NewDisc />}
-        </>
-    )
+    return <>
+        <Outlet />
+        {pathname === '/home' && <div className={styles.container}>
+            <Carousel
+                style={{ height: '100%', width: `100vw`}}
+                autoplay>
+                {arr?.map(mv => {
+                    return <img src={mv.cover} className={styles.carousel} alt={mv.name} />
+                })}
+            </Carousel>
+        </div>}
+        {hasLogin && pathname === '/home' && <div className={styles['my-recommon']}>
+            <MyRecommend />
+        </div>}
+        {/* 精选歌单*/}
+        {pathname === '/home' && <RecommonList />}
+        {/* 新碟上架*/}
+        {pathname === '/home' && <NewDisc />}
+    </>;
 }

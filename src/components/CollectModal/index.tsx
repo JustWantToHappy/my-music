@@ -8,7 +8,6 @@ export default function CollectModal(props: { close: () => void, songId: number 
     //点击将歌曲加入歌单
     const addSongToSongList = async (listId: number) => {
         let res = await addOrDeleteSongFromSongList("add", String(listId), props.songId, localStorage.getItem("cookies") as string);
-        console.log(res, 'hhhhh')
         if (res.status === 200) {
             message.success("收藏成功!", 1);
             PubSub.publish("getSongList");

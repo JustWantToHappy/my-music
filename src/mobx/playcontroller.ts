@@ -14,7 +14,7 @@ class PlayController{
     @observable collect: boolean = false;//是否显示收藏框
     @observable showBar: boolean = false;//展开收起播放条
     @observable olyric:Map<number,string> = new Map();//原歌词
-    @observable tlyric: Map<number,string> = new Map();//翻译歌词
+    @observable tlyric: Map<number, string> = new Map();//翻译歌词
     
     constructor() {
         makeObservable(this);

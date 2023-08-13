@@ -1,35 +1,27 @@
 import React from 'react'
-import { CloseCircleOutlined, SafetyCertificateTwoTone } from "@ant-design/icons";
 import styles from "../index.module.scss";
 import playlist from '../../../mobx/playlist';
-import playcontroller from '../../../mobx/playcontroller';
 import { getLyricBySongId } from "../../../api/song"
-import { throttle } from "../../../utils/throttle_debounce";
-import { delayedExcution } from "../../../utils"
 import { observer } from "mobx-react";
+import playcontroller from '../../../mobx/playcontroller';
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 export default observer(function Lyric() {
-    const height = 50;
-    const top = 40;
+    const itemHeight = 60;
+    const paddingTopHeight = 40;
     const { song } = playlist;
-    const { isPlay } = playcontroller;
-    const [lyric, setLyric] = React.useState<Array<[number, { lyc: string, tlyc?: string }]>>();
-    //区分用户滚动和自动滚动,避免同一回调的触发
-    const [scrollByUser, setScrollByUser] = React.useState(false);
-    //是否自动滚动
-    const [allowAutoScroll, setAllowAutoScroll] = React.useState(true);
-    //用于标记正在播放的歌词数组下标
-    const [playIndex, setIndex] = React.useState<number>(0);
+    const recoverAutoScrollInterval = 5000;//用户滚动后恢复自动滚动间隔
+    const { isPlay, time } = playcontroller;
+    const timerRef = React.useRef<number>();
+    const mouseWheelRef = React.useRef(false);
+    const prevPlayIndex = React.useRef(0)
+    const [autoScroll, setAutoScroll] = React.useState(true);
+    const [playIndex, setPlayIndex] = React.useState<number>(0);
     const lyricRef = React.useRef<HTMLDivElement>(null);
-    React.useEffect(() => {
-        (async () => {
-            let res = await getLyricBySongId(song.id);
-            playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
-            setLyric(playcontroller.getLyric());
-        })();
-    }, [song.id]);
-    //使用二分查找，根据现在的时间确定时间轴上的歌词,返回一个下标，时间单位是us
-    const binarySearchLyric = function (time: number): number {
+    const [lyric, setLyric] = React.useState<Array<[number, { lyc: string, tlyc?: string }]>>();
+
+    //使用二分查找，根据现在的时间确定时间轴上的歌词,返回一个下标
+    const binarySearchLyric = React.useCallback((time: number) => {
         if (!lyric) {
             return 0;
         }
@@ -47,48 +39,62 @@ export default observer(function Lyric() {
             }
         }
         return ans;
+    }, [lyric])
+
+    const handleUserScroll = () => {
+        window.clearTimeout(timerRef.current)
+        if (mouseWheelRef.current) {
+            setAutoScroll(false)
+        }
+        timerRef.current = window.setTimeout(() => {
+            setAutoScroll(true)
+            mouseWheelRef.current = false;
+        }, recoverAutoScrollInterval)
     }
 
-    const handleUserScroll = function (event: React.UIEvent<HTMLDivElement>) {
-        setScrollByUser(true);
-        if (scrollByUser && allowAutoScroll) {
-            setAllowAutoScroll(state => {
-                return !state ? state : !state;
-            });
-            delayedExcution(() => {
-                setAllowAutoScroll(true);
-                setScrollByUser(false);
-            }, 4000)();
+    const heandleWheelScroll = () => {
+        mouseWheelRef.current = true;
+    }
+
+    React.useMemo(() => {
+        const lyricEle = lyricRef.current;
+        if (lyricEle) {
+            const scrollTop = playIndex * itemHeight + paddingTopHeight - lyricEle.clientHeight / 2;
+            lyricEle.scrollTop = scrollTop;
         }
-    };
+    }, [playIndex]);
+
     React.useEffect(() => {
-        const handleAutoScroll = function () {
-            if (allowAutoScroll && isPlay && lyricRef.current) {
-                // 歌词自动滚动...
-                let index = binarySearchLyric(playcontroller.time);
-                setIndex(index);
-                lyricRef.current.scrollTop = index * height + top - lyricRef.current.clientHeight / 2;
-            }
+        (async () => {
+            let res = await getLyricBySongId(song.id);
+            playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
+            setLyric(playcontroller.getLyric());
+        })();
+    }, [song.id]);
+
+    React.useEffect(() => {
+        if (autoScroll && isPlay && lyricRef.current) {
+            window.requestAnimationFrame(() => {
+                let index = binarySearchLyric(time);
+                setPlayIndex(index);
+            })
         }
-        const timer = setInterval(() => {
-            window.requestAnimationFrame(handleAutoScroll);
-        }, 100);
-        return function () {
-            clearInterval(timer);
-        }
-    }, [allowAutoScroll]);
-    
+    }, [autoScroll, isPlay, binarySearchLyric, time]);
+
     return (
         <div className={styles.lyric}>
             <header>
                 <span>{song.name}</span>
-                <span><CloseCircleOutlined onClick={() => playlist.isShow = false} /></span>
+                <span>
+                    <CloseCircleOutlined onClick={() => playlist.isShow = false} />
+                </span>
             </header>
             <div
-                className={styles["lyric-content"]}
                 ref={lyricRef}
-                style={{ paddingTop: `${top}px` }}
-                onScroll={throttle(handleUserScroll, 500)}
+                className={styles["lyric-content"]}
+                style={{ padding: `${paddingTopHeight}px 0` }}
+                onScroll={handleUserScroll}
+                onWheel={heandleWheelScroll}
             >
                 {lyric?.map(([time, { lyc, tlyc }], index) => {
                     return (<p
@@ -96,12 +102,14 @@ export default observer(function Lyric() {
                         style={
                             playIndex === index ?
                                 {
-                                    height: `${height}px`,
+                                    height: `${itemHeight}px`,
                                     fontSize: "1rem",
                                     color: "#fff",
                                     fontWeight: "bolder",
                                 } :
-                                { height: `${height}px` }
+                                {
+                                    height: `${itemHeight}px`,
+                                }
                         }>
                         <small>{lyc}</small>
                         <br />

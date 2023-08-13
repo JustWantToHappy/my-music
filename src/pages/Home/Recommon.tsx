@@ -1,9 +1,9 @@
+import { Tooltip } from "antd"
+import styles from "./recommon.module.scss"
+import { useNavigate } from "react-router-dom"
+import { getImgRealSrc } from "../../utils/help";
 import React, { useEffect, useState, useRef } from "react"
 import { getHightSongLists, getNewDiscs } from "../../api/recommond"
-import { getImgRealSrc } from "../../utils/help";
-import { Tooltip } from "antd"
-import { useNavigate } from "react-router-dom"
-import styles from "./recommon.module.scss"
 //最热歌单
 const RecommonList = () => {
     const navigate = useNavigate();

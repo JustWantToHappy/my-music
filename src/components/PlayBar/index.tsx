@@ -11,13 +11,14 @@ import {
     DownOutlined,
     PlusSquareOutlined,
 } from "@ant-design/icons"
-import PlayListIcon from "../../assets/logo/playlist.svg";
 import { transTime } from "../../utils/help"
 import CollectModal from "../CollectModal";
 import PlayList from "../PlayList";
 import { observer } from "mobx-react";
 import playlist from "../../mobx/playlist";
 import playcontroller from "../../mobx/playcontroller";
+import PlayListIcon from "../../assets/logo/playlist.svg";
+
 const PlayBar = observer(() => {
     const playBar = React.useRef<HTMLAudioElement>(null);
     const { song, isShow } = playlist;
