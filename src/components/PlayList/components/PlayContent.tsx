@@ -35,7 +35,7 @@ export default function PlayContent() {
                 setScrollTop((event.target as HTMLDivElement).scrollTop)
             })
         })
-    }, 50)
+    }, 40)
 
     const start = React.useMemo(() => {
         return Math.max(Math.floor(scrollTop / itemHeight) - extraRenderItemCount, 0)
@@ -71,8 +71,8 @@ export default function PlayContent() {
                         {songs.slice(start, end).map(song => {
                             return (
                                 <li
-                                    className={styles.song}
-                                    key={song.id}
+                                key={song.id}
+                                className={styles.song}
                                     style={song.id === playSong.id ?
                                         { background: "rgba(0,0,0,0.8)", height: `${itemHeight}px` } :
                                         { height: `${itemHeight}px` }}

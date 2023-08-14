@@ -110,7 +110,7 @@ $scroll-width: 6px; //滚动条宽度
     cursor: pointer;
 
     &:hover {
-        background: rgba(0, 0, 0, 0.7);
+        background-color: rgba(0, 0, 0, 0.7);
     }
 
     &>span {
@@ -189,9 +189,15 @@ $scroll-width: 6px; //滚动条宽度
 .lyric-content {
     text-align: center;
     height: 100%;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     scroll-behavior: smooth;
     color: rgba(255, 255, 255, 0.7);
+    /* firefox */
+    scrollbar-width: none;
+    /* ie */
+    -ms-overflow-style: none;
+    position: relative;
 
     &>p {
         overflow: hidden;
@@ -201,20 +207,30 @@ $scroll-width: 6px; //滚动条宽度
 }
 
 //滚动条样式
-
 .lyric-content::-webkit-scrollbar {
-    width: $scroll-width;
+    display: none;
 }
 
-.lyric-content::-webkit-scrollbar-thumb {
+.scrollbar-track {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    width: $scroll-width;
+    height: calc($total-height - $header-height);
+    background-color: var(--mc-bg-color);
+    overflow: hidden;
+}
+
+.scrollbar-thumb {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    width: 100%;
+    min-height: 10px;
+    transition: top ease 300ms;
     background-image: linear-gradient(to top, #ebc0fd 0%, #d9ded8 100%);
     border-radius: calc($scroll-width/2);
-}
-
-.lyric-content::-webkit-scrollbar-thumb:window-inactive {
-    background-image: linear-gradient(to top, #ebc0fd 0%, #d9ded8 100%);
-}
-
-.lyric-content::-webkit-scrollbar-track {
-    background-color: var(--mc-bg-color);
 }
