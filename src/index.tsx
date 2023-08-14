@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom"
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-document.title = "仿网易云音乐"
+document.title = "小霖的音乐"
 root.render(
   <React.StrictMode>
     <BrowserRouter><App /></BrowserRouter>

@@ -168,7 +168,7 @@ $scroll-width: 6px; //滚动条宽度
     width: calc($total-width - $songlist-width + $scroll-width/2);
     position: absolute;
     right: 0;
-    top: 0;
+    top: 0%;
     text-align: center;
 
     &>span {
@@ -229,8 +229,7 @@ $scroll-width: 6px; //滚动条宽度
     top: 0;
     right: 0;
     width: 100%;
-    min-height: 10px;
-    transition: top ease 300ms;
+    transition: top ease 100ms;
     background-image: linear-gradient(to top, #ebc0fd 0%, #d9ded8 100%);
     border-radius: calc($scroll-width/2);
 }

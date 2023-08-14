@@ -12,7 +12,7 @@ export default observer(function Lyric() {
     const { song } = playlist;
     const recoverAutoScrollInterval = 5000;//用户滚动后恢复自动滚动间隔
     const { isPlay, time } = playcontroller;
-    const timerRef = React.useRef<number>();
+    const timerRef = React.useRef<number | null>();
     const mouseWheelRef = React.useRef(false);
     const lyricRef = React.useRef<HTMLDivElement>(null);
     const thumbRef = React.useRef<HTMLSpanElement>(null);
@@ -39,6 +39,14 @@ export default observer(function Lyric() {
         return ans;
     }, [lyric])
 
+
+    const clearTimer = () => {
+        if (timerRef.current) {
+            window.clearTimeout(timerRef.current)
+            timerRef.current = null;
+        }
+    }
+
     //恢复自动滚动
     const recoverAutoScroll = () => {
         timerRef.current = window.setTimeout(() => {
@@ -48,7 +56,7 @@ export default observer(function Lyric() {
     }
 
     const handleUserScroll = () => {
-        window.clearTimeout(timerRef.current)
+        clearTimer()
         if (mouseWheelRef.current || userDragScrollBarThumbRef.current) {
             setAutoScroll(false)
         }
@@ -62,22 +70,35 @@ export default observer(function Lyric() {
         setThumbTop(Math.min(clientHeight - height, scrollTop / scrollHeight * clientHeight))
     }
 
-    const handleMouseDown = () => {
+    const handleMouseDown = (event: React.MouseEvent) => {
+        event.stopPropagation()
         userDragScrollBarThumbRef.current = true
     };
 
-    const handleMouseUp = () => {
-        userDragScrollBarThumbRef.current = false
-        recoverAutoScroll()
-    };
-
-    const handleMouseMove = (event: React.MouseEvent) => {
-        console.info(event.clientY, 'hhh')
-        if (userDragScrollBarThumbRef.current) {
-            clearTimeout(timerRef.current)
-            //setThumbTop(event.clientY)
+    const handleMouseUp = React.useCallback((event: Event) => {
+        if (userDragScrollBarThumbRef.current && thumbRef.current&&lyricRef.current) {
+            event.preventDefault()
+            userDragScrollBarThumbRef.current = false
+            thumbRef.current.style.transition = 'top ease 300ms'
+            lyricRef.current.style.scrollBehavior = 'smooth'
+            recoverAutoScroll()
         }
-    }
+    }, [])
+
+    const handleMouseMove = React.useCallback((event: MouseEvent) => {
+        event.preventDefault()
+        if (userDragScrollBarThumbRef.current && lyricRef.current && thumbRef.current) {
+            const { top, height } = lyricRef.current.getBoundingClientRect();
+            thumbRef.current.style.transition = 'none'
+            let thumbTop = event.clientY - top;
+            if (thumbTop < 0) thumbTop = 0;
+            thumbTop = Math.min(thumbTop, height - thumbRef.current.clientHeight)
+            lyricRef.current.style.scrollBehavior = 'auto'
+            lyricRef.current.scrollTop = thumbTop / height * lyricRef.current.scrollHeight;
+            setThumbTop(thumbTop)
+            clearTimer();
+        }
+    }, [])
 
     const thumbHeight = React.useMemo(() => {
         let ratio = 1;
@@ -101,7 +122,13 @@ export default observer(function Lyric() {
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             setLyric(playcontroller.getLyric());
         })();
-    }, [song.id]);
+        document.documentElement.addEventListener('mousemove', handleMouseMove)
+        document.documentElement.addEventListener('mouseup', handleMouseUp)
+        return function () {
+            document.documentElement.removeEventListener('mousemove', handleMouseMove)
+            document.documentElement.removeEventListener('mouseup', handleMouseUp)
+        }
+    }, [song.id, handleMouseMove, handleMouseUp]);
 
     React.useEffect(() => {
         if (autoScroll && isPlay && lyricRef.current) {
@@ -145,13 +172,16 @@ export default observer(function Lyric() {
                         <small>{tlyc}</small>
                     </p>)
                 })}
+                {/* 模拟滚动条实现 */}
                 <div className={styles['scrollbar-track']}>
                     <span
                         ref={thumbRef}
-                        style={{ height: `${thumbHeight}px`, top: `${thumbTop}px` }}
-                        onMouseUp={handleMouseUp}
+                        style={{
+                            height: `${thumbHeight}px`,
+                            top: `${thumbTop}px`,
+                            minHeight: `${thumbHeight && 10}px`
+                        }}
                         onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
                         className={styles['scrollbar-thumb']}>
                     </span>
                 </div>

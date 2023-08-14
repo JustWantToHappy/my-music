@@ -58,8 +58,8 @@ const PlayBar = observer(() => {
         }
     }, [isPlay, playMusic]);
 
-    const handleClik = function (e: MouseEvent) {
-        playlist.isShow = false;
+    const handleClick = function (e: MouseEvent) {
+        //playlist.isShow = false;
         playcontroller.showVoice(false);
     }
 
@@ -72,13 +72,13 @@ const PlayBar = observer(() => {
     React.useEffect(() => {
         const audio = playBar.current;
         playcontroller.init(playBar)
-        window.addEventListener("click", handleClik);
+        window.addEventListener("click", handleClick);
         audio?.addEventListener("canplaythrough", playMusic);
         audio?.addEventListener("timeupdate", changePlayTime);
         audio?.addEventListener("ended", endMusic);
         document.addEventListener('mouseleave', handleMouseLeaveDocument)
         return function () {
-            window.removeEventListener("click", handleClik);
+            window.removeEventListener("click", handleClick);
             audio?.removeEventListener("canplaythrough", playMusic);
             audio?.removeEventListener("timeupdate", changePlayTime);
             audio?.removeEventListener("ended", endMusic);
