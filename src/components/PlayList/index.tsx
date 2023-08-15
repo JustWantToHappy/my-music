@@ -8,10 +8,12 @@ export interface Props {
 }
 
 const PlayList: React.FC<Props> = (props) => {
+    const playListContainerRef = React.useRef<HTMLDivElement>(null);
+
     return (
         <div
-            className={styles.playlist}
-            onClick={e => e.stopPropagation()} >
+            ref={playListContainerRef}
+            className={styles.playlist} >
             <PlayContent />
             <Lyric {...props} />
         </div>

@@ -10,7 +10,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    transition: all 1s linear;
+    transition: all 300ms linear;
 }
 
 ul {
@@ -146,11 +146,11 @@ ul {
 .play-sound-container {
     position: absolute;
     width: 36px;
-    height: 18vh;
+    height: 100px;
     z-index: 22;
     background-color: var(--mc-bg-color);
     opacity: 0.7;
-    top: -18vh;
+    top: -100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -163,4 +163,25 @@ ul {
 .play-lock {
     cursor: pointer;
     position: absolute;
+    background-color: #252933;
+    right: 0;
+    top: -20px;
+    width: 80px;
+    height: 40px;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    &::after {
+        content: "";
+        position: absolute;
+        height: 50%;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        background-color: #252933;
+        border-top: 1px solid #eee;
+    }
 }

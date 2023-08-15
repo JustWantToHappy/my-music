@@ -51,6 +51,12 @@ const PlayBar = observer(() => {
         }
     }
 
+    // 当播放新的歌曲的时候调用
+    React.useEffect(() => {
+        playBar.current!.currentTime = 0;
+        playMusic();
+    }, [song, playMusic]);
+
     React.useEffect(() => {
         if (isPlay) {
             playMusic();
@@ -100,7 +106,7 @@ const PlayBar = observer(() => {
         <div
             ref={playBarContainer}
             className={styles.playbar}
-            style={!showBar ? { bottom: '-100%' } : { bottom: '0' }}>
+            style={!showBar ? { bottom: '-3.5rem' } : { bottom: '0' }}>
             {isShow && <PlayList container={playBarContainer.current} />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title='收起' >
@@ -151,7 +157,15 @@ const PlayBar = observer(() => {
                     <span>&nbsp;{playlist.size}</span>
                 </div>
             </div>
-            <div className={styles['play-lock']}></div>
+            <div
+                onMouseEnter={() => playcontroller.expend()}
+                className={styles['play-lock']}>
+                <img
+                    style={{ height: '50%' }}
+                    src={require('../../assets/img/unlock.png')}
+                    title='上锁'
+                    alt='上锁' />
+            </div>
         </div>
     </>
 });

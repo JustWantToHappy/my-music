@@ -76,17 +76,6 @@ export default observer(function Lyric({ container }: Props) {
         userDragScrollBarThumbRef.current = true
     };
 
-    const handleMouseUp = React.useCallback((event: MouseEvent) => {
-        event.stopPropagation()
-        if (userDragScrollBarThumbRef.current && thumbRef.current && lyricRef.current) {
-            event.preventDefault()
-            userDragScrollBarThumbRef.current = false
-            thumbRef.current.style.transition = 'top ease 300ms'
-            lyricRef.current.style.scrollBehavior = 'smooth'
-            recoverAutoScroll()
-        }
-    }, [])
-
     const handleMouseMove = React.useCallback((event: MouseEvent) => {
         if (userDragScrollBarThumbRef.current && lyricRef.current && thumbRef.current) {
             event.preventDefault()
@@ -109,14 +98,15 @@ export default observer(function Lyric({ container }: Props) {
     }, [lyric])
 
 
-    const handleDocumentMouseUp = function (e: MouseEvent) {
-        if (!userDragScrollBarThumbRef.current) {
-            playcontroller.showVoice(false);
-            playlist.isShow = false;
-        } else {
-            userDragScrollBarThumbRef.current = false;
+    const handleDocumentMouseUp = React.useCallback((event: MouseEvent) => {
+        if (userDragScrollBarThumbRef.current && thumbRef.current && lyricRef.current) {
+            userDragScrollBarThumbRef.current = false
+            thumbRef.current.style.transition = 'top ease 300ms'
+            lyricRef.current.style.scrollBehavior = 'smooth'
+            recoverAutoScroll()
         }
-    }
+        playcontroller.showVoice(false)
+    }, [])
 
     React.useMemo(() => {
         const lyricEle = lyricRef.current;
@@ -134,15 +124,14 @@ export default observer(function Lyric({ container }: Props) {
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             setLyric(playcontroller.getLyric());
         })();
-        container?.addEventListener('mouseup', handleMouseUp)
+
         document.documentElement.addEventListener("mouseup", handleDocumentMouseUp);
-        document.documentElement.addEventListener('mousemove', handleMouseMove)
+        document.body.addEventListener('mousemove', handleMouseMove)
         return function () {
-            container?.removeEventListener('mouseup', handleMouseUp)
             document.documentElement.removeEventListener('mousemove', handleMouseMove)
-            document.documentElement.removeEventListener('mouseup', handleDocumentMouseUp)
+            document.body.removeEventListener('mouseup', handleDocumentMouseUp)
         }
-    }, [song.id, handleMouseMove, handleMouseUp, container]);
+    }, [song.id, handleMouseMove, container, handleDocumentMouseUp]);
 
     React.useEffect(() => {
         if (autoScroll && isPlay && lyricRef.current) {
