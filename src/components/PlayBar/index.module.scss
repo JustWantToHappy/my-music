@@ -2,14 +2,15 @@
     position: fixed;
     z-index: 21;
     width: 100%;
-    min-width: 100px;
+    height: 3.5rem;
     background-color: #252933;
     color: aliceblue;
     display: flex;
     align-items: center;
     bottom: 0;
     left: 0;
-    transition: all 1s ease-in-out;
+    right: 0;
+    transition: all 1s linear;
 }
 
 ul {
@@ -32,12 +33,7 @@ ul {
 }
 
 .playbar>div>img {
-    width: 47px;
-    border-radius: 5%;
-}
-
-.playbar-move>div>img {
-    width: 47px;
+    height: 3rem;
     border-radius: 5%;
 }
 
@@ -162,4 +158,9 @@ ul {
 
 .play-sound-bar {
     height: 70%;
+}
+
+.play-lock {
+    cursor: pointer;
+    position: absolute;
 }

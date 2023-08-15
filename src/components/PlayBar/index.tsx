@@ -20,13 +20,13 @@ import playcontroller from "../../mobx/playcontroller";
 import PlayListIcon from "../../assets/logo/playlist.svg";
 
 const PlayBar = observer(() => {
-    const playBar = React.useRef<HTMLAudioElement>(null);
     const { song, isShow } = playlist;
+    const playBar = React.useRef<HTMLAudioElement>(null);
+    const playBarContainer = React.useRef<HTMLDivElement>(null);
     const { time, voice, showSloud, collect, showBar, isPlay } = playcontroller;
     const url = `https://music.163.com/song/media/outer/url?id=${song.id}`;
-
     const playMusic = React.useCallback(function () {
-        if (playBar.current) {
+        if (playBar.current && isPlay) {
             const promise = playBar.current.play();
             promise.then(() => {
                 playcontroller.play();
@@ -34,7 +34,7 @@ const PlayBar = observer(() => {
                 playcontroller.pause();
             })
         }
-    }, [])
+    }, [isPlay])
 
     const changePlayTime = function () {
         playcontroller.setTime(playBar.current!.currentTime * 1000);
@@ -45,24 +45,6 @@ const PlayBar = observer(() => {
         playlist.playNextSong();
     };
 
-    // 当播放新的歌曲的时候调用
-    React.useEffect(() => {
-        playBar.current!.currentTime = 0;
-        playMusic();
-    }, [song, playMusic]);
-
-    //当点击播放按钮时调用
-    React.useEffect(() => {
-        if (isPlay) {
-            playMusic();
-        }
-    }, [isPlay, playMusic]);
-
-    const handleClick = function (e: MouseEvent) {
-        //playlist.isShow = false;
-        playcontroller.showVoice(false);
-    }
-
     const handleMouseLeaveDocument = function (e: Event) {
         if (!playcontroller.showBar) {
             playcontroller.expend();
@@ -70,15 +52,19 @@ const PlayBar = observer(() => {
     }
 
     React.useEffect(() => {
+        if (isPlay) {
+            playMusic();
+        }
+    }, [isPlay, playMusic]);
+
+    React.useEffect(() => {
         const audio = playBar.current;
         playcontroller.init(playBar)
-        window.addEventListener("click", handleClick);
         audio?.addEventListener("canplaythrough", playMusic);
         audio?.addEventListener("timeupdate", changePlayTime);
         audio?.addEventListener("ended", endMusic);
         document.addEventListener('mouseleave', handleMouseLeaveDocument)
         return function () {
-            window.removeEventListener("click", handleClick);
             audio?.removeEventListener("canplaythrough", playMusic);
             audio?.removeEventListener("timeupdate", changePlayTime);
             audio?.removeEventListener("ended", endMusic);
@@ -112,10 +98,10 @@ const PlayBar = observer(() => {
         <audio ref={playBar} src={url} preload="auto" />
         {collect && <CollectModal close={() => playcontroller.showCollect()} songId={song.id} />}
         <div
+            ref={playBarContainer}
             className={styles.playbar}
-            style={!showBar ? { bottom: '-100%' } : {}}
-            onClick={e => e.stopPropagation()}>
-            {isShow && <PlayList />}
+            style={!showBar ? { bottom: '-100%' } : { bottom: '0' }}>
+            {isShow && <PlayList container={playBarContainer.current} />}
             <div style={{ flex: "1" }} className={styles["hidden-indicate"]}>
                 <Tooltip placement="right" title='收起' >
                     <DownOutlined onClick={() => playcontroller.shrink()} />
@@ -165,6 +151,7 @@ const PlayBar = observer(() => {
                     <span>&nbsp;{playlist.size}</span>
                 </div>
             </div>
+            <div className={styles['play-lock']}></div>
         </div>
     </>
 });

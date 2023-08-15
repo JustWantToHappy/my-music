@@ -1,12 +1,13 @@
 import React from 'react'
+import type { Props } from '../index'
+import { observer } from "mobx-react";
 import styles from "../index.module.scss";
 import playlist from '../../../mobx/playlist';
 import { getLyricBySongId } from "../../../api/song"
-import { observer } from "mobx-react";
 import playcontroller from '../../../mobx/playcontroller';
 import { CloseCircleOutlined } from "@ant-design/icons";
 
-export default observer(function Lyric() {
+export default observer(function Lyric({ container }: Props) {
     const itemHeight = 60;
     const paddingTopHeight = 40;
     const { song } = playlist;
@@ -71,12 +72,13 @@ export default observer(function Lyric() {
     }
 
     const handleMouseDown = (event: React.MouseEvent) => {
-        event.stopPropagation()
+        event.preventDefault()
         userDragScrollBarThumbRef.current = true
     };
 
-    const handleMouseUp = React.useCallback((event: Event) => {
-        if (userDragScrollBarThumbRef.current && thumbRef.current&&lyricRef.current) {
+    const handleMouseUp = React.useCallback((event: MouseEvent) => {
+        event.stopPropagation()
+        if (userDragScrollBarThumbRef.current && thumbRef.current && lyricRef.current) {
             event.preventDefault()
             userDragScrollBarThumbRef.current = false
             thumbRef.current.style.transition = 'top ease 300ms'
@@ -86,8 +88,8 @@ export default observer(function Lyric() {
     }, [])
 
     const handleMouseMove = React.useCallback((event: MouseEvent) => {
-        event.preventDefault()
         if (userDragScrollBarThumbRef.current && lyricRef.current && thumbRef.current) {
+            event.preventDefault()
             const { top, height } = lyricRef.current.getBoundingClientRect();
             thumbRef.current.style.transition = 'none'
             let thumbTop = event.clientY - top;
@@ -106,6 +108,16 @@ export default observer(function Lyric() {
         return ratio >= 1 ? 0 : ratio * lyricRef.current!.clientHeight;
     }, [lyric])
 
+
+    const handleDocumentMouseUp = function (e: MouseEvent) {
+        if (!userDragScrollBarThumbRef.current) {
+            playcontroller.showVoice(false);
+            playlist.isShow = false;
+        } else {
+            userDragScrollBarThumbRef.current = false;
+        }
+    }
+
     React.useMemo(() => {
         const lyricEle = lyricRef.current;
         const thumbEle = thumbRef.current;
@@ -122,13 +134,15 @@ export default observer(function Lyric() {
             playcontroller.handleLyric(res.lrc.lyric, res.tlyric ? res.tlyric.lyric : "");
             setLyric(playcontroller.getLyric());
         })();
+        container?.addEventListener('mouseup', handleMouseUp)
+        document.documentElement.addEventListener("mouseup", handleDocumentMouseUp);
         document.documentElement.addEventListener('mousemove', handleMouseMove)
-        document.documentElement.addEventListener('mouseup', handleMouseUp)
         return function () {
+            container?.removeEventListener('mouseup', handleMouseUp)
             document.documentElement.removeEventListener('mousemove', handleMouseMove)
-            document.documentElement.removeEventListener('mouseup', handleMouseUp)
+            document.documentElement.removeEventListener('mouseup', handleDocumentMouseUp)
         }
-    }, [song.id, handleMouseMove, handleMouseUp]);
+    }, [song.id, handleMouseMove, handleMouseUp, container]);
 
     React.useEffect(() => {
         if (autoScroll && isPlay && lyricRef.current) {
