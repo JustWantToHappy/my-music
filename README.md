@@ -26,18 +26,13 @@ yarn start(yarn run start)
 4. 文字展开收起
 5. 多行文字省略
 ## 项目部分截图
-**首页**
-![首页](src/assets//screenshot//Snipaste_2022-09-12_22-16-01.png)
-**登录**
-![登录](src/assets//screenshot//Snipaste_2022-09-12_22-23-34.png)
-**歌词**
-![歌词](src/assets//screenshot//Snipaste_2023-03-08_12-07-49.png)
-**歌单分类**
-![歌单分类](src/assets//screenshot/Snipaste_2022-09-12_22-17-30.png)
-**排行榜**
-![排行榜](src/assets//screenshot/Snipaste_2022-09-12_22-16-41.png)
-**我的音乐**
-![我的音乐](src/assets/screenshot/Snipaste_2022-09-12_22-17-51.png)
+![首页](src/assets/screenshot/home.png)
+![登录](src/assets/screenshot/login.png)
+![歌词](src/assets/screenshot/lyric.png)
+![歌单分类](src/assets/screenshot/lyricTypes.png)
+![排行榜](src/assets/screenshot/rank.png)
+![我的歌单](src/assets/screenshot/myPlaylist.png)
+![演示](src/assets/screenshot/demo.gif)
 
 
 

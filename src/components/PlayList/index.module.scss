@@ -108,6 +108,7 @@ $scroll-width: 6px; //滚动条宽度
     justify-content: space-around;
     align-items: center;
     cursor: pointer;
+    transition: background-color ease 300ms;
 
     &:hover {
         background-color: rgba(0, 0, 0, 0.7);

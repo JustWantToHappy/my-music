@@ -8,14 +8,13 @@ import {
 import styles from "../index.module.scss";
 import playlist from '../../../mobx/playlist';
 import { transTime } from '../../../utils/help';
-import { throttle } from '../../../utils/throttle_debounce'
 import playcontroller from '../../../mobx/playcontroller';
 
 //播放列表组件(长列表)
 export default function PlayContent() {
     const itemHeight = 32;
     const clientHeight = 265;
-    const extraRenderItemCount = 20;
+    const extraRenderItemCount = 5;
     const { size, songs, song: playSong } = playlist;
     const Ref = React.useRef<HTMLDivElement>(null);
     const [scrollTop, setScrollTop] = React.useState(0)
@@ -29,13 +28,12 @@ export default function PlayContent() {
         playcontroller.play();
     }
 
-    const pageScrolling = throttle((event: React.UIEvent<HTMLDivElement>) => {
-        window.requestAnimationFrame(() => {
-            flushSync(() => {
-                setScrollTop((event.target as HTMLDivElement).scrollTop)
-            })
+    const pageScrolling = (event: React.UIEvent<HTMLDivElement>) => {
+        flushSync(() => {
+            const currentScrollTop = (event.target as HTMLDivElement).scrollTop
+            if (currentScrollTop !== scrollTop) setScrollTop(currentScrollTop)
         })
-    }, 40)
+    }
 
     const start = React.useMemo(() => {
         return Math.max(Math.floor(scrollTop / itemHeight) - extraRenderItemCount, 0)
@@ -71,8 +69,8 @@ export default function PlayContent() {
                         {songs.slice(start, end).map(song => {
                             return (
                                 <li
-                                key={song.id}
-                                className={styles.song}
+                                    key={song.id}
+                                    className={styles.song}
                                     style={song.id === playSong.id ?
                                         { background: "rgba(0,0,0,0.8)", height: `${itemHeight}px` } :
                                         { height: `${itemHeight}px` }}

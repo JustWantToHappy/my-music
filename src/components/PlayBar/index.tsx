@@ -53,7 +53,6 @@ const PlayBar = observer(() => {
 
     // 当播放新的歌曲的时候调用
     React.useEffect(() => {
-        playBar.current!.currentTime = 0;
         playMusic();
     }, [song, playMusic]);
 
@@ -157,7 +156,7 @@ const PlayBar = observer(() => {
                     <span>&nbsp;{playlist.size}</span>
                 </div>
             </div>
-            <div
+            {/*<div
                 onMouseEnter={() => playcontroller.expend()}
                 className={styles['play-lock']}>
                 <img
@@ -165,7 +164,7 @@ const PlayBar = observer(() => {
                     src={require('../../assets/img/unlock.png')}
                     title='上锁'
                     alt='上锁' />
-            </div>
+            </div>*/}
         </div>
     </>
 });
