@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
+  "author": "JustWantToHappy",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@testing-library/jest-dom": "^5.16.4",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@types/pubsub-js": "^1.8.3",
+    "prettier": "^3.0.3",
     "sass": "^1.54.4",
     "styled-components": "^5.3.5"
   }

@@ -1,44 +1,44 @@
 @mixin container-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 遮罩层 */
 .mask {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 30;
-    background: rgba(0, 0, 0, 0.4);
-    @include container-center();
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 30;
+  background: rgba(0, 0, 0, 0.4);
+  @include container-center();
 }
 
 .login {
-    background-color: white;
-    border-radius: .5rem;
+  background-color: white;
+  border-radius: 0.5rem;
 
-    header {
-        padding: 1rem;
-        border-top-left-radius: .5rem;
-        border-top-right-radius: .5rem;
-        background-color: var(--mc-bg-color);
-        color: white;
-        font-weight: bold;
+  header {
+    padding: 1rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    background-color: var(--mc-bg-color);
+    color: white;
+    font-weight: bold;
 
-        &>span:last-of-type {
-            float: right;
-        }
-
-        &>span:last-of-type:hover {
-            color: var(--mc-primary-color);
-        }
+    & > span:last-of-type {
+      float: right;
     }
 
-    main {
-        padding: 2rem 1rem;
-        text-align: center;
+    & > span:last-of-type:hover {
+      color: var(--mc-primary-color);
     }
+  }
+
+  main {
+    padding: 2rem 1rem;
+    text-align: center;
+  }
 }

@@ -1,52 +1,50 @@
 .my-music {
-    width: 80vw;
-    height: 87vh;
-    margin: 0 auto;
-    display: flex;
+  width: 80vw;
+  height: 87vh;
+  margin: 0 auto;
+  display: flex;
 }
 
 .navigate {
-    flex: 1;
-    overflow: auto;
-    border-left: 1px solid #d4d4d4;
+  flex: 1;
+  overflow: auto;
+  border-left: 1px solid #d4d4d4;
 
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
 
-    &::mb {
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.1);
-    }
+  &::mb {
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
+  }
 }
 
 .navigate::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .content {
-    flex: 3;
-    height: 87vh;
-    border: 1px solid #d4d4d4;
-    border-bottom: 1px solid transparent;
-    overflow: auto;
-    padding-bottom: 8vh;
+  flex: 3;
+  height: 87vh;
+  border: 1px solid #d4d4d4;
+  border-bottom: 1px solid transparent;
+  overflow: auto;
+  padding-bottom: 8vh;
 }
 
 //滚动条宽度
 .content::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
-
-
 
 //滚动条滑块
 .content::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 //当切换窗口时滚动条滑块样式
 .content::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1);
 }

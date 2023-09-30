@@ -1,116 +1,116 @@
 .my-recommend {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 
-    >h3 {
-        font-weight: 700;
-    }
+  > h3 {
+    font-weight: 700;
+  }
 
-    >span {
-        height: 2px;
-        background-color: #C10D0C;
-    }
+  > span {
+    height: 2px;
+    background-color: #c10d0c;
+  }
 
-    >div {
-        display: grid;
-        margin-top: 2vh;
-        grid-template-columns: repeat(5, 1fr);
-        grid-row-gap: 20px;
-        grid-template-rows: repeat(2, 1fr);
-        grid-column-gap: 40px;
-    }
+  > div {
+    display: grid;
+    margin-top: 2vh;
+    grid-template-columns: repeat(5, 1fr);
+    grid-row-gap: 20px;
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 40px;
+  }
 }
 
 //推荐歌单样式
 .content {
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    background-size: 100% 100%;
+    min-width: 150px;
+    min-height: 150px;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+    cursor: pointer;
+    background-size: cover;
 
-    >div {
-        background-size: 100% 100%;
-        min-width: 150px;
-        min-height: 150px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
+    &:hover {
+      transform: scale(1.05);
+      transition: transform 100ms linear;
+    }
+
+    > figcaption {
+      color: #fff;
+      height: 30px;
+      background: var(--mc-bg-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      opacity: 0.7;
+      cursor: auto;
+
+      > :last-child {
         cursor: pointer;
-        background-size: cover;
+        opacity: 0.7;
 
         &:hover {
-            transform: scale(1.05);
-            transition: transform 100ms linear;
+          opacity: 1;
         }
-
-        >figcaption {
-            color: #fff;
-            height: 30px;
-            background: var(--mc-bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            opacity: 0.7;
-            cursor: auto;
-
-            >:last-child {
-                cursor: pointer;
-                opacity: 0.7;
-
-                &:hover {
-                    opacity: 1;
-                }
-            }
-        }
+      }
     }
+  }
 
-    >span {
-        &:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
+  > span {
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
     }
+  }
 }
 
 //推荐歌曲样式
 .songs-recommend {
+  display: flex;
+  flex-direction: column;
+
+  > div {
+    border-radius: 3px;
+    border: 1px solid #d4d4d4;
     display: flex;
     flex-direction: column;
+    height: 150px;
+    width: 150px;
 
-    >div {
-        border-radius: 3px;
-        border: 1px solid #d4d4d4;
-        display: flex;
-        flex-direction: column;
-        height: 150px;
-        width: 150px;
-
-        &:hover {
-            cursor: pointer;
-        }
-
-        >:first-child {
-            flex: 1;
-            background: #C10D0C;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        >:last-child {
-            flex: 3;
-            background: #fff;
-            font-size: 40px;
-            font-weight: 700;
-            text-align: center;
-        }
+    &:hover {
+      cursor: pointer;
     }
 
-    >footer {
-        cursor: pointer;
-        text-align: center;
-
-        &:hover {
-            text-decoration: underline;
-        }
+    > :first-child {
+      flex: 1;
+      background: #c10d0c;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
     }
+
+    > :last-child {
+      flex: 3;
+      background: #fff;
+      font-size: 40px;
+      font-weight: 700;
+      text-align: center;
+    }
+  }
+
+  > footer {
+    cursor: pointer;
+    text-align: center;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

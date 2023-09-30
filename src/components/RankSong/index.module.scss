@@ -1,33 +1,33 @@
-.table{
-    margin-bottom:8vh;
+.table {
+  margin-bottom: 8vh;
 }
 .title {
-    >:first-child {
-        margin-right: 2vw;
-        cursor: pointer;
-        opacity: 0.5;
-        font-size: 1.2em;
+  > :first-child {
+    margin-right: 2vw;
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 1.2em;
 
-        &:hover {
-            opacity: 1;
-        }
+    &:hover {
+      opacity: 1;
     }
+  }
 }
 
 .singer {
-    width: 20vw;
-    overflow: hidden;
-    height: 100%;
+  width: 20vw;
+  overflow: hidden;
+  height: 100%;
 }
 
 .artist {
-    >span {
-        cursor: pointer;
-        overflow: hidden;
-        width: 20vw;
+  > span {
+    cursor: pointer;
+    overflow: hidden;
+    width: 20vw;
 
-        &:hover {
-            text-decoration: underline;
-        }
+    &:hover {
+      text-decoration: underline;
     }
+  }
 }

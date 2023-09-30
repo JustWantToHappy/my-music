@@ -1,187 +1,182 @@
 .playbar {
-    position: fixed;
-    z-index: 21;
-    width: 100%;
-    height: 3.5rem;
-    background-color: #252933;
-    color: aliceblue;
-    display: flex;
-    align-items: center;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    transition: all 300ms linear;
+  position: fixed;
+  z-index: 21;
+  width: 100%;
+  height: 3.5rem;
+  background-color: #252933;
+  color: aliceblue;
+  display: flex;
+  align-items: center;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: all 300ms linear;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 .hidden-indicate {
-    display: flex;
-    cursor: pointer;
-    height: 100%;
-    justify-content: space-around;
-    align-items: center;
+  display: flex;
+  cursor: pointer;
+  height: 100%;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .coverImg {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.playbar>div>img {
-    height: 3rem;
-    border-radius: 5%;
+.playbar > div > img {
+  height: 3rem;
+  border-radius: 5%;
 }
 
 .playmusic {
-    flex: 1;
-    display: flex;
-    height: 100%;
-    align-items: center;
-    font-size: 30px;
-    justify-content: space-around;
+  flex: 1;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  font-size: 30px;
+  justify-content: space-around;
 }
 
 /*  几个播放按钮的样式 */
 .playmusic-div1 {
-    opacity: 0.4;
-    margin: 10px;
-    cursor: pointer;
+  opacity: 0.4;
+  margin: 10px;
+  cursor: pointer;
 }
 
 .playmusic-div1:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .playmusic-div2 {
-    opacity: 0.4;
+  opacity: 0.4;
 }
 
 .playmusic-div2:hover {
-    opacity: 0.9;
-
+  opacity: 0.9;
 }
 
 .playmusic-div3 {
-    margin: 10px;
-    opacity: 0.4;
-    cursor: pointer;
+  margin: 10px;
+  opacity: 0.4;
+  cursor: pointer;
 }
 
 .playmusic-div3:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
-
 
 .music-bar {
-    flex: 3;
+  flex: 3;
 
-    &>li:first-of-type {
-        height: 80%;
-        display: flex;
-        align-items: center;
-        width: 100%;
-
-        &>:first-child {
-            flex: 3;
-        }
-
-        &>:last-child {
-            flex: 1;
-        }
-
-    }
-
-    &>li:nth-of-type(2) {
-        line-height: 50%;
-        height: 30%;
-        font-size: 0.1rem;
-    }
-}
-
-
-
-.play-method {
-    flex: 2;
+  & > li:first-of-type {
+    height: 80%;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    width: 100%;
 
-    img {
-        width: 1rem;
-        height: 1rem;
-        cursor: pointer;
+    & > :first-child {
+      flex: 3;
     }
 
-    >:last-child {
-        opacity: 0.8;
-
-        &:hover {
-            opacity: 1;
-            cursor: pointer;
-        }
+    & > :last-child {
+      flex: 1;
     }
+  }
+
+  & > li:nth-of-type(2) {
+    line-height: 50%;
+    height: 30%;
+    font-size: 0.1rem;
+  }
+}
+
+.play-method {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+
+  img {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+  }
+
+  > :last-child {
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
 }
 
 .play-sound {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .play-sound-btn {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .play-sound-btn:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 /* 音量调整条 */
 .play-sound-container {
-    position: absolute;
-    width: 36px;
-    height: 100px;
-    z-index: 22;
-    background-color: var(--mc-bg-color);
-    opacity: 0.7;
-    top: -100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  width: 36px;
+  height: 100px;
+  z-index: 22;
+  background-color: var(--mc-bg-color);
+  opacity: 0.7;
+  top: -100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .play-sound-bar {
-    height: 70%;
+  height: 70%;
 }
 
 .play-lock {
-    cursor: pointer;
-    position: absolute;
-    background-color: #252933;
-    right: 0;
-    top: -20px;
-    width: 80px;
-    height: 40px;
-    border-radius: 20px;
-    overflow: hidden;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  background-color: #252933;
+  right: 0;
+  top: -20px;
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 
-    &::after {
-        content: "";
-        position: absolute;
-        height: 50%;
-        width: 100%;
-        left: 0;
-        bottom: 0;
-        background-color: #252933;
-        border-top: 1px solid #eee;
-    }
+  &::after {
+    content: '';
+    position: absolute;
+    height: 50%;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    background-color: #252933;
+    border-top: 1px solid #eee;
+  }
 }

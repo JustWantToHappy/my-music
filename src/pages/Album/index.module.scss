@@ -1,76 +1,76 @@
 .album {
-    width: 70vw;
-    margin: 0 auto;
-    border-left: 1px solid #d4d4d4;
-    border-right: 1px solid #d4d4d4;
-    padding: 10vh 4vw;
+  width: 70vw;
+  margin: 0 auto;
+  border-left: 1px solid #d4d4d4;
+  border-right: 1px solid #d4d4d4;
+  padding: 10vh 4vw;
 
-    >header {
-        display: grid;
-        grid-template-columns: 1fr 3fr;
-        grid-template-rows: calc(59vw/4);
-        grid-column-gap: 3vw;
+  > header {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: calc(59vw / 4);
+    grid-column-gap: 3vw;
 
-        >img {
-            width: 100%;
-            height: 100%;
-        }
-
-        figcaption {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-
-            >label:first-child {
-                display: flex;
-                align-items: center;
-            }
-
-            >label:nth-child(2) {
-                cursor: text;
-
-                span {
-                    cursor: pointer;
-
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-            }
-
-            border:1px solid #d4d4d4;
-            padding-left:1vw;
-        }
+    > img {
+      width: 100%;
+      height: 100%;
     }
 
-    >footer {
-        display: table-cell;
-        vertical-align: middle;
-        height: 8vh;
-        h2{
-            display: inline;
-        }
+    figcaption {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      > label:first-child {
+        display: flex;
+        align-items: center;
+      }
+
+      > label:nth-child(2) {
+        cursor: text;
+
         span {
-            margin-left: 2vw;
-        }
-    }
+          cursor: pointer;
 
-    >hr {
-        height: 2px;
-        background-color: #F53F3F;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      border: 1px solid #d4d4d4;
+      padding-left: 1vw;
     }
+  }
+
+  > footer {
+    display: table-cell;
+    vertical-align: middle;
+    height: 8vh;
+    h2 {
+      display: inline;
+    }
+    span {
+      margin-left: 2vw;
+    }
+  }
+
+  > hr {
+    height: 2px;
+    background-color: #f53f3f;
+  }
 }
 
 .desc {
-    margin-top: 3vh;
+  margin-top: 3vh;
 
-    h4 {
-        font-weight: 700;
-    }
+  h4 {
+    font-weight: 700;
+  }
 
-    >p {
-        text-indent: 2em;
-        //文本两端对齐
-        text-align: justify;
-    }
+  > p {
+    text-indent: 2em;
+    //文本两端对齐
+    text-align: justify;
+  }
 }
