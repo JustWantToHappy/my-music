@@ -33,7 +33,7 @@ const Song: React.FC<Iprops> = observer(function (props) {
   const playMusic = (song: Music.song) => {
     runInAction(() => {
       playlist.song = song
-      let success = playlist.add(song)
+      const success = playlist.appendLeft(song)
       if (success) {
         playcontroller.play()
         playcontroller.expend()

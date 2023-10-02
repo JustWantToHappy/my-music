@@ -163,7 +163,7 @@ const EditSongList = () => {
         <div>
           <Form>
             <Form.Item name="imgFile">
-              <ImgCrop rotate>
+              <ImgCrop >
                 <Upload
                   listType="picture-card"
                   fileList={fileList}

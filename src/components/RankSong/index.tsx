@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Table } from 'antd'
-import { PlayCircleOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
+import { useState } from 'react'
+import playlist from '../../mobx/playlist'
+import { useNavigate } from 'react-router-dom'
+import { PlayCircleOutlined } from '@ant-design/icons'
 import styles from './index.module.scss'
 import { musicIsUse } from '../../api/songlist'
-import { addLocalStorage } from '../../utils/authorization'
-import PubSub from 'pubsub-js'
 export default function RankSong(props: {
   songs: Array<Music.song> | undefined
 }) {
@@ -23,15 +22,12 @@ export default function RankSong(props: {
   //点击播放音乐
   const playMusic = async (currentSong: Music.song) => {
     setSong(currentSong)
-    let { message } = await musicIsUse(currentSong.id)
+    const { message } = await musicIsUse(currentSong.id)
     if (message === 'ok') {
-      let items = [
-        { key: 'isPlay', value: 'true' },
-        { key: 'song', value: JSON.stringify(currentSong) },
-        { key: 'songs', value: JSON.stringify(songs) },
-      ]
-      addLocalStorage(items)
-      PubSub.publish('play', true)
+      const canPlay = playlist.appendLeft(currentSong)
+      if (canPlay) {
+        playlist.song = currentSong
+      }
     } else {
       message.info(
         { content: '亲爱的,暂无版权', style: { marginTop: '40vh' } },
@@ -39,7 +35,7 @@ export default function RankSong(props: {
       )
     }
   }
-  useEffect(() => {}, [])
+
   return (
     <div className={styles.table}>
       <Table dataSource={songs} pagination={false}>
@@ -52,7 +48,9 @@ export default function RankSong(props: {
             return (
               <div className={styles.title}>
                 <span
-                  onClick={() => playMusic(currentSong)}
+                  onClick={() => {
+                    playMusic(currentSong)
+                  }}
                   style={
                     song && currentSong.id === song.id
                       ? { opacity: 1, color: '#F53F3F' }

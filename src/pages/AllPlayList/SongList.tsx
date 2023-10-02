@@ -1,35 +1,28 @@
 import { Pagination } from 'antd'
-import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CustomerServiceOutlined, PlayCircleOutlined } from '@ant-design/icons'
 import type { PaginationProps } from 'antd'
-import styles from './styles/songlist.module.scss'
-import { fetchSongLists } from '../../api/recommond'
 import { transPlayCount } from '../../utils'
-import { debounce } from '../../utils/throttle_debounce'
 import { getListSong } from '../../api/songlist'
 import playlist from '../../mobx/playlist'
+import styles from './styles/songlist.module.scss'
+import { fetchSongLists } from '../../api/recommond'
 import playcontroller from '../../mobx/playcontroller'
-export default function SongList(props: { cat: string; total: number }) {
-  const { cat, total } = props
+import { debounce } from '../../utils/throttle_debounce'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { CustomerServiceOutlined, PlayCircleOutlined } from '@ant-design/icons'
+
+export default function SongList(props: { tag: string; total: number }) {
+  const { tag, total } = props
   const navigate = useNavigate()
-  //当前标签
-  const [tag, setTag] = useState(cat)
-  //每页显示的歌单数量
   const [pageSize] = useState(35)
-  //当前页
   const [current, setCurrent] = useState(1)
-  //存放歌单
-  const [songLists, setSongLists] = useState<Array<Music.list>>([])
-  //当前容器
   const myRef = useRef<HTMLDivElement>(null)
+  const [songLists, setSongLists] = useState<Array<Music.list>>([])
+
   //实现懒加载
   const loadImage = () => {
-    //获取所有图片
     const imgs = document.getElementsByClassName('songlist-image')
-    //获取可视高度
-    const viewHeight =
-      window.innerHeight || document.documentElement.clientHeight
+    const viewHeight = window.innerHeight || document.documentElement.clientHeight
     for (let i = 0; i < imgs.length; i++) {
       let distance = viewHeight - imgs[i].getBoundingClientRect().top
       if (distance >= 0 && imgs[i].getBoundingClientRect().top >= 0) {
@@ -37,17 +30,12 @@ export default function SongList(props: { cat: string; total: number }) {
       }
     }
   }
-  //重新渲染页面
-  if (cat !== tag) {
-    setTag(cat)
-  }
-  //点击不同页码时候触发
   const onChange: PaginationProps['onChange'] = (page) => {
     setCurrent(page)
   }
   //点击播放按钮播放音乐
   const playMusic = (id: number) => {
-    ;(async () => {
+    (async () => {
       const res = await getListSong(id)
       playlist.setPlayList(res.songs)
       playcontroller.play()
@@ -58,12 +46,12 @@ export default function SongList(props: { cat: string; total: number }) {
     navigate(`/playlist/${id}`)
   }
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       //more为true表示还有分页
       try {
         const { playlists, code } = await fetchSongLists(
           'hot',
-          cat,
+          tag,
           pageSize,
           (current - 1) * pageSize,
         )
@@ -74,57 +62,58 @@ export default function SongList(props: { cat: string; total: number }) {
         console.log(e)
       }
     })()
-    loadImage()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [tag, current, cat, pageSize])
-
-  const pageScrolling = useCallback(() => {
-    debounce(loadImage, 300)
-  }, [])
+  }, [tag, current, pageSize])
 
   useEffect(() => {
+    window.scrollTo({ top: 0 })
+    loadImage()
+  }, [songLists])
+
+  useEffect(() => {
+    const pageScrolling = () => {
+      debounce(loadImage, 300)
+    }
+
     window.addEventListener('scroll', pageScrolling)
     return function () {
       window.removeEventListener('scroll', pageScrolling)
     }
-  }, [pageScrolling])
+  }, [])
 
   return (
     <>
       <div className={styles.songlist} ref={myRef}>
-        {songLists &&
-          songLists.map((songlist) => {
-            return (
-              <div key={songlist.id}>
-                <div className={styles.content}>
-                  <img
-                    data-src={songlist.coverImgUrl}
-                    alt="加载中..."
-                    className="songlist-image"
-                    onClick={() => playSongList(songlist.id)}
-                  />
-                  <div>
-                    <span>
-                      <CustomerServiceOutlined />
-                      <span>{transPlayCount(songlist.playCount)}</span>
-                    </span>
-                    <span>
-                      <PlayCircleOutlined
-                        onClick={() => {
-                          playMusic(songlist.id)
-                        }}
-                      />
-                    </span>
-                  </div>
+        {songLists.map((songlist) => {
+          return (
+            <div key={songlist.id}>
+              <div className={styles.content}>
+                <img
+                  data-src={songlist.coverImgUrl}
+                  alt="加载中..."
+                  className="songlist-image"
+                  onClick={() => playSongList(songlist.id)}
+                />
+                <div>
+                  <span>
+                    <CustomerServiceOutlined />
+                    <span>{transPlayCount(songlist.playCount)}</span>
+                  </span>
+                  <span>
+                    <PlayCircleOutlined
+                      onClick={() => {
+                        playMusic(songlist.id)
+                      }}
+                    />
+                  </span>
                 </div>
-                <span onClick={() => playSongList(songlist.id)}>
-                  {songlist.name}
-                </span>
               </div>
-            )
-          })}
+              <span onClick={() => playSongList(songlist.id)}>
+                {songlist.name}
+              </span>
+            </div>
+          )
+        })}
       </div>
-      {/* 分页 */}
       <footer className={styles.footer}>
         <Pagination
           current={current}

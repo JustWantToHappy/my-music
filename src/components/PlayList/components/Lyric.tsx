@@ -125,11 +125,11 @@ export default observer(function Lyric({ container }: Props) {
       lyricRef.current
     ) {
       userDragScrollBarThumbRef.current = false
-      thumbRef.current.style.transition = 'top ease 300ms'
+      thumbRef.current.style.transition = 'top ease 50ms'
       lyricRef.current.style.scrollBehavior = 'smooth'
       recoverAutoScroll()
     }
-    playcontroller.showVoice(false)
+    playcontroller.setShowVoice(false)
   }, [])
 
   React.useMemo(() => {

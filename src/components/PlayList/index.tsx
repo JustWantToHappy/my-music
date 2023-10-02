@@ -18,4 +18,4 @@ const PlayList: React.FC<Props> = (props) => {
   )
 }
 
-export default PlayList
+export default React.memo(PlayList)

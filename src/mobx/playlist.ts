@@ -53,13 +53,29 @@ class PlayList {
       this.playsong = song
     }
   }
+  isFee(song:Music.song): boolean{
+    if (song.fee === 1 || song.fee === 4) {
+      return false
+    }
+    return true
+  }
   /**
-   * @desc 添加歌曲
+   * @desc 添加歌曲到播放队列队尾
    */
-  @action add(song: Music.song): boolean {
+  @action appendLeft(song: Music.song): boolean{
+    if (!this.has(song.id)) {
+      if (!this.isFee(song)) {
+        return false
+      }
+      this.queue.unshift(song)
+    }
+    localStorage.setItem('songs', JSON.stringify(this.queue))
+    return true
+  }
+  @action append(song: Music.song): boolean {
     if (!this.has(song.id)) {
       // 添加歌曲之前判断当前歌曲是否可以播放(需要版权或者vip等)
-      if (song.fee === 1 || song.fee === 4) {
+      if (!this.isFee(song)) {
         return false
       }
       this.queue.push(song)

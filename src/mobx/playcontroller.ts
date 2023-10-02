@@ -40,13 +40,6 @@ class PlayController {
   @computed get time() {
     return this.currentTime
   }
-  /**
-   * @desc 播放暂停按钮切换
-   */
-  @action playPause() {
-    this.audioRef.current.pause()
-    this.isplay = !this.isplay
-  }
   @action play() {
     this.isplay = true
   }
@@ -63,7 +56,7 @@ class PlayController {
   @action changeVolume(num: number) {
     let volume = num * 0.01
     this.volume = volume
-    localStorage.setItem('volume', volume + '')
+    localStorage.setItem('volume', String(volume))
     this.audioRef.current.volume = volume
   }
   @computed get voice() {
@@ -72,12 +65,11 @@ class PlayController {
   @computed get showSloud() {
     return this.showVolume
   }
-  @action showVoice(isshow: boolean = true) {
-    if (!isshow) {
-      this.showVolume = isshow
-      return
-    }
-    this.showVolume = !this.showVolume
+  @action setShowVoice(isshow:boolean) {
+    this.showVolume = isshow
+  }
+  @action showVoiceChange() {
+    this.showVolume=!this.showSloud
   }
   @action showCollect() {
     this.collect = !this.collect

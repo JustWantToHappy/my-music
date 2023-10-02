@@ -25,6 +25,7 @@ const PlayBar = observer(() => {
   const playBarContainer = React.useRef<HTMLDivElement>(null)
   const { time, voice, showSloud, collect, showBar, isPlay } = playcontroller
   const url = `https://music.163.com/song/media/outer/url?id=${song.id}`
+
   const playMusic = React.useCallback(
     function () {
       if (playBar.current && isPlay) {
@@ -40,6 +41,16 @@ const PlayBar = observer(() => {
     },
     [isPlay],
   )
+
+  const play = () => {
+    playcontroller.play()
+    playMusic()
+  }
+
+  const pause = () => {
+    playcontroller.pause()
+    playBar.current?.pause()
+  }
 
   const changePlayTime = function () {
     playcontroller.setTime(playBar.current!.currentTime * 1000)
@@ -61,11 +72,6 @@ const PlayBar = observer(() => {
     playMusic()
   }, [song, playMusic])
 
-  React.useEffect(() => {
-    if (isPlay) {
-      playMusic()
-    }
-  }, [isPlay, playMusic])
 
   React.useEffect(() => {
     const audio = playBar.current
@@ -136,13 +142,13 @@ const PlayBar = observer(() => {
           {!isPlay && (
             <PlayCircleOutlined
               className={styles['playmusic-div2']}
-              onClick={() => playcontroller.playPause()}
+              onClick={play}
             />
           )}
           {isPlay && (
             <PauseCircleOutlined
               className={styles['playmusic-div2']}
-              onClick={() => playcontroller.playPause()}
+              onClick={pause}
             />
           )}
           {/* 播放下一首 */}
@@ -180,10 +186,12 @@ const PlayBar = observer(() => {
         </ul>
         <div className={styles['play-method']}>
           {/* 音量调整 */}
-          <span className={styles['play-sound']}>
+          <div className={styles['play-sound']}>
             <SoundFilled
               className={styles['play-sound-btn']}
-              onClick={() => playcontroller.showVoice()}
+              onClick={() => {
+                playcontroller.setShowVoice(true)
+              }}
             />
             {showSloud && (
               <div className={styles['play-sound-container']}>
@@ -197,7 +205,7 @@ const PlayBar = observer(() => {
                 />
               </div>
             )}
-          </span>
+          </div>
           {/* 播放方式 */}
           <img
             src={playlist.way.icon}

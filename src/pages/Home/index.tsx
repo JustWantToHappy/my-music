@@ -14,7 +14,7 @@ export default function Container() {
   const [hasLogin, setHasLogin] = useState(false)
   //当页面初始化时调用
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       const mvs = await getRecommondmv()
       setArr(mvs.data)
     })()
@@ -43,9 +43,9 @@ export default function Container() {
         </div>
       )}
       {/* 精选歌单*/}
-      {pathname === '/home' && <RecommonList />}
+      {pathname === '/home' && <div style={{ paddingBottom: '3.5rem' }}><RecommonList /></div>}
       {/* 新碟上架*/}
-      {pathname === '/home' && <NewDisc />}
+      {/*{pathname === '/home' && <NewDisc />}*/}
     </>
   )
 }

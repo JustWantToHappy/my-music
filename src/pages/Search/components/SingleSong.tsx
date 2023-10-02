@@ -39,6 +39,7 @@ export default function SingleSong(props: { keywords: string | null }) {
   useEffect(() => {
     getData(current)
   }, [search])
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -51,7 +52,6 @@ export default function SingleSong(props: { keywords: string | null }) {
   const playMusic = (song: Music.song, e: React.MouseEvent) => {
     setId(song.id)
     let items = [
-      { key: 'isPlay', value: 'true' },
       { key: 'song', value: JSON.stringify(song) },
       { key: 'songs', value: JSON.stringify([song]) },
     ]

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import SongList from './SongList'
 import { Button, Tag } from 'antd'
 import {
   DownOutlined,
@@ -7,25 +7,22 @@ import {
   CoffeeOutlined,
   SmileOutlined,
   ThunderboltOutlined,
-  TagsFilled,
 } from '@ant-design/icons'
+import { useState, useEffect } from 'react'
 import styles from './styles/index.module.scss'
 import { songlistCategory } from '../../api/songlist'
-import SongList from './SongList'
 import { debounce } from '../../utils/throttle_debounce'
+
 export default function AllPlayList() {
   const [tags, setTags] = useState<Array<Music.tag>>()
   const [title, setTitle] = useState('全部')
   const [showTags, setShowTags] = useState(false)
-  //表示当前标签下的歌单总数
   const [count, setCount] = useState(0)
-  //表示所有歌单
   const [all, setAll] = useState<Music.tag>()
-  //表示总分类类别
   const [category, setCategory] = useState<{ [key: number]: string }>()
-  //表示当前
+
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       const res = await songlistCategory()
       //more字段为true表示还有分页,categories表示分类的类别有哪些
       let { code, all, categories, sub } = res
@@ -38,6 +35,7 @@ export default function AllPlayList() {
       }
     })()
   }, [])
+
   useEffect(() => {
     const hiddenCategory = () => {
       debounce(() => {
@@ -49,6 +47,7 @@ export default function AllPlayList() {
       document.documentElement.removeEventListener('click', hiddenCategory)
     }
   }, [])
+
   return (
     <div className={styles.playlist}>
       <header>
@@ -84,12 +83,11 @@ export default function AllPlayList() {
       )}
       <hr />
       <div className={styles.content}>
-        <SongList cat={title} total={count} />
+        <SongList tag={title} total={count} />
       </div>
     </div>
   )
 }
-//标签框
 const SongTags = (props: {
   tags: Array<Music.tag>
   category: { [key: number]: string }
@@ -98,9 +96,8 @@ const SongTags = (props: {
   setTotal: (count: number) => void
   defaultTotal: number | undefined
 }) => {
-  const { tags, setTitle, setShowTags, category, setTotal, defaultTotal } =
-    props
-  let categories: number[] = []
+  const { tags, setTitle, setShowTags, category, setTotal, defaultTotal } = props
+  const categories: number[] = []
   for (let index of Object.keys(category)) {
     categories.push(parseInt(index))
   }
@@ -123,7 +120,6 @@ const SongTags = (props: {
         </Button>
       </header>
       <ul className={styles.side}>
-        {/* 语种,风格，场景，情感，主题 */}
         <li>
           <GlobalOutlined />
           <span>语种</span>
